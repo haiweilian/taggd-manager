@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Taggd</title>
+    <link rel="stylesheet" href="assets/layout.css" />
+    <link rel="stylesheet" href="themes/taggd-classic.css" />
+  </head>
+  <body>
+    <main class="container">
+      <img src="../assets/1024x512.jpg" alt="" id="image" />
+      <button id="btn-generate-output">Get tags</button>
+      <pre id="output"></pre>
+    </main>
+    <script src="functions.js"></script>
+    <script src="../../dist/taggd-manager.umd.js"></script>
+    <script>
+      var image = document.getElementById('image')
+
+      var taggd = new TaggdManager.Taggd(image)
+
+      taggd.setTags([createTag(), createTag(), createTag()])
+
+      taggd.enableEditorMode()
+
+      taggd.on('taggd.image.click', function (taggd, position) {
+        console.log(taggd, position)
+        taggd.addTag(new TaggdManager.Tag(position, `x${position.x}-y${position.y}`))
+      })
+
+      document.getElementById('btn-generate-output').addEventListener('click', function () {
+        document.getElementById('output').innerHTML = JSON.stringify(taggd.getTags(), null, 2)
+      })
+    </script>
+  </body>
+</html>

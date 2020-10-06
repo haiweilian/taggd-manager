@@ -1,0 +1,63 @@
+{
+  "name": "taggd-manager",
+  "space": "TaggdManager",
+  "version": "1.0.0",
+  "description": "taggd-manager is a tool that allows you to tag pictures with additional information.",
+  "main": "dist/taggd-manager.umd.js",
+  "module": "dist/taggd-manager.esm.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "test:unit": "jest --coverage",
+    "commit": "git-cz",
+    "release": "standard-version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haiweilian/taggd-manager.git"
+  },
+  "author": "haiweilian@foxmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/haiweilian/taggd-manager/issues"
+  },
+  "homepage": "https://github.com/haiweilian/taggd-manager#readme",
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@types/jest": "^26.0.9",
+    "babel-jest": "^26.2.2",
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
+    "eslint": "^7.6.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^23.20.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.2.5",
+    "jest": "^26.2.2",
+    "lint-staged": "^10.2.11",
+    "node-sass": "^4.14.1",
+    "prettier": "^2.0.5",
+    "rollup": "^2.28.2",
+    "standard-version": "^8.0.2",
+    "stylelint": "^13.6.1",
+    "stylelint-config-recess-order": "^2.1.0",
+    "stylelint-config-recommended-scss": "^4.2.0",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-order": "^4.1.0",
+    "stylelint-scss": "^3.18.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

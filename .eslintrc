@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "extends": ["airbnb-base", "plugin:prettier/recommended"],
+  "plugins": ["jest"],
+  "env": {
+    "browser": true,
+    "jest/globals": true
+  },
+  "rules": {
+    "no-param-reassign": "off",
+    "no-unsafe-negation": "off"
+  }
+}

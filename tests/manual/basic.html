@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Taggd</title>
+    <link rel="stylesheet" href="assets/layout.css" />
+    <link rel="stylesheet" href="themes/taggd-classic.css" />
+  </head>
+  <body>
+    <main class="container">
+      <img src="../assets/1024x512.jpg" alt="" id="image" />
+    </main>
+    <ul>
+      <li><button id="action-add">Add random tags</button></li>
+      <li><button id="action-delete">Delete all tags</button></li>
+    </ul>
+    <script src="functions.js"></script>
+    <script src="../../dist/taggd-manager.umd.js"></script>
+    <script>
+      var image = document.getElementById('image')
+
+      var taggd = new TaggdManager.Taggd(image)
+
+      taggd.setTags([createTag(), createTag(), createTag()])
+
+      document.getElementById('action-add').addEventListener('click', function addRandomTags() {
+        for (var i = 0; i < 4; i++) {
+          taggd.addTag(createTag())
+        }
+      })
+
+      document.getElementById('action-delete').addEventListener('click', function deleteTags() {
+        taggd.deleteTags()
+      })
+    </script>
+  </body>
+</html>
