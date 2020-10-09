@@ -2,11 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Taggd</title>
-    <link rel="stylesheet" href="assets/layout.css" />
-    <link rel="stylesheet" href="themes/taggd-classic.css" />
+    <title>基础演示</title>
+    <link rel="stylesheet" href="../../dist/taggd.css">
+    <link rel="stylesheet" href="./assets/layout.css" />
+    <link rel="stylesheet" href="./themes/taggd-classic.css" />
   </head>
   <body>
+    <header class="header">
+      <ul>
+        <li class="active"><a href="./basic.html">基础演示</a></li>
+        <li><a href="./editor.html">编辑演示</a></li>
+      </ul>
+    </header>
     <main class="container">
       <img src="../assets/1024x512.jpg" alt="" id="image" />
     </main>
@@ -14,14 +21,12 @@
       <li><button id="action-add">Add random tags</button></li>
       <li><button id="action-delete">Delete all tags</button></li>
     </ul>
-    <script src="functions.js"></script>
-    <script src="../../dist/taggd-manager.umd.js"></script>
+    <script src="./functions.js"></script>
+    <script src="../../dist/taggd.js"></script>
     <script>
       var image = document.getElementById('image')
 
-      var taggd = new TaggdManager.Taggd(image)
-
-      taggd.setTags([createTag(), createTag(), createTag()])
+      var taggd = new Taggd(image, {}, [createTag(), createTag(), createTag()])
 
       document.getElementById('action-add').addEventListener('click', function addRandomTags() {
         for (var i = 0; i < 4; i++) {

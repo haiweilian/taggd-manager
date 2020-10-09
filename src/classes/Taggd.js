@@ -1,7 +1,8 @@
 import Tag from './Tag'
+import TaggdEffect from './TaggdEffect'
 import EventEmitter from '../util/event-emitter'
 import TypeErrorMessage from '../util/type-error-message'
-import * as Utilities from '../util/utilities'
+import { ofInstance, isObject, isFunction, assign } from '../util/utilities'
 
 class Taggd extends EventEmitter {
   /**
@@ -18,22 +19,29 @@ class Taggd extends EventEmitter {
     super()
 
     this.wrapper = document.createElement('div')
-    this.wrapper.classList.add('taggd')
+    this.wrapper.className = 'taggd'
 
     image.classList.add('taggd__image')
     image.parentElement.insertBefore(this.wrapper, image)
-    image.parentElement.removeChild(image)
 
     this.wrapper.appendChild(image)
 
     this.image = image
     this.options = {}
+    this.imageData = {}
+    this.initialImageData = {}
     this.tags = []
-
-    this.imageClickHandler = this.imageClickHandler.bind(this)
+    this.pointer = {}
+    this.action = false
+    this.wheeling = false
+    this.zooming = false
 
     this.setOptions(options)
-    this.setTags(data)
+
+    // TODO: Subscriptions do not fire after instantiation 'taggd.editor.load'
+    setTimeout(() => {
+      this.loadImage(data)
+    })
   }
 
   /**
@@ -72,26 +80,13 @@ class Taggd extends EventEmitter {
    * @return {Taggd} Current Taggd instance
    */
   setOptions(options) {
-    if (!Utilities.isObject(options) || Array.isArray(options)) {
+    if (!isObject(options)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(options))
     }
 
-    this.options = Object.assign(this.options, Taggd.DEFAULT_OPTIONS, options)
-    return this
-  }
+    this.options = assign(this.options, Taggd.DEFAULT_OPTIONS, options)
 
-  /**
-   * Set taggd options
-   * @param {Object} options - The options to set
-   * @return {Taggd} Current Taggd instance
-   */
-  imageClickHandler(e) {
-    const offset = Utilities.getOffset(this.image)
-    const position = {
-      x: (e.pageX - offset.left) / this.image.width,
-      y: (e.pageY - offset.top) / this.image.height,
-    }
-    this.emit('taggd.image.click', this, position)
+    return this
   }
 
   /**
@@ -100,9 +95,13 @@ class Taggd extends EventEmitter {
    * @return {Taggd} Current Taggd instance
    */
   addTag(tag) {
-    if (!Utilities.ofInstance(tag, Tag)) {
+    if (!ofInstance(tag, Tag)) {
       throw new TypeError(TypeErrorMessage.getTagMessage(tag))
     }
+
+    tag.Taggd = this
+
+    tag.setPosition()
 
     const isCanceled = !this.emit('taggd.tag.add', this, tag)
     let hideTimeout
@@ -275,7 +274,7 @@ class Taggd extends EventEmitter {
    * @return {Taggd} Current Taggd instance
    */
   map(callback) {
-    if (!Utilities.isFunction(callback)) {
+    if (!isFunction(callback)) {
       throw new TypeError(TypeErrorMessage.getFunctionMessage(callback))
     }
 
@@ -305,7 +304,11 @@ class Taggd extends EventEmitter {
     const isCanceled = !this.emit('taggd.editor.enable', this)
 
     if (!isCanceled) {
-      this.image.addEventListener(this.options.click, this.imageClickHandler)
+      this.image.addEventListener(this.options.addEvent, (this.imageClickHandler = this.imageClickHandler.bind(this)))
+      this.image.addEventListener('wheel', (this.imageZoomHander = this.imageZoomHander.bind(this)))
+      this.image.addEventListener('mousedown', (this.imageDownHander = this.imageDownHander.bind(this)))
+      this.image.addEventListener('mousemove', (this.imageMoveHander = this.imageMoveHander.bind(this)))
+      this.image.addEventListener('mouseup', (this.imageUpHander = this.imageUpHander.bind(this)))
       this.getTags().forEach((tag) => tag.enableControls())
     }
 
@@ -320,13 +323,19 @@ class Taggd extends EventEmitter {
     const isCanceled = !this.emit('taggd.editor.disable', this)
 
     if (!isCanceled) {
-      this.image.removeEventListener(this.options.click, this.imageClickHandler)
+      this.image.removeEventListener(this.options.addEvent, (this.imageClickHandler = this.imageClickHandler.bind(this)))
+      this.image.removeEventListener('wheel', (this.imageZoomHander = this.imageZoomHander.bind(this)))
+      this.image.removeEventListener('mousedown', (this.imageDownHander = this.imageDownHander.bind(this)))
+      this.image.removeEventListener('mousemove', (this.imageMoveHander = this.imageMoveHander.bind(this)))
+      this.image.removeEventListener('mouseup', (this.imageUpHander = this.imageUpHander.bind(this)))
       this.getTags().forEach((tag) => tag.disableControls())
     }
 
     return this
   }
 }
+
+assign(Taggd.prototype, TaggdEffect)
 
 /**
  * Default options for all Taggd instances
@@ -337,7 +346,10 @@ class Taggd extends EventEmitter {
 Taggd.DEFAULT_OPTIONS = {
   show: 'mouseenter',
   hide: 'mouseleave',
-  click: 'dblclick',
+  addEvent: 'dblclick',
+  zoomRatio: 0.1,
+  zoomRatioMin: 0.01,
+  zoomRatioMax: 100,
   hideDelay: 500,
 }
 

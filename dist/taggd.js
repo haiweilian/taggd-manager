@@ -1,8 +1,18 @@
+/*!
+ * taggd-manager v0.0.1
+ * https://github.com/haiweilian/taggd-manager#readme
+ *
+ * Copyright 2020 haiweilian@foxmail.com
+ * Released under the MIT license
+ *
+ * Date: 2020-10-09T14:53:04.673Z
+ */
+
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.TaggdManager = {}));
-}(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Taggd = factory());
+}(this, (function () { 'use strict';
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
@@ -40,6 +50,55 @@
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
+  }
+
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
   }
 
   function _inherits(subClass, superClass) {
@@ -363,6 +422,11 @@
   };
 
   /**
+   * see from https://github.com/haiweilian/share-snippets
+   * see from https://github.com/fengyuanchen/viewerjs/blob/master/src/js/utilities.js
+   */
+
+  /**
    * Check wheter an object is an instance of type
    * @param {Object} object - The object to test
    * @param {Object} type - The class to test
@@ -408,6 +472,80 @@
     return typeof value === 'function';
   }
   /**
+   * Iterate the given data.
+   * @param {*} data - The data to iterate.
+   * @param {Function} callback - The process function for each element.
+   * @returns {*} The original data.
+   */
+
+  function forEach(data, callback) {
+    if (data && isFunction(callback)) {
+      if (Array.isArray(data) || isNumber(data.length)
+      /* array-like */
+      ) {
+          var length = data.length;
+          var i;
+
+          for (i = 0; i < length; i += 1) {
+            if (callback.call(data, data[i], i, data) === false) {
+              break;
+            }
+          }
+        } else if (isObject(data)) {
+        Object.keys(data).forEach(function (key) {
+          callback.call(data, data[key], key, data);
+        });
+      }
+    }
+
+    return data;
+  }
+  /**
+   * Extend the given object.
+   * @param {*} obj - The object to be extended.
+   * @param {*} args - The rest objects which will be merged to the first object.
+   * @returns {Object} The extended object.
+   */
+
+  /* eslint-disable prettier/prettier */
+
+  var assign = Object.assign || function assign(obj) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    if (isObject(obj) && args.length > 0) {
+      args.forEach(function (arg) {
+        if (isObject(arg)) {
+          Object.keys(arg).forEach(function (key) {
+            obj[key] = arg[key];
+          });
+        }
+      });
+    }
+
+    return obj;
+  };
+  var REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/;
+  /* eslint-enable prettier/prettier */
+
+  /**
+   * Apply styles to the given element.
+   * @param {Element} element - The target element.
+   * @param {Object} styles - The styles for applying.
+   */
+
+  function setStyle(element, styles) {
+    var style = element.style;
+    forEach(styles, function (value, property) {
+      if (REGEXP_SUFFIX.test(property) && isNumber(value)) {
+        value += 'px';
+      }
+
+      style[property] = value;
+    });
+  }
+  /**
    * Get the offset base on the document.
    * @param {Element} element - The target element.
    * @returns {Object} The offset data.
@@ -419,6 +557,26 @@
       left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
       top: box.top + (window.pageYOffset - document.documentElement.clientTop)
     };
+  }
+  /**
+   * Get a pointer from an event object.
+   * @param {Object} event - The target event object.
+   * @param {boolean} endOnly - Indicates if only returns the end point coordinate or not.
+   * @returns {Object} The result pointer contains start and/or end point coordinates.
+   */
+
+  function getPointer(_ref, endOnly) {
+    var pageX = _ref.pageX,
+        pageY = _ref.pageY;
+    var end = {
+      endX: pageX,
+      endY: pageY
+    };
+    return endOnly ? end : _objectSpread2({
+      timeStamp: Date.now(),
+      startX: pageX,
+      startY: pageY
+    }, end);
   }
 
   var Tag = /*#__PURE__*/function (_EventEmitter) {
@@ -441,7 +599,7 @@
 
       _classCallCheck(this, Tag);
 
-      if (!isObject(position) || Array.isArray(position)) {
+      if (!isObject(position)) {
         throw new TypeError(TypeErrorMessage.getObjectMessage(position));
       } else if (!('x' in position) || !('y' in position)) {
         throw new Error("".concat(position, " should have x and y property"));
@@ -464,14 +622,13 @@
 
       _this.wrapperElement.appendChild(_this.popupElement);
 
-      _this.text = undefined;
+      _this.text = null;
+      _this.position = position;
       _this.isControlsEnabled = false;
 
       _this.setButtonAttributes(buttonAttributes);
 
       _this.setPopupAttributes(popupAttributes);
-
-      _this.setPosition(position.x, position.y);
 
       _this.setText(text);
 
@@ -568,7 +725,9 @@
 
     }, {
       key: "setText",
-      value: function setText(text) {
+      value: function setText() {
+        var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
         if (!isString(text) && !isFunction(text)) {
           throw new TypeError(TypeErrorMessage.getMessage(text, 'a string or a function'));
         }
@@ -602,7 +761,10 @@
 
     }, {
       key: "setPosition",
-      value: function setPosition(x, y) {
+      value: function setPosition() {
+        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.position.x;
+        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.position.y;
+
         if (!isNumber(x)) {
           throw new TypeError(TypeErrorMessage.getFloatMessage(x));
         }
@@ -614,9 +776,19 @@
         var isCanceled = !this.emit('taggd.tag.change', this);
 
         if (!isCanceled) {
-          var positionStyle = Tag.getPositionStyle(x, y);
-          this.wrapperElement.style.left = positionStyle.left;
-          this.wrapperElement.style.top = positionStyle.top;
+          var _this$Taggd$imageData = this.Taggd.imageData,
+              left = _this$Taggd$imageData.left,
+              top = _this$Taggd$imageData.top,
+              width = _this$Taggd$imageData.width,
+              height = _this$Taggd$imageData.height,
+              naturalWidth = _this$Taggd$imageData.naturalWidth,
+              naturalHeight = _this$Taggd$imageData.naturalHeight;
+          this.position.left = width / naturalWidth * x + left;
+          this.position.top = height / naturalHeight * y + top;
+          setStyle(this.wrapperElement, {
+            left: this.position.left,
+            top: this.position.top
+          });
           this.emit('taggd.tag.changed', this);
         }
 
@@ -633,7 +805,7 @@
       value: function setButtonAttributes() {
         var attributes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        if (!isObject(attributes) || Array.isArray(attributes)) {
+        if (!isObject(attributes)) {
           throw new TypeError(TypeErrorMessage.getObjectMessage(attributes));
         }
 
@@ -657,7 +829,7 @@
       value: function setPopupAttributes() {
         var attributes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        if (!isObject(attributes) || Array.isArray(attributes)) {
+        if (!isObject(attributes)) {
           throw new TypeError(TypeErrorMessage.getObjectMessage(attributes));
         }
 
@@ -691,7 +863,7 @@
       key: "disableControls",
       value: function disableControls() {
         this.isControlsEnabled = false;
-        this.setText(this.text);
+        this.setText('');
         return this;
       }
       /**
@@ -715,10 +887,7 @@
         }
 
         return {
-          position: {
-            x: parseFloat(this.wrapperElement.style.left) / 100,
-            y: parseFloat(this.wrapperElement.style.top) / 100
-          },
+          position: this.position,
           text: this.text,
           buttonAttributes: getAttributes(this.buttonElement.attributes),
           popupAttributes: getAttributes(this.popupElement.attributes)
@@ -736,7 +905,7 @@
       value: function setElementAttributes(element) {
         var attributes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-        if (!isObject(attributes) || Array.isArray(attributes)) {
+        if (!isObject(attributes)) {
           throw new TypeError(TypeErrorMessage.getObjectMessage(attributes));
         }
 
@@ -774,8 +943,8 @@
         }
 
         return {
-          left: "".concat(x * 100, "%"),
-          top: "".concat(y * 100, "%")
+          left: "".concat(x, "px"),
+          top: "".concat(y, "px")
         };
       }
       /**
@@ -793,6 +962,204 @@
 
     return Tag;
   }(EventEmitter);
+
+  var TaggdEffect = {
+    /**
+     * load image and reset image
+     * @param {Taggd.Tag[]} tags - An array of tags
+     * @return {Taggd} Current Taggd instance
+     */
+    loadImage: function loadImage(tags) {
+      var _this = this;
+
+      this.emit('taggd.editor.load', this);
+      var image = this.image;
+      var parent = image.parentNode;
+      var parentWidth = parent.offsetWidth || 500;
+      var parentHeight = parent.offsetHeight || 300;
+      var newImage = document.createElement('img');
+
+      newImage.onload = function () {
+        // Original aspect ratio
+        var naturalWidth = image.naturalWidth,
+            naturalHeight = image.naturalHeight;
+        var aspectRatio = naturalWidth / naturalHeight; // Full center in default
+
+        var width = parentWidth;
+        var height = parentHeight;
+
+        if (parentHeight * aspectRatio > parentWidth) {
+          height = parentWidth / aspectRatio;
+        } else {
+          width = parentHeight * aspectRatio;
+        } // Init image style
+
+
+        var imageData = {
+          width: width,
+          height: height,
+          naturalWidth: naturalWidth,
+          naturalHeight: naturalHeight,
+          ratio: width / naturalWidth,
+          left: (parentWidth - width) / 2,
+          top: (parentHeight - height) / 2
+        };
+        var initialImageData = assign({}, imageData);
+        _this.imageData = imageData;
+        _this.initialImageData = initialImageData; // Init tags
+
+        _this.setTags(tags);
+
+        _this.imageChangeRender();
+
+        _this.emit('taggd.editor.loaded', _this);
+      };
+
+      newImage.onerror = function () {};
+
+      newImage.src = image.src;
+      return this;
+    },
+
+    /**
+     * change image reset style
+     * @param {Object} style style change
+     * @return {undefined}
+     */
+    imageChangeRender: function imageChangeRender() {
+      var style = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      style = _objectSpread2(_objectSpread2({}, this.imageData), style);
+      setStyle(this.image, {
+        width: style.width,
+        height: style.height,
+        marginLeft: style.left,
+        marginTop: style.top
+      }); // update tags position
+
+      this.tags.forEach(function (tag) {
+        return tag.setPosition();
+      });
+    },
+
+    /**
+     * image click/dblclick hander
+     * @param {EventTarget} event
+     * @return {undefined}
+     */
+    imageClickHandler: function imageClickHandler(event) {
+      var imageData = this.imageData;
+      var offset = getOffset(this.image);
+      var position = {
+        x: (event.pageX - offset.left) / imageData.width * imageData.naturalWidth,
+        y: (event.pageY - offset.top) / imageData.height * imageData.naturalHeight
+      };
+      this.emit('taggd.editor.add', this, position);
+    },
+
+    /**
+     * image wheel hander
+     * @param {EventTarget} event
+     * @return {undefined}
+     */
+    imageZoomHander: function imageZoomHander(event) {
+      var _this2 = this;
+
+      if (this.wheeling) {
+        return;
+      }
+
+      this.wheeling = true;
+      setTimeout(function () {
+        _this2.wheeling = false;
+      }, 50);
+      event.preventDefault();
+      var options = this.options,
+          imageData = this.imageData;
+      var width = imageData.width,
+          height = imageData.height,
+          naturalWidth = imageData.naturalWidth,
+          naturalHeight = imageData.naturalHeight;
+      var delta = 1;
+      var ratio = options.zoomRatio;
+
+      if (event.deltaY) {
+        delta = event.deltaY > 0 ? 1 : -1;
+      } else if (event.wheelDelta) {
+        delta = -event.wheelDelta / 120;
+      } else if (event.detail) {
+        delta = event.detail > 0 ? 1 : -1;
+      }
+
+      ratio *= -delta;
+
+      if (ratio < 0) {
+        ratio = 1 / (1 - ratio);
+      } else {
+        ratio = 1 + ratio;
+      }
+
+      ratio = width * ratio / naturalWidth;
+      var offset = getOffset(this.image);
+      var newWidth = naturalWidth * ratio;
+      var newHeight = naturalHeight * ratio;
+      var offsetWidth = newWidth - width;
+      var offsetHeight = newHeight - height;
+      imageData.ratio = ratio;
+      imageData.width = newWidth;
+      imageData.height = newHeight;
+      imageData.left -= offsetWidth * ((event.pageX - offset.left) / width);
+      imageData.top -= offsetHeight * ((event.pageY - offset.top) / height);
+      this.imageChangeRender();
+      this.emit('taggd.editor.zoom', this);
+    },
+
+    /**
+     * image mousedown hander
+     * @param {EventTarget} event
+     */
+    imageDownHander: function imageDownHander(event) {
+      event.preventDefault();
+      this.action = 'move';
+      this.pointer = assign(getPointer(event), {
+        moveX: this.imageData.left,
+        moveY: this.imageData.top
+      });
+      this.emit('taggd.editor.movedown', this);
+    },
+
+    /**
+     * image mousemove hander
+     * @param {EventTarget} event
+     */
+    imageMoveHander: function imageMoveHander(event) {
+      if (!this.action) {
+        return;
+      }
+
+      event.preventDefault();
+      var imageData = this.imageData,
+          pointer = this.pointer;
+
+      var _getPointer = getPointer(event, true),
+          endX = _getPointer.endX,
+          endY = _getPointer.endY;
+
+      imageData.left = pointer.moveX + (endX - pointer.startX);
+      imageData.top = pointer.moveY + (endY - pointer.startY);
+      this.imageChangeRender();
+      this.emit('taggd.editor.move', this);
+    },
+
+    /**
+     * image mouseup hander
+     * @param {EventTarget} event
+     */
+    imageUpHander: function imageUpHander(event) {
+      event.preventDefault();
+      this.action = false;
+      this.emit('taggd.editor.moveup', this);
+    }
+  };
 
   var Taggd = /*#__PURE__*/function (_EventEmitter) {
     _inherits(Taggd, _EventEmitter);
@@ -819,24 +1186,28 @@
 
       _this = _super.call(this);
       _this.wrapper = document.createElement('div');
-
-      _this.wrapper.classList.add('taggd');
-
+      _this.wrapper.className = 'taggd';
       image.classList.add('taggd__image');
       image.parentElement.insertBefore(_this.wrapper, image);
-      image.parentElement.removeChild(image);
 
       _this.wrapper.appendChild(image);
 
       _this.image = image;
       _this.options = {};
+      _this.imageData = {};
+      _this.initialImageData = {};
       _this.tags = [];
-      _this.imageClickHandler = _this.imageClickHandler.bind(_assertThisInitialized(_this));
+      _this.pointer = {};
+      _this.action = false;
+      _this.wheeling = false;
+      _this.zooming = false;
 
-      _this.setOptions(options);
+      _this.setOptions(options); // TODO: Subscriptions do not fire after instantiation 'taggd.editor.load'
 
-      _this.setTags(data);
 
+      setTimeout(function () {
+        _this.loadImage(data);
+      });
       return _this;
     }
     /**
@@ -885,28 +1256,12 @@
     }, {
       key: "setOptions",
       value: function setOptions(options) {
-        if (!isObject(options) || Array.isArray(options)) {
+        if (!isObject(options)) {
           throw new TypeError(TypeErrorMessage.getObjectMessage(options));
         }
 
-        this.options = Object.assign(this.options, Taggd.DEFAULT_OPTIONS, options);
+        this.options = assign(this.options, Taggd.DEFAULT_OPTIONS, options);
         return this;
-      }
-      /**
-       * Set taggd options
-       * @param {Object} options - The options to set
-       * @return {Taggd} Current Taggd instance
-       */
-
-    }, {
-      key: "imageClickHandler",
-      value: function imageClickHandler(e) {
-        var offset = getOffset(this.image);
-        var position = {
-          x: (e.pageX - offset.left) / this.image.width,
-          y: (e.pageY - offset.top) / this.image.height
-        };
-        this.emit('taggd.image.click', this, position);
       }
       /**
        * Add a single tag
@@ -923,6 +1278,8 @@
           throw new TypeError(TypeErrorMessage.getTagMessage(tag));
         }
 
+        tag.Taggd = this;
+        tag.setPosition();
         var isCanceled = !this.emit('taggd.tag.add', this, tag);
         var hideTimeout;
         /**
@@ -1151,7 +1508,11 @@
         var isCanceled = !this.emit('taggd.editor.enable', this);
 
         if (!isCanceled) {
-          this.image.addEventListener(this.options.click, this.imageClickHandler);
+          this.image.addEventListener(this.options.addEvent, this.imageClickHandler = this.imageClickHandler.bind(this));
+          this.image.addEventListener('wheel', this.imageZoomHander = this.imageZoomHander.bind(this));
+          this.image.addEventListener('mousedown', this.imageDownHander = this.imageDownHander.bind(this));
+          this.image.addEventListener('mousemove', this.imageMoveHander = this.imageMoveHander.bind(this));
+          this.image.addEventListener('mouseup', this.imageUpHander = this.imageUpHander.bind(this));
           this.getTags().forEach(function (tag) {
             return tag.enableControls();
           });
@@ -1170,7 +1531,11 @@
         var isCanceled = !this.emit('taggd.editor.disable', this);
 
         if (!isCanceled) {
-          this.image.removeEventListener(this.options.click, this.imageClickHandler);
+          this.image.removeEventListener(this.options.addEvent, this.imageClickHandler = this.imageClickHandler.bind(this));
+          this.image.removeEventListener('wheel', this.imageZoomHander = this.imageZoomHander.bind(this));
+          this.image.removeEventListener('mousedown', this.imageDownHander = this.imageDownHander.bind(this));
+          this.image.removeEventListener('mousemove', this.imageMoveHander = this.imageMoveHander.bind(this));
+          this.image.removeEventListener('mouseup', this.imageUpHander = this.imageUpHander.bind(this));
           this.getTags().forEach(function (tag) {
             return tag.disableControls();
           });
@@ -1182,6 +1547,8 @@
 
     return Taggd;
   }(EventEmitter);
+
+  assign(Taggd.prototype, TaggdEffect);
   /**
    * Default options for all Taggd instances
    * @const
@@ -1189,17 +1556,18 @@
    * @ignore
    */
 
-
   Taggd.DEFAULT_OPTIONS = {
     show: 'mouseenter',
     hide: 'mouseleave',
-    click: 'dblclick',
+    addEvent: 'dblclick',
+    zoomRatio: 0.1,
+    zoomRatioMin: 0.01,
+    zoomRatioMax: 100,
     hideDelay: 500
   };
 
-  exports.Tag = Tag;
-  exports.Taggd = Taggd;
+  Taggd.Tag = Tag;
 
-  Object.defineProperty(exports, '__esModule', { value: true });
+  return Taggd;
 
 })));

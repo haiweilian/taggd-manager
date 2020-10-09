@@ -3,29 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <title>Taggd</title>
-    <link rel="stylesheet" href="assets/layout.css" />
-    <link rel="stylesheet" href="themes/taggd-classic.css" />
+    <link rel="stylesheet" href="../../dist/taggd.css">
+    <link rel="stylesheet" href="./assets/layout.css" />
+    <link rel="stylesheet" href="./themes/taggd-classic.css" />
   </head>
   <body>
+    <header class="header">
+      <ul>
+        <li><a href="./basic.html">基础演示</a></li>
+        <li class="active"><a href="./editor.html">编辑演示</a></li>
+      </ul>
+    </header>
     <main class="container">
       <img src="../assets/1024x512.jpg" alt="" id="image" />
-      <button id="btn-generate-output">Get tags</button>
-      <pre id="output"></pre>
     </main>
-    <script src="functions.js"></script>
-    <script src="../../dist/taggd-manager.umd.js"></script>
+    <button id="btn-generate-output">Get tags</button>
+    <pre id="output"></pre>
+    <script src="../../dist/taggd.js"></script>
+    <script src="./functions.js"></script>
     <script>
       var image = document.getElementById('image')
 
-      var taggd = new TaggdManager.Taggd(image)
-
-      taggd.setTags([createTag(), createTag(), createTag()])
+      var taggd = new Taggd(image,{}, [
+        new Taggd.Tag({x: 200, y: 200}, ''),
+        new Taggd.Tag({x: 600, y: 300}, ''),
+        new Taggd.Tag({x: 300, y: 400}, ''),
+        new Taggd.Tag({x: 000, y: 000}, '')
+      ])
 
       taggd.enableEditorMode()
 
-      taggd.on('taggd.image.click', function (taggd, position) {
-        console.log(taggd, position)
-        taggd.addTag(new TaggdManager.Tag(position, `x${position.x}-y${position.y}`))
+      taggd.on('*', function (event) {
+        console.log(event)
+      })
+
+      taggd.on('taggd.editor.add', function (taggd, position) {
+        taggd.addTag(new Taggd.Tag(position, `x${position.x}-y${position.y}`))
       })
 
       document.getElementById('btn-generate-output').addEventListener('click', function () {

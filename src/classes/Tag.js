@@ -1,6 +1,6 @@
 import EventEmitter from '../util/event-emitter'
 import TypeErrorMessage from '../util/type-error-message'
-import * as Utilities from '../util/utilities'
+import { isObject, isString, isFunction, isNumber, setStyle } from '../util/utilities'
 
 class Tag extends EventEmitter {
   /**
@@ -11,7 +11,7 @@ class Tag extends EventEmitter {
    * @param {Object} [popupAttributes = {}] - The popup’s attributes
    */
   constructor(position, text, buttonAttributes = {}, popupAttributes = {}) {
-    if (!Utilities.isObject(position) || Array.isArray(position)) {
+    if (!isObject(position)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(position))
     } else if (!('x' in position) || !('y' in position)) {
       throw new Error(`${position} should have x and y property`)
@@ -31,14 +31,13 @@ class Tag extends EventEmitter {
     this.wrapperElement.appendChild(this.buttonElement)
     this.wrapperElement.appendChild(this.popupElement)
 
-    this.text = undefined
+    this.text = null
+    this.position = position
     this.isControlsEnabled = false
 
     this.setButtonAttributes(buttonAttributes)
     this.setPopupAttributes(popupAttributes)
-    this.setPosition(position.x, position.y)
     this.setText(text)
-
     this.hide()
   }
 
@@ -115,15 +114,15 @@ class Tag extends EventEmitter {
    * @param {String|Function} text - The tag’s content
    * @return {Taggd.Tag} Current Tag
    */
-  setText(text) {
-    if (!Utilities.isString(text) && !Utilities.isFunction(text)) {
+  setText(text = '') {
+    if (!isString(text) && !isFunction(text)) {
       throw new TypeError(TypeErrorMessage.getMessage(text, 'a string or a function'))
     }
 
     const isCanceled = !this.emit('taggd.tag.change', this)
 
     if (!isCanceled) {
-      if (Utilities.isFunction(text)) {
+      if (isFunction(text)) {
         this.text = text(this)
       } else {
         this.text = text
@@ -147,21 +146,26 @@ class Tag extends EventEmitter {
    * @param {Number} y - The tag’s y-coordinate
    * @return {Taggd.Tag} Current Tag
    */
-  setPosition(x, y) {
-    if (!Utilities.isNumber(x)) {
+  setPosition(x = this.position.x, y = this.position.y) {
+    if (!isNumber(x)) {
       throw new TypeError(TypeErrorMessage.getFloatMessage(x))
     }
-    if (!Utilities.isNumber(y)) {
+    if (!isNumber(y)) {
       throw new TypeError(TypeErrorMessage.getFloatMessage(y))
     }
 
     const isCanceled = !this.emit('taggd.tag.change', this)
 
     if (!isCanceled) {
-      const positionStyle = Tag.getPositionStyle(x, y)
+      const { left, top, width, height, naturalWidth, naturalHeight } = this.Taggd.imageData
 
-      this.wrapperElement.style.left = positionStyle.left
-      this.wrapperElement.style.top = positionStyle.top
+      this.position.left = (width / naturalWidth) * x + left
+      this.position.top = (height / naturalHeight) * y + top
+
+      setStyle(this.wrapperElement, {
+        left: this.position.left,
+        top: this.position.top,
+      })
 
       this.emit('taggd.tag.changed', this)
     }
@@ -175,7 +179,7 @@ class Tag extends EventEmitter {
    * @return {Taggd.Tag} Current tag
    */
   setButtonAttributes(attributes = {}) {
-    if (!Utilities.isObject(attributes) || Array.isArray(attributes)) {
+    if (!isObject(attributes)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(attributes))
     }
 
@@ -195,7 +199,7 @@ class Tag extends EventEmitter {
    * @return {Taggd.Tag} Current tag
    */
   setPopupAttributes(attributes = {}) {
-    if (!Utilities.isObject(attributes) || Array.isArray(attributes)) {
+    if (!isObject(attributes)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(attributes))
     }
 
@@ -215,7 +219,9 @@ class Tag extends EventEmitter {
    */
   enableControls() {
     this.isControlsEnabled = true
+
     this.setText(this.text)
+
     return this
   }
 
@@ -225,7 +231,9 @@ class Tag extends EventEmitter {
    */
   disableControls() {
     this.isControlsEnabled = false
-    this.setText(this.text)
+
+    this.setText('')
+
     return this
   }
 
@@ -249,10 +257,7 @@ class Tag extends EventEmitter {
     }
 
     return {
-      position: {
-        x: parseFloat(this.wrapperElement.style.left) / 100,
-        y: parseFloat(this.wrapperElement.style.top) / 100,
-      },
+      position: this.position,
       text: this.text,
       buttonAttributes: getAttributes(this.buttonElement.attributes),
       popupAttributes: getAttributes(this.popupElement.attributes),
@@ -266,7 +271,7 @@ class Tag extends EventEmitter {
    * @return {DomNode} The original element
    */
   static setElementAttributes(element, attributes = {}) {
-    if (!Utilities.isObject(attributes) || Array.isArray(attributes)) {
+    if (!isObject(attributes)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(attributes))
     }
 
@@ -292,16 +297,16 @@ class Tag extends EventEmitter {
    * @return {Object} The style
    */
   static getPositionStyle(x, y) {
-    if (!Utilities.isNumber(x)) {
+    if (!isNumber(x)) {
       throw new TypeError(TypeErrorMessage.getFloatMessage(x))
     }
-    if (!Utilities.isNumber(y)) {
+    if (!isNumber(y)) {
       throw new TypeError(TypeErrorMessage.getFloatMessage(y))
     }
 
     return {
-      left: `${x * 100}%`,
-      top: `${y * 100}%`,
+      left: `${x}px`,
+      top: `${y}px`,
     }
   }
 

@@ -59,15 +59,11 @@ function createTag() {
     text += characterSet[Math.floor(Math.random() * characterSet.length)]
   } while (--textLength)
 
-  return new TaggdManager.Tag(
+  return new Taggd.Tag(
     {
-      x: Math.random(),
-      y: Math.random(),
+      x: Math.round(Math.random() * (0 - 1000) + 1000),
+      y: Math.round(Math.random() * (0 - 500) + 500),
     },
     text
   )
-}
-
-function shortDelay(callback) {
-  setTimeout(callback, 1000 / 8)
 }

@@ -1,4 +1,8 @@
 /**
+ * see from https://github.com/haiweilian/share-snippets
+ * see from https://github.com/fengyuanchen/viewerjs/blob/master/src/js/utilities.js
+ */
+/**
  * Check wheter an object is an instance of type
  * @param {Object} object - The object to test
  * @param {Object} type - The class to test
@@ -86,7 +90,8 @@ export function forEach(data, callback) {
  * @param {*} args - The rest objects which will be merged to the first object.
  * @returns {Object} The extended object.
  */
-export function assign(obj, ...args) {
+/* eslint-disable prettier/prettier */
+export const assign = Object.assign || function assign(obj, ...args) {
   if (isObject(obj) && args.length > 0) {
     args.forEach((arg) => {
       if (isObject(arg)) {
@@ -101,6 +106,7 @@ export function assign(obj, ...args) {
 
 const REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/
 
+/* eslint-enable prettier/prettier */
 /**
  * Apply styles to the given element.
  * @param {Element} element - The target element.
@@ -232,75 +238,6 @@ export function toggleClass(element, value, added) {
   }
 }
 
-const REGEXP_HYPHENATE = /([a-z\d])([A-Z])/g
-
-/**
- * Transform the given string from camelCase to kebab-case
- * @param {string} value - The value to transform.
- * @returns {string} The transformed value.
- */
-export function hyphenate(value) {
-  return value.replace(REGEXP_HYPHENATE, '$1-$2').toLowerCase()
-}
-
-/**
- * Get data from the given element.
- * @param {Element} element - The target element.
- * @param {string} name - The data key to get.
- * @returns {string} The data value.
- */
-export function getData(element, name) {
-  if (isObject(element[name])) {
-    return element[name]
-  }
-
-  if (element.dataset) {
-    return element.dataset[name]
-  }
-
-  return element.getAttribute(`data-${hyphenate(name)}`)
-}
-
-/**
- * Set data to the given element.
- * @param {Element} element - The target element.
- * @param {string} name - The data key to set.
- * @param {string} data - The data value.
- */
-export function setData(element, name, data) {
-  if (isObject(data)) {
-    element[name] = data
-  } else if (element.dataset) {
-    element.dataset[name] = data
-  } else {
-    element.setAttribute(`data-${hyphenate(name)}`, data)
-  }
-}
-
-/**
- * Remove data from the given element.
- * @param {Element} element - The target element.
- * @param {string} name - The data key to remove.
- */
-export function removeData(element, name) {
-  if (isObject(element[name])) {
-    try {
-      delete element[name]
-    } catch (error) {
-      element[name] = undefined
-    }
-  } else if (element.dataset) {
-    // #128 Safari not allows to delete dataset property
-    try {
-      delete element.dataset[name]
-    } catch (error) {
-      element.dataset[name] = undefined
-    }
-  } else {
-    element.removeAttribute(`data-${hyphenate(name)}`)
-  }
-}
-
 /**
  * Get the offset base on the document.
  * @param {Element} element - The target element.
@@ -313,4 +250,26 @@ export function getOffset(element) {
     left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
     top: box.top + (window.pageYOffset - document.documentElement.clientTop),
   }
+}
+
+/**
+ * Get a pointer from an event object.
+ * @param {Object} event - The target event object.
+ * @param {boolean} endOnly - Indicates if only returns the end point coordinate or not.
+ * @returns {Object} The result pointer contains start and/or end point coordinates.
+ */
+export function getPointer({ pageX, pageY }, endOnly) {
+  const end = {
+    endX: pageX,
+    endY: pageY,
+  }
+
+  return endOnly
+    ? end
+    : {
+        timeStamp: Date.now(),
+        startX: pageX,
+        startY: pageY,
+        ...end,
+      }
 }
