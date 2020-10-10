@@ -19,6 +19,6 @@
   display: inline-block;
 }
 
-.header li.active a {
+.header li.active * {
   color: red;
 }

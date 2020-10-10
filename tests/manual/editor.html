@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Taggd</title>
+    <title>编辑演示</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../dist/taggd.css">
     <link rel="stylesheet" href="./assets/layout.css" />
     <link rel="stylesheet" href="./themes/taggd-classic.css" />
@@ -14,35 +15,59 @@
         <li class="active"><a href="./editor.html">编辑演示</a></li>
       </ul>
     </header>
+    <header class="header">
+      <ul>
+        <li class=""><label><input type="checkbox" checked id="TaggdEditor"/>Taggd 编辑</label></li>
+        <li class=""><label><input type="checkbox" checked id="TagEditor"/>Tag 编辑</label></li>
+        <li class=""><button id="btnGenerateOutput">获取数据</button></li>
+      </ul>
+    </header>
     <main class="container">
       <img src="../assets/1024x512.jpg" alt="" id="image" />
     </main>
-    <button id="btn-generate-output">Get tags</button>
     <pre id="output"></pre>
     <script src="../../dist/taggd.js"></script>
-    <script src="./functions.js"></script>
     <script>
       var image = document.getElementById('image')
 
-      var taggd = new Taggd(image,{}, [
-        new Taggd.Tag({x: 200, y: 200}, ''),
-        new Taggd.Tag({x: 600, y: 300}, ''),
-        new Taggd.Tag({x: 300, y: 400}, ''),
-        new Taggd.Tag({x: 000, y: 000}, '')
-      ])
+      var data = [
+        new Taggd.Tag({x: 200, y: 200}).enableEditorMode(),
+        new Taggd.Tag({x: 600, y: 300}).enableEditorMode(),
+        new Taggd.Tag({x: 300, y: 400}, '蕾姆是最好的女孩').enableEditorMode(),
+        new Taggd.Tag({x: 400, y: 300}, '蕾姆是最好的女孩').disableEditorMode()
+      ]
 
-      taggd.enableEditorMode()
+      var taggd = new Taggd(image,{}, data).enableEditorMode()
 
       taggd.on('*', function (event) {
         console.log(event)
       })
 
       taggd.on('taggd.editor.add', function (taggd, position) {
-        taggd.addTag(new Taggd.Tag(position, `x${position.x}-y${position.y}`))
+        var tag = new Taggd.Tag(position, `x${position.x}-y${position.y}`).enableEditorMode()
+        data.push(tag)
+        taggd.addTag(tag)
       })
 
-      document.getElementById('btn-generate-output').addEventListener('click', function () {
-        document.getElementById('output').innerHTML = JSON.stringify(taggd.getTags(), null, 2)
+      btnGenerateOutput.addEventListener('click', function () {
+        output.innerHTML = JSON.stringify(taggd.getTags(), null, 2);
+      });
+
+      TaggdEditor.addEventListener('change', function (event) {
+        if(event.target.checked) {
+          taggd.enableEditorMode()
+        } else {
+          taggd.disableEditorMode()
+        }
+      })
+
+      TagEditor.addEventListener('change', function (event) {
+        console.log(event.target.checked)
+        if(event.target.checked) {
+          data.forEach(tag => tag.enableEditorMode())
+        } else {
+          data.forEach(tag => tag.disableEditorMode())
+        }
       })
     </script>
   </body>

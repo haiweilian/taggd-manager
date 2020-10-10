@@ -5,8 +5,282 @@
  * Copyright 2020 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2020-10-09T14:53:04.673Z
+ * Date: 2020-10-10T13:17:13.317Z
  */
+
+/**
+ * see from https://github.com/haiweilian/share-snippets
+ * see from https://github.com/fengyuanchen/viewerjs/blob/master/src/js/utilities.js
+ */
+/**
+ * Check wheter an object is an instance of type
+ * @param {Object} object - The object to test
+ * @param {Object} type - The class to test
+ * @return {Boolean}
+ */
+function ofInstance(object, type) {
+  return object instanceof type
+}
+
+/**
+ * Check if the given value is a string.
+ * @param {*} value - The value to check.
+ * @returns {boolean} Returns `true` if the given value is a string, else `false`.
+ */
+function isString(value) {
+  return typeof value === 'string'
+}
+
+/**
+ * Check if the given value is a number.
+ * @param {*} value - The value to check.
+ * @returns {boolean} Returns `true` if the given value is a number, else `false`.
+ */
+function isNumber(value) {
+  return typeof value === 'number' && !Number.isNaN(value)
+}
+
+/**
+ * Check if the given value is an object.
+ * @param {*} value - The value to check.
+ * @returns {boolean} Returns `true` if the given value is an object, else `false`.
+ */
+function isObject(value) {
+  return typeof value === 'object' && value !== null
+}
+
+/**
+ * Check if the given value is a function.
+ * @param {*} value - The value to check.
+ * @returns {boolean} Returns `true` if the given value is a function, else `false`.
+ */
+function isFunction(value) {
+  return typeof value === 'function'
+}
+
+/**
+ * Iterate the given data.
+ * @param {*} data - The data to iterate.
+ * @param {Function} callback - The process function for each element.
+ * @returns {*} The original data.
+ */
+function forEach(data, callback) {
+  if (data && isFunction(callback)) {
+    if (Array.isArray(data) || isNumber(data.length) /* array-like */) {
+      const { length } = data;
+      let i;
+
+      for (i = 0; i < length; i += 1) {
+        if (callback.call(data, data[i], i, data) === false) {
+          break
+        }
+      }
+    } else if (isObject(data)) {
+      Object.keys(data).forEach((key) => {
+        callback.call(data, data[key], key, data);
+      });
+    }
+  }
+
+  return data
+}
+
+/**
+ * Extend the given object.
+ * @param {*} obj - The object to be extended.
+ * @param {*} args - The rest objects which will be merged to the first object.
+ * @returns {Object} The extended object.
+ */
+/* eslint-disable prettier/prettier */
+const assign = Object.assign || function assign(obj, ...args) {
+  if (isObject(obj) && args.length > 0) {
+    args.forEach((arg) => {
+      if (isObject(arg)) {
+        Object.keys(arg).forEach((key) => {
+          obj[key] = arg[key];
+        });
+      }
+    });
+  }
+  return obj
+};
+
+const REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/;
+
+/* eslint-enable prettier/prettier */
+/**
+ * Apply styles to the given element.
+ * @param {Element} element - The target element.
+ * @param {Object} styles - The styles for applying.
+ */
+function setStyle(element, styles) {
+  const { style } = element;
+
+  forEach(styles, (value, property) => {
+    if (REGEXP_SUFFIX.test(property) && isNumber(value)) {
+      value += 'px';
+    }
+
+    style[property] = value;
+  });
+}
+
+/**
+ * Add classes to the given element.
+ * @param {Element} element - The target element.
+ * @param {string} value - The classes to be added.
+ */
+function addClass(element, value) {
+  if (!element || !value) {
+    return
+  }
+
+  if (isNumber(element.length)) {
+    forEach(element, (elem) => {
+      addClass(elem, value);
+    });
+    return
+  }
+
+  if (element.classList) {
+    element.classList.add(value);
+    return
+  }
+
+  const className = element.className.trim();
+
+  if (!className) {
+    element.className = value;
+  } else if (className.indexOf(value) < 0) {
+    element.className = `${className} ${value}`;
+  }
+}
+
+/**
+ * Remove classes from the given element.
+ * @param {Element} element - The target element.
+ * @param {string} value - The classes to be removed.
+ */
+function removeClass(element, value) {
+  if (!element || !value) {
+    return
+  }
+
+  if (isNumber(element.length)) {
+    forEach(element, (elem) => {
+      removeClass(elem, value);
+    });
+    return
+  }
+
+  if (element.classList) {
+    element.classList.remove(value);
+    return
+  }
+
+  if (element.className.indexOf(value) >= 0) {
+    element.className = element.className.replace(value, '');
+  }
+}
+
+/**
+ * Get the offset base on the document.
+ * @param {Element} element - The target element.
+ * @returns {Object} The offset data.
+ */
+function getOffset(element) {
+  const box = element.getBoundingClientRect();
+
+  return {
+    left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
+    top: box.top + (window.pageYOffset - document.documentElement.clientTop),
+  }
+}
+
+/**
+ * Get a pointer from an event object.
+ * @param {Object} event - The target event object.
+ * @param {boolean} endOnly - Indicates if only returns the end point coordinate or not.
+ * @returns {Object} The result pointer contains start and/or end point coordinates.
+ */
+function getPointer({ pageX, pageY }, endOnly) {
+  const end = {
+    endX: pageX,
+    endY: pageY,
+  };
+
+  return endOnly
+    ? end
+    : {
+        timeStamp: Date.now(),
+        startX: pageX,
+        startY: pageY,
+        ...end,
+      }
+}
+
+var TagEffect = {
+  /**
+   * tag mousedown hander
+   * @param {EventTarget} event
+   * @return {undefined}
+   */
+  tagDownHander(event) {
+    event.preventDefault();
+
+    addClass(this.buttonElement, 'taggd--grabbing');
+
+    this.action = 'move';
+    this.pointer = assign(getPointer(event), {
+      moveX: this.position.left,
+      moveY: this.position.top,
+    });
+
+    this.emit('taggd.tag.editor.movedown', this);
+  },
+
+  /**
+   * tag mousemove hander
+   * @param {EventTarget} event
+   */
+  tagMoveHander(event) {
+    if (!this.action) {
+      return
+    }
+
+    event.preventDefault();
+
+    const { position, pointer, Taggd } = this;
+    const { left, top, ratio } = Taggd.imageData;
+    const { endX, endY } = getPointer(event, true);
+
+    // update tag x & y
+    position.x = (pointer.moveX + (endX - pointer.startX) - left) / ratio;
+    position.y = (pointer.moveY + (endY - pointer.startY) - top) / ratio;
+
+    this.setPosition();
+
+    this.emit('taggd.tag.editor.move', this);
+  },
+
+  /**
+   * tag mouseup hander
+   * @param {EventTarget} event
+   */
+  tagUpHander(event) {
+    if (!this.action) {
+      return
+    }
+
+    event.preventDefault();
+
+    removeClass(this.buttonElement, 'taggd--grabbing');
+
+    this.action = false;
+
+    this.emit('taggd.tag.editor.moveup', this);
+  },
+};
 
 const EVENT_WILDCARD = '*';
 
@@ -131,159 +405,6 @@ const TypeErrorMessage = {
   getTypeErrorMessage: (object, message) => `${object} is not a ${message}`,
 };
 
-/**
- * see from https://github.com/haiweilian/share-snippets
- * see from https://github.com/fengyuanchen/viewerjs/blob/master/src/js/utilities.js
- */
-/**
- * Check wheter an object is an instance of type
- * @param {Object} object - The object to test
- * @param {Object} type - The class to test
- * @return {Boolean}
- */
-function ofInstance(object, type) {
-  return object instanceof type
-}
-
-/**
- * Check if the given value is a string.
- * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is a string, else `false`.
- */
-function isString(value) {
-  return typeof value === 'string'
-}
-
-/**
- * Check if the given value is a number.
- * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is a number, else `false`.
- */
-function isNumber(value) {
-  return typeof value === 'number' && !Number.isNaN(value)
-}
-
-/**
- * Check if the given value is an object.
- * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is an object, else `false`.
- */
-function isObject(value) {
-  return typeof value === 'object' && value !== null
-}
-
-/**
- * Check if the given value is a function.
- * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is a function, else `false`.
- */
-function isFunction(value) {
-  return typeof value === 'function'
-}
-
-/**
- * Iterate the given data.
- * @param {*} data - The data to iterate.
- * @param {Function} callback - The process function for each element.
- * @returns {*} The original data.
- */
-function forEach(data, callback) {
-  if (data && isFunction(callback)) {
-    if (Array.isArray(data) || isNumber(data.length) /* array-like */) {
-      const { length } = data;
-      let i;
-
-      for (i = 0; i < length; i += 1) {
-        if (callback.call(data, data[i], i, data) === false) {
-          break
-        }
-      }
-    } else if (isObject(data)) {
-      Object.keys(data).forEach((key) => {
-        callback.call(data, data[key], key, data);
-      });
-    }
-  }
-
-  return data
-}
-
-/**
- * Extend the given object.
- * @param {*} obj - The object to be extended.
- * @param {*} args - The rest objects which will be merged to the first object.
- * @returns {Object} The extended object.
- */
-/* eslint-disable prettier/prettier */
-const assign = Object.assign || function assign(obj, ...args) {
-  if (isObject(obj) && args.length > 0) {
-    args.forEach((arg) => {
-      if (isObject(arg)) {
-        Object.keys(arg).forEach((key) => {
-          obj[key] = arg[key];
-        });
-      }
-    });
-  }
-  return obj
-};
-
-const REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/;
-
-/* eslint-enable prettier/prettier */
-/**
- * Apply styles to the given element.
- * @param {Element} element - The target element.
- * @param {Object} styles - The styles for applying.
- */
-function setStyle(element, styles) {
-  const { style } = element;
-
-  forEach(styles, (value, property) => {
-    if (REGEXP_SUFFIX.test(property) && isNumber(value)) {
-      value += 'px';
-    }
-
-    style[property] = value;
-  });
-}
-
-/**
- * Get the offset base on the document.
- * @param {Element} element - The target element.
- * @returns {Object} The offset data.
- */
-function getOffset(element) {
-  const box = element.getBoundingClientRect();
-
-  return {
-    left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
-    top: box.top + (window.pageYOffset - document.documentElement.clientTop),
-  }
-}
-
-/**
- * Get a pointer from an event object.
- * @param {Object} event - The target event object.
- * @param {boolean} endOnly - Indicates if only returns the end point coordinate or not.
- * @returns {Object} The result pointer contains start and/or end point coordinates.
- */
-function getPointer({ pageX, pageY }, endOnly) {
-  const end = {
-    endX: pageX,
-    endY: pageY,
-  };
-
-  return endOnly
-    ? end
-    : {
-        timeStamp: Date.now(),
-        startX: pageX,
-        startY: pageY,
-        ...end,
-      }
-}
-
 class Tag extends EventEmitter {
   /**
    * Create a new Tag instance
@@ -315,7 +436,8 @@ class Tag extends EventEmitter {
 
     this.text = null;
     this.position = position;
-    this.isControlsEnabled = false;
+    this.pointer = {};
+    this.action = false;
 
     this.setButtonAttributes(buttonAttributes);
     this.setPopupAttributes(popupAttributes);
@@ -410,11 +532,7 @@ class Tag extends EventEmitter {
         this.text = text;
       }
 
-      if (!this.isControlsEnabled) {
-        this.popupElement.innerHTML = this.text;
-      } else {
-        this.popupElement.innerHTML = this.text;
-      }
+      this.popupElement.innerHTML = this.text;
 
       this.emit('taggd.tag.changed', this);
     }
@@ -439,14 +557,15 @@ class Tag extends EventEmitter {
     const isCanceled = !this.emit('taggd.tag.change', this);
 
     if (!isCanceled) {
-      const { left, top, width, height, naturalWidth, naturalHeight } = this.Taggd.imageData;
+      const { wrapperElement, position, Taggd } = this;
+      const { left, top, ratio } = Taggd.imageData;
 
-      this.position.left = (width / naturalWidth) * x + left;
-      this.position.top = (height / naturalHeight) * y + top;
+      position.left = ratio * position.x + left;
+      position.top = ratio * position.y + top;
 
-      setStyle(this.wrapperElement, {
-        left: this.position.left,
-        top: this.position.top,
+      setStyle(wrapperElement, {
+        left: position.left,
+        top: position.top,
       });
 
       this.emit('taggd.tag.changed', this);
@@ -496,25 +615,37 @@ class Tag extends EventEmitter {
   }
 
   /**
-   * Enables the tag controls
+   * Enable editor mode
    * @return {Taggd.Tag} Current tag
    */
-  enableControls() {
-    this.isControlsEnabled = true;
+  enableEditorMode() {
+    const isCanceled = !this.emit('taggd.tag.editor.enable', this);
 
-    this.setText(this.text);
+    if (!isCanceled) {
+      addClass(this.buttonElement, 'taggd--grab');
+
+      this.buttonElement.addEventListener('mousedown', (this.tagDownHander = this.tagDownHander.bind(this)));
+      document.addEventListener('mousemove', (this.tagMoveHander = this.tagMoveHander.bind(this)));
+      document.addEventListener('mouseup', (this.tagUpHander = this.tagUpHander.bind(this)));
+    }
 
     return this
   }
 
   /**
-   * Disabled the tag controls
+   * Disable editor mode
    * @return {Taggd.Tag} Current tag
    */
-  disableControls() {
-    this.isControlsEnabled = false;
+  disableEditorMode() {
+    const isCanceled = !this.emit('taggd.tag.editor.disable', this);
 
-    this.setText('');
+    if (!isCanceled) {
+      removeClass(this.buttonElement, 'taggd--grab');
+
+      this.buttonElement.removeEventListener('mousedown', this.tagDownHander);
+      document.removeEventListener('mousemove', this.tagMoveHander);
+      document.removeEventListener('mouseup', this.tagUpHander);
+    }
 
     return this
   }
@@ -602,19 +733,20 @@ class Tag extends EventEmitter {
   }
 }
 
+assign(Tag.prototype, TagEffect);
+
 var TaggdEffect = {
   /**
    * load image and reset image
    * @param {Taggd.Tag[]} tags - An array of tags
-   * @return {Taggd} Current Taggd instance
+   * @return {undefined}
    */
   loadImage(tags) {
     this.emit('taggd.editor.load', this);
 
     const { image } = this;
-    const parent = image.parentNode;
-    const parentWidth = parent.offsetWidth || 500;
-    const parentHeight = parent.offsetHeight || 300;
+    const parentWidth = image.parentNode.offsetWidth || 500;
+    const parentHeight = image.parentNode.offsetHeight || 300;
     const newImage = document.createElement('img');
 
     newImage.onload = () => {
@@ -653,11 +785,11 @@ var TaggdEffect = {
       this.emit('taggd.editor.loaded', this);
     };
 
-    newImage.onerror = () => {};
+    newImage.onerror = () => {
+      this.emit('taggd.editor.loaderror', this);
+    };
 
     newImage.src = image.src;
-
-    return this
   },
 
   /**
@@ -714,7 +846,7 @@ var TaggdEffect = {
 
     event.preventDefault();
 
-    const { options, imageData } = this;
+    const { options, image, imageData } = this;
     const { width, height, naturalWidth, naturalHeight } = imageData;
 
     let delta = 1;
@@ -738,7 +870,7 @@ var TaggdEffect = {
 
     ratio = (width * ratio) / naturalWidth;
 
-    const offset = getOffset(this.image);
+    const offset = getOffset(image);
     const newWidth = naturalWidth * ratio;
     const newHeight = naturalHeight * ratio;
     const offsetWidth = newWidth - width;
@@ -747,8 +879,8 @@ var TaggdEffect = {
     imageData.ratio = ratio;
     imageData.width = newWidth;
     imageData.height = newHeight;
-    imageData.left -= offsetWidth * ((event.pageX - offset.left) / width);
-    imageData.top -= offsetHeight * ((event.pageY - offset.top) / height);
+    imageData.left -= offsetWidth * ((event.pageX - offset.left) / newWidth);
+    imageData.top -= offsetHeight * ((event.pageY - offset.top) / newHeight);
 
     this.imageChangeRender();
 
@@ -758,9 +890,12 @@ var TaggdEffect = {
   /**
    * image mousedown hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   imageDownHander(event) {
     event.preventDefault();
+
+    addClass(this.wrapper, 'taggd--grabbing');
 
     this.action = 'move';
     this.pointer = assign(getPointer(event), {
@@ -774,6 +909,7 @@ var TaggdEffect = {
   /**
    * image mousemove hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   imageMoveHander(event) {
     if (!this.action) {
@@ -796,9 +932,16 @@ var TaggdEffect = {
   /**
    * image mouseup hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   imageUpHander(event) {
+    if (!this.action) {
+      return
+    }
+
     event.preventDefault();
+
+    removeClass(this.wrapper, 'taggd--grabbing');
 
     this.action = false;
 
@@ -835,12 +978,10 @@ class Taggd extends EventEmitter {
     this.tags = [];
     this.pointer = {};
     this.action = false;
-    this.wheeling = false;
-    this.zooming = false;
 
     this.setOptions(options);
 
-    // TODO: Subscriptions do not fire after instantiation 'taggd.editor.load'
+    // TODO: Subscriptions do not fire after instantiation 'taggd.editor.load'
     setTimeout(() => {
       this.loadImage(data);
     });
@@ -901,10 +1042,6 @@ class Taggd extends EventEmitter {
       throw new TypeError(TypeErrorMessage.getTagMessage(tag))
     }
 
-    tag.Taggd = this;
-
-    tag.setPosition();
-
     const isCanceled = !this.emit('taggd.tag.add', this, tag);
     let hideTimeout;
 
@@ -964,18 +1101,14 @@ class Taggd extends EventEmitter {
         }
       }
 
-      tag.once('taggd.tag.delete', () => {
-        const tagIndex = this.tags.indexOf(tag);
-
-        if (tagIndex >= 0) {
-          this.deleteTag(tagIndex);
-        }
-      });
-
       // Route all tag events through taggd instance
       tag.onAnything((eventName, ...args) => {
         this.emit(eventName, this, ...args);
       });
+
+      // Establish contact with Taggd
+      tag.Taggd = this;
+      tag.setPosition();
 
       this.tags.push(tag);
       this.wrapper.appendChild(tag.wrapperElement);
@@ -1048,6 +1181,7 @@ class Taggd extends EventEmitter {
     }
 
     tags.forEach((tag) => this.addTag(tag));
+
     return this
   }
 
@@ -1081,6 +1215,7 @@ class Taggd extends EventEmitter {
     }
 
     this.tags = this.tags.map(callback);
+
     return this
   }
 
@@ -1106,12 +1241,13 @@ class Taggd extends EventEmitter {
     const isCanceled = !this.emit('taggd.editor.enable', this);
 
     if (!isCanceled) {
+      addClass(this.wrapper, 'taggd--pointer');
+
       this.image.addEventListener(this.options.addEvent, (this.imageClickHandler = this.imageClickHandler.bind(this)));
       this.image.addEventListener('wheel', (this.imageZoomHander = this.imageZoomHander.bind(this)));
       this.image.addEventListener('mousedown', (this.imageDownHander = this.imageDownHander.bind(this)));
-      this.image.addEventListener('mousemove', (this.imageMoveHander = this.imageMoveHander.bind(this)));
-      this.image.addEventListener('mouseup', (this.imageUpHander = this.imageUpHander.bind(this)));
-      this.getTags().forEach((tag) => tag.enableControls());
+      document.addEventListener('mousemove', (this.imageMoveHander = this.imageMoveHander.bind(this)));
+      document.addEventListener('mouseup', (this.imageUpHander = this.imageUpHander.bind(this)));
     }
 
     return this
@@ -1125,12 +1261,13 @@ class Taggd extends EventEmitter {
     const isCanceled = !this.emit('taggd.editor.disable', this);
 
     if (!isCanceled) {
-      this.image.removeEventListener(this.options.addEvent, (this.imageClickHandler = this.imageClickHandler.bind(this)));
-      this.image.removeEventListener('wheel', (this.imageZoomHander = this.imageZoomHander.bind(this)));
-      this.image.removeEventListener('mousedown', (this.imageDownHander = this.imageDownHander.bind(this)));
-      this.image.removeEventListener('mousemove', (this.imageMoveHander = this.imageMoveHander.bind(this)));
-      this.image.removeEventListener('mouseup', (this.imageUpHander = this.imageUpHander.bind(this)));
-      this.getTags().forEach((tag) => tag.disableControls());
+      removeClass(this.wrapper, 'taggd--pointer');
+
+      this.image.removeEventListener(this.options.addEvent, this.imageClickHandler);
+      this.image.removeEventListener('wheel', this.imageZoomHander);
+      this.image.removeEventListener('mousedown', this.imageDownHander);
+      document.removeEventListener('mousemove', this.imageMoveHander);
+      document.removeEventListener('mouseup', this.imageUpHander);
     }
 
     return this

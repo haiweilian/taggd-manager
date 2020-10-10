@@ -2,7 +2,7 @@ import Tag from './Tag'
 import TaggdEffect from './TaggdEffect'
 import EventEmitter from '../util/event-emitter'
 import TypeErrorMessage from '../util/type-error-message'
-import { ofInstance, isObject, isFunction, assign } from '../util/utilities'
+import { ofInstance, isObject, isFunction, assign, addClass, removeClass } from '../util/utilities'
 
 class Taggd extends EventEmitter {
   /**
@@ -33,12 +33,10 @@ class Taggd extends EventEmitter {
     this.tags = []
     this.pointer = {}
     this.action = false
-    this.wheeling = false
-    this.zooming = false
 
     this.setOptions(options)
 
-    // TODO: Subscriptions do not fire after instantiation 'taggd.editor.load'
+    // TODO: Subscriptions do not fire after instantiation 'taggd.editor.load'
     setTimeout(() => {
       this.loadImage(data)
     })
@@ -99,10 +97,6 @@ class Taggd extends EventEmitter {
       throw new TypeError(TypeErrorMessage.getTagMessage(tag))
     }
 
-    tag.Taggd = this
-
-    tag.setPosition()
-
     const isCanceled = !this.emit('taggd.tag.add', this, tag)
     let hideTimeout
 
@@ -162,18 +156,14 @@ class Taggd extends EventEmitter {
         }
       }
 
-      tag.once('taggd.tag.delete', () => {
-        const tagIndex = this.tags.indexOf(tag)
-
-        if (tagIndex >= 0) {
-          this.deleteTag(tagIndex)
-        }
-      })
-
       // Route all tag events through taggd instance
       tag.onAnything((eventName, ...args) => {
         this.emit(eventName, this, ...args)
       })
+
+      // Establish contact with Taggd
+      tag.Taggd = this
+      tag.setPosition()
 
       this.tags.push(tag)
       this.wrapper.appendChild(tag.wrapperElement)
@@ -246,6 +236,7 @@ class Taggd extends EventEmitter {
     }
 
     tags.forEach((tag) => this.addTag(tag))
+
     return this
   }
 
@@ -279,6 +270,7 @@ class Taggd extends EventEmitter {
     }
 
     this.tags = this.tags.map(callback)
+
     return this
   }
 
@@ -304,12 +296,13 @@ class Taggd extends EventEmitter {
     const isCanceled = !this.emit('taggd.editor.enable', this)
 
     if (!isCanceled) {
+      addClass(this.wrapper, 'taggd--pointer')
+
       this.image.addEventListener(this.options.addEvent, (this.imageClickHandler = this.imageClickHandler.bind(this)))
       this.image.addEventListener('wheel', (this.imageZoomHander = this.imageZoomHander.bind(this)))
       this.image.addEventListener('mousedown', (this.imageDownHander = this.imageDownHander.bind(this)))
-      this.image.addEventListener('mousemove', (this.imageMoveHander = this.imageMoveHander.bind(this)))
-      this.image.addEventListener('mouseup', (this.imageUpHander = this.imageUpHander.bind(this)))
-      this.getTags().forEach((tag) => tag.enableControls())
+      document.addEventListener('mousemove', (this.imageMoveHander = this.imageMoveHander.bind(this)))
+      document.addEventListener('mouseup', (this.imageUpHander = this.imageUpHander.bind(this)))
     }
 
     return this
@@ -323,12 +316,13 @@ class Taggd extends EventEmitter {
     const isCanceled = !this.emit('taggd.editor.disable', this)
 
     if (!isCanceled) {
-      this.image.removeEventListener(this.options.addEvent, (this.imageClickHandler = this.imageClickHandler.bind(this)))
-      this.image.removeEventListener('wheel', (this.imageZoomHander = this.imageZoomHander.bind(this)))
-      this.image.removeEventListener('mousedown', (this.imageDownHander = this.imageDownHander.bind(this)))
-      this.image.removeEventListener('mousemove', (this.imageMoveHander = this.imageMoveHander.bind(this)))
-      this.image.removeEventListener('mouseup', (this.imageUpHander = this.imageUpHander.bind(this)))
-      this.getTags().forEach((tag) => tag.disableControls())
+      removeClass(this.wrapper, 'taggd--pointer')
+
+      this.image.removeEventListener(this.options.addEvent, this.imageClickHandler)
+      this.image.removeEventListener('wheel', this.imageZoomHander)
+      this.image.removeEventListener('mousedown', this.imageDownHander)
+      document.removeEventListener('mousemove', this.imageMoveHander)
+      document.removeEventListener('mouseup', this.imageUpHander)
     }
 
     return this

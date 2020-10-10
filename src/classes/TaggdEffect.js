@@ -1,18 +1,17 @@
-import { assign, setStyle, getOffset, getPointer } from '../util/utilities'
+import { assign, setStyle, getOffset, getPointer, addClass, removeClass } from '../util/utilities'
 
 export default {
   /**
    * load image and reset image
    * @param {Taggd.Tag[]} tags - An array of tags
-   * @return {Taggd} Current Taggd instance
+   * @return {undefined}
    */
   loadImage(tags) {
     this.emit('taggd.editor.load', this)
 
     const { image } = this
-    const parent = image.parentNode
-    const parentWidth = parent.offsetWidth || 500
-    const parentHeight = parent.offsetHeight || 300
+    const parentWidth = image.parentNode.offsetWidth || 500
+    const parentHeight = image.parentNode.offsetHeight || 300
     const newImage = document.createElement('img')
 
     newImage.onload = () => {
@@ -51,11 +50,11 @@ export default {
       this.emit('taggd.editor.loaded', this)
     }
 
-    newImage.onerror = () => {}
+    newImage.onerror = () => {
+      this.emit('taggd.editor.loaderror', this)
+    }
 
     newImage.src = image.src
-
-    return this
   },
 
   /**
@@ -112,7 +111,7 @@ export default {
 
     event.preventDefault()
 
-    const { options, imageData } = this
+    const { options, image, imageData } = this
     const { width, height, naturalWidth, naturalHeight } = imageData
 
     let delta = 1
@@ -136,7 +135,7 @@ export default {
 
     ratio = (width * ratio) / naturalWidth
 
-    const offset = getOffset(this.image)
+    const offset = getOffset(image)
     const newWidth = naturalWidth * ratio
     const newHeight = naturalHeight * ratio
     const offsetWidth = newWidth - width
@@ -145,8 +144,8 @@ export default {
     imageData.ratio = ratio
     imageData.width = newWidth
     imageData.height = newHeight
-    imageData.left -= offsetWidth * ((event.pageX - offset.left) / width)
-    imageData.top -= offsetHeight * ((event.pageY - offset.top) / height)
+    imageData.left -= offsetWidth * ((event.pageX - offset.left) / newWidth)
+    imageData.top -= offsetHeight * ((event.pageY - offset.top) / newHeight)
 
     this.imageChangeRender()
 
@@ -156,9 +155,12 @@ export default {
   /**
    * image mousedown hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   imageDownHander(event) {
     event.preventDefault()
+
+    addClass(this.wrapper, 'taggd--grabbing')
 
     this.action = 'move'
     this.pointer = assign(getPointer(event), {
@@ -172,6 +174,7 @@ export default {
   /**
    * image mousemove hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   imageMoveHander(event) {
     if (!this.action) {
@@ -194,9 +197,16 @@ export default {
   /**
    * image mouseup hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   imageUpHander(event) {
+    if (!this.action) {
+      return
+    }
+
     event.preventDefault()
+
+    removeClass(this.wrapper, 'taggd--grabbing')
 
     this.action = false
 

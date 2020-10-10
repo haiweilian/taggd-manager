@@ -1,6 +1,7 @@
+import TagEffect from './TagEffect'
 import EventEmitter from '../util/event-emitter'
 import TypeErrorMessage from '../util/type-error-message'
-import { isObject, isString, isFunction, isNumber, setStyle } from '../util/utilities'
+import { isObject, isString, isFunction, isNumber, assign, setStyle, addClass, removeClass } from '../util/utilities'
 
 class Tag extends EventEmitter {
   /**
@@ -33,7 +34,8 @@ class Tag extends EventEmitter {
 
     this.text = null
     this.position = position
-    this.isControlsEnabled = false
+    this.pointer = {}
+    this.action = false
 
     this.setButtonAttributes(buttonAttributes)
     this.setPopupAttributes(popupAttributes)
@@ -128,11 +130,7 @@ class Tag extends EventEmitter {
         this.text = text
       }
 
-      if (!this.isControlsEnabled) {
-        this.popupElement.innerHTML = this.text
-      } else {
-        this.popupElement.innerHTML = this.text
-      }
+      this.popupElement.innerHTML = this.text
 
       this.emit('taggd.tag.changed', this)
     }
@@ -157,14 +155,15 @@ class Tag extends EventEmitter {
     const isCanceled = !this.emit('taggd.tag.change', this)
 
     if (!isCanceled) {
-      const { left, top, width, height, naturalWidth, naturalHeight } = this.Taggd.imageData
+      const { wrapperElement, position, Taggd } = this
+      const { left, top, ratio } = Taggd.imageData
 
-      this.position.left = (width / naturalWidth) * x + left
-      this.position.top = (height / naturalHeight) * y + top
+      position.left = ratio * position.x + left
+      position.top = ratio * position.y + top
 
-      setStyle(this.wrapperElement, {
-        left: this.position.left,
-        top: this.position.top,
+      setStyle(wrapperElement, {
+        left: position.left,
+        top: position.top,
       })
 
       this.emit('taggd.tag.changed', this)
@@ -214,25 +213,37 @@ class Tag extends EventEmitter {
   }
 
   /**
-   * Enables the tag controls
+   * Enable editor mode
    * @return {Taggd.Tag} Current tag
    */
-  enableControls() {
-    this.isControlsEnabled = true
+  enableEditorMode() {
+    const isCanceled = !this.emit('taggd.tag.editor.enable', this)
 
-    this.setText(this.text)
+    if (!isCanceled) {
+      addClass(this.buttonElement, 'taggd--grab')
+
+      this.buttonElement.addEventListener('mousedown', (this.tagDownHander = this.tagDownHander.bind(this)))
+      document.addEventListener('mousemove', (this.tagMoveHander = this.tagMoveHander.bind(this)))
+      document.addEventListener('mouseup', (this.tagUpHander = this.tagUpHander.bind(this)))
+    }
 
     return this
   }
 
   /**
-   * Disabled the tag controls
+   * Disable editor mode
    * @return {Taggd.Tag} Current tag
    */
-  disableControls() {
-    this.isControlsEnabled = false
+  disableEditorMode() {
+    const isCanceled = !this.emit('taggd.tag.editor.disable', this)
 
-    this.setText('')
+    if (!isCanceled) {
+      removeClass(this.buttonElement, 'taggd--grab')
+
+      this.buttonElement.removeEventListener('mousedown', this.tagDownHander)
+      document.removeEventListener('mousemove', this.tagMoveHander)
+      document.removeEventListener('mouseup', this.tagUpHander)
+    }
 
     return this
   }
@@ -319,5 +330,7 @@ class Tag extends EventEmitter {
     return new Tag(object.position, object.text, object.buttonAttributes, object.popupAttributes)
   }
 }
+
+assign(Tag.prototype, TagEffect)
 
 export default Tag
