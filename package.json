@@ -1,7 +1,7 @@
 {
   "name": "taggd-manager",
   "space": "Taggd",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "is an image annotation management tool that supports zooming, moving, and flexible customization.",
   "main": "dist/taggd.js",
   "module": "dist/taggd.esm.js",
