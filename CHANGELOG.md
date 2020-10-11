@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.3](https://github.com/haiweilian/taggd-manager/compare/v0.0.2...v0.0.3) (2020-10-11)
+
+
+### Features
+
+* add loading and autoprefixer ([bb4ad34](https://github.com/haiweilian/taggd-manager/commit/bb4ad3445e05a61ecf52a7cf31601e2629723b88))
+* lock taggd zoom and tag move ([43dbd63](https://github.com/haiweilian/taggd-manager/commit/43dbd63b5fd7b53f1ddf361ccbbdb875a121a5e6))
+
 ### [0.0.2](https://github.com/haiweilian/taggd-manager/compare/v0.0.1...v0.0.2) (2020-10-11)
 
 
