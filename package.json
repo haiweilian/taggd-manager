@@ -2,7 +2,7 @@
   "name": "taggd-manager",
   "space": "Taggd",
   "version": "0.0.1",
-  "description": "Taggd is a tool that allows you to tag pictures with additional information.",
+  "description": "is an image annotation management tool that supports zooming, moving, and flexible customization.",
   "main": "dist/taggd.js",
   "module": "dist/taggd.esm.js",
   "scripts": {
@@ -14,7 +14,8 @@
     "test": "jest",
     "test:unit": "jest --coverage",
     "commit": "git-cz",
-    "release": "standard-version"
+    "release": "standard-version",
+    "docs": "jsdoc2md src/classes/Taggd.js > docs/methods-taggd.md && jsdoc2md src/classes/Tag.js > docs/methods-tag.md"
   },
   "repository": {
     "type": "git",
@@ -50,6 +51,7 @@
     "gulp-sass": "^4.1.0",
     "husky": "^4.2.5",
     "jest": "^26.2.2",
+    "jsdoc-to-markdown": "^6.0.1",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "push-dir": "^0.4.1",
