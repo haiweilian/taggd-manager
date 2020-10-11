@@ -2,7 +2,7 @@
   "name": "taggd-manager",
   "space": "Taggd",
   "version": "0.0.3",
-  "description": "is an image annotation management tool that supports zooming, moving, and flexible customization.",
+  "description": "Is an image tag management tool that supports zooming, moving, and flexible customization.",
   "main": "dist/taggd.js",
   "module": "dist/taggd.esm.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "test:unit": "jest --coverage",
     "commit": "git-cz",
     "release": "standard-version",
-    "docs": "jsdoc2md src/classes/Taggd.js > docs/methods-taggd.md && jsdoc2md src/classes/Tag.js > docs/methods-tag.md"
+    "docs": "jsdoc2md src/classes/Taggd.js > docs/en/methods-taggd.md && jsdoc2md src/classes/Tag.js > docs/en/methods-tag.md"
   },
   "repository": {
     "type": "git",
