@@ -1,12 +1,18 @@
 const { series, src, dest, watch } = require('gulp')
 const sass = require('gulp-sass')
 const rename = require('gulp-rename')
+const autoprefixer = require('gulp-autoprefixer')
 
 function scssTask() {
   return src('./src/*.scss')
     .pipe(
       sass({
         outputStyle: 'expanded',
+      })
+    )
+    .pipe(
+      autoprefixer({
+        cascade: false,
       })
     )
     .pipe(

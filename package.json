@@ -47,6 +47,7 @@
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-prettier": "^3.1.4",
     "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^4.1.0",
     "husky": "^4.2.5",
