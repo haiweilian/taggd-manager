@@ -1,11 +1,11 @@
 /*!
- * taggd-manager v0.0.1
+ * taggd-manager v0.0.2
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2020 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2020-10-10T13:17:13.317Z
+ * Date: 2020-10-11T10:18:44.313Z
  */
 
 /**
@@ -242,6 +242,7 @@ var TagEffect = {
   /**
    * tag mousemove hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   tagMoveHander(event) {
     if (!this.action) {
@@ -251,12 +252,15 @@ var TagEffect = {
     event.preventDefault();
 
     const { position, pointer, Taggd } = this;
-    const { left, top, ratio } = Taggd.imageData;
+    const { left, top, ratio, naturalWidth, naturalHeight } = Taggd.imageData;
     const { endX, endY } = getPointer(event, true);
 
     // update tag x & y
-    position.x = (pointer.moveX + (endX - pointer.startX) - left) / ratio;
-    position.y = (pointer.moveY + (endY - pointer.startY) - top) / ratio;
+    const x = (pointer.moveX + (endX - pointer.startX) - left) / ratio;
+    const y = (pointer.moveY + (endY - pointer.startY) - top) / ratio;
+
+    position.x = Math.min(Math.max(0, x), naturalWidth);
+    position.y = Math.min(Math.max(0, y), naturalHeight);
 
     this.setPosition();
 
@@ -266,6 +270,7 @@ var TagEffect = {
   /**
    * tag mouseup hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   tagUpHander(event) {
     if (!this.action) {
@@ -744,12 +749,16 @@ var TaggdEffect = {
   loadImage(tags) {
     this.emit('taggd.editor.load', this);
 
-    const { image } = this;
-    const parentWidth = image.parentNode.offsetWidth || 500;
-    const parentHeight = image.parentNode.offsetHeight || 300;
+    const { image, wrapper } = this;
+    const parentWidth = wrapper.offsetWidth || 500;
+    const parentHeight = wrapper.offsetHeight || 300;
     const newImage = document.createElement('img');
 
+    addClass(wrapper, 'taggd--loading');
+
     newImage.onload = () => {
+      removeClass(wrapper, 'taggd--loading');
+
       // Original aspect ratio
       const { naturalWidth, naturalHeight } = image;
       const aspectRatio = naturalWidth / naturalHeight;
@@ -868,7 +877,11 @@ var TaggdEffect = {
       ratio = 1 + ratio;
     }
 
+    const zoomRatioMin = Math.max(0.01, options.zoomRatioMin);
+    const zoomRatioMax = Math.min(100, options.zoomRatioMax);
+
     ratio = (width * ratio) / naturalWidth;
+    ratio = Math.min(Math.max(ratio, zoomRatioMin), zoomRatioMax);
 
     const offset = getOffset(image);
     const newWidth = naturalWidth * ratio;

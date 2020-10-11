@@ -9,12 +9,16 @@ export default {
   loadImage(tags) {
     this.emit('taggd.editor.load', this)
 
-    const { image } = this
-    const parentWidth = image.parentNode.offsetWidth || 500
-    const parentHeight = image.parentNode.offsetHeight || 300
+    const { image, wrapper } = this
+    const parentWidth = wrapper.offsetWidth || 500
+    const parentHeight = wrapper.offsetHeight || 300
     const newImage = document.createElement('img')
 
+    addClass(wrapper, 'taggd--loading')
+
     newImage.onload = () => {
+      removeClass(wrapper, 'taggd--loading')
+
       // Original aspect ratio
       const { naturalWidth, naturalHeight } = image
       const aspectRatio = naturalWidth / naturalHeight
@@ -133,7 +137,11 @@ export default {
       ratio = 1 + ratio
     }
 
+    const zoomRatioMin = Math.max(0.01, options.zoomRatioMin)
+    const zoomRatioMax = Math.min(100, options.zoomRatioMax)
+
     ratio = (width * ratio) / naturalWidth
+    ratio = Math.min(Math.max(ratio, zoomRatioMin), zoomRatioMax)
 
     const offset = getOffset(image)
     const newWidth = naturalWidth * ratio

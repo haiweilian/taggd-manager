@@ -23,6 +23,7 @@ export default {
   /**
    * tag mousemove hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   tagMoveHander(event) {
     if (!this.action) {
@@ -32,12 +33,15 @@ export default {
     event.preventDefault()
 
     const { position, pointer, Taggd } = this
-    const { left, top, ratio } = Taggd.imageData
+    const { left, top, ratio, naturalWidth, naturalHeight } = Taggd.imageData
     const { endX, endY } = getPointer(event, true)
 
     // update tag x & y
-    position.x = (pointer.moveX + (endX - pointer.startX) - left) / ratio
-    position.y = (pointer.moveY + (endY - pointer.startY) - top) / ratio
+    const x = (pointer.moveX + (endX - pointer.startX) - left) / ratio
+    const y = (pointer.moveY + (endY - pointer.startY) - top) / ratio
+
+    position.x = Math.min(Math.max(0, x), naturalWidth)
+    position.y = Math.min(Math.max(0, y), naturalHeight)
 
     this.setPosition()
 
@@ -47,6 +51,7 @@ export default {
   /**
    * tag mouseup hander
    * @param {EventTarget} event
+   * @return {undefined}
    */
   tagUpHander(event) {
     if (!this.action) {

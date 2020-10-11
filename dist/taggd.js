@@ -1,11 +1,11 @@
 /*!
- * taggd-manager v0.0.1
+ * taggd-manager v0.0.2
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2020 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2020-10-10T13:17:13.317Z
+ * Date: 2020-10-11T10:18:44.313Z
  */
 
 (function (global, factory) {
@@ -502,6 +502,7 @@
     /**
      * tag mousemove hander
      * @param {EventTarget} event
+     * @return {undefined}
      */
     tagMoveHander: function tagMoveHander(event) {
       if (!this.action) {
@@ -515,15 +516,19 @@
       var _Taggd$imageData = Taggd.imageData,
           left = _Taggd$imageData.left,
           top = _Taggd$imageData.top,
-          ratio = _Taggd$imageData.ratio;
+          ratio = _Taggd$imageData.ratio,
+          naturalWidth = _Taggd$imageData.naturalWidth,
+          naturalHeight = _Taggd$imageData.naturalHeight;
 
       var _getPointer = getPointer(event, true),
           endX = _getPointer.endX,
           endY = _getPointer.endY; // update tag x & y
 
 
-      position.x = (pointer.moveX + (endX - pointer.startX) - left) / ratio;
-      position.y = (pointer.moveY + (endY - pointer.startY) - top) / ratio;
+      var x = (pointer.moveX + (endX - pointer.startX) - left) / ratio;
+      var y = (pointer.moveY + (endY - pointer.startY) - top) / ratio;
+      position.x = Math.min(Math.max(0, x), naturalWidth);
+      position.y = Math.min(Math.max(0, y), naturalHeight);
       this.setPosition();
       this.emit('taggd.tag.editor.move', this);
     },
@@ -531,6 +536,7 @@
     /**
      * tag mouseup hander
      * @param {EventTarget} event
+     * @return {undefined}
      */
     tagUpHander: function tagUpHander(event) {
       if (!this.action) {
@@ -1105,13 +1111,16 @@
       var _this = this;
 
       this.emit('taggd.editor.load', this);
-      var image = this.image;
-      var parentWidth = image.parentNode.offsetWidth || 500;
-      var parentHeight = image.parentNode.offsetHeight || 300;
+      var image = this.image,
+          wrapper = this.wrapper;
+      var parentWidth = wrapper.offsetWidth || 500;
+      var parentHeight = wrapper.offsetHeight || 300;
       var newImage = document.createElement('img');
+      addClass(wrapper, 'taggd--loading');
 
       newImage.onload = function () {
-        // Original aspect ratio
+        removeClass(wrapper, 'taggd--loading'); // Original aspect ratio
+
         var naturalWidth = image.naturalWidth,
             naturalHeight = image.naturalHeight;
         var aspectRatio = naturalWidth / naturalHeight; // Full center in default
@@ -1231,7 +1240,10 @@
         ratio = 1 + ratio;
       }
 
+      var zoomRatioMin = Math.max(0.01, options.zoomRatioMin);
+      var zoomRatioMax = Math.min(100, options.zoomRatioMax);
       ratio = width * ratio / naturalWidth;
+      ratio = Math.min(Math.max(ratio, zoomRatioMin), zoomRatioMax);
       var offset = getOffset(image);
       var newWidth = naturalWidth * ratio;
       var newHeight = naturalHeight * ratio;
