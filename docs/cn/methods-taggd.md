@@ -24,170 +24,170 @@
 <a name="new_Taggd_new"></a>
 
 ### new Taggd(image, [options], [data])
-Create a new taggd instance
+创建一个 Taggd 新实例
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| image | <code>HTMLElement</code> |  | The image to wrap |
-| [options] | <code>Object</code> | <code>{}</code> | The options |
-| [data] | <code>Array</code> | <code>[]</code> | The tags |
+| image | <code>HTMLElement</code> |  | 图片元素 |
+| [options] | <code>Object</code> | <code>{}</code> | 选项配置 |
+| [data] | <code>Array</code> | <code>[]</code> | tags 实例 |
 
 <a name="Taggd+on"></a>
 
 ### taggd.on(eventName, handler) ⇒ [<code>Taggd</code>](#Taggd)
-Subscribe to an event.
+订阅事件
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>String</code> | The event to subscribe to. |
-| handler | <code>function</code> | The handler to execute. |
+| eventName | <code>String</code> | 事件名称 |
+| handler | <code>function</code> | 事件回调 |
 
 <a name="Taggd+off"></a>
 
 ### taggd.off(eventName, handler) ⇒ [<code>Taggd</code>](#Taggd)
-Unsubscribe from an event.
+取消订阅事件
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>String</code> | The event to unsubscribe from. |
-| handler | <code>function</code> | The handler that was used to subscribe. |
+| eventName | <code>String</code> | 事件名称 |
+| handler | <code>function</code> | 事件回调 |
 
 <a name="Taggd+once"></a>
 
 ### taggd.once(eventName, handler) ⇒ [<code>Taggd</code>](#Taggd)
-Subscribe to an event and unsubscribe once triggered.
+触发一次订阅后，以及取消订阅
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>String</code> | The event to subscribe to. |
-| handler | <code>function</code> | The handler to execute. |
+| eventName | <code>String</code> | 事件名称 |
+| handler | <code>function</code> | 事件回调 |
 
 <a name="Taggd+setOptions"></a>
 
 ### taggd.setOptions(options) ⇒ [<code>Taggd</code>](#Taggd)
-Set taggd options
+设置 taggd 选项配置
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options | <code>Object</code> | The options to set |
+| options | <code>Object</code> | 选项配置(options.md) |
 
 <a name="Taggd+addTag"></a>
 
 ### taggd.addTag(tag) ⇒ [<code>Taggd</code>](#Taggd)
-Add a single tag
+添加一个 tag
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tag | <code>Taggd.Tag</code> | The tag to add |
+| tag | <code>Taggd.Tag</code> | tag 实例 |
 
 <a name="Taggd+getTag"></a>
 
 ### taggd.getTag(index) ⇒ <code>Taggd.Tag</code>
-Get a single tag by index
+根据索引获取一个 tag
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: <code>Taggd.Tag</code> - The tag to get  
+**Returns**: <code>Taggd.Tag</code> - 当前获取到的 tag  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| index | <code>Number</code> | The index of the desired tag |
+| index | <code>Number</code> | tag 所在集合的索引 |
 
 <a name="Taggd+deleteTag"></a>
 
 ### taggd.deleteTag(index) ⇒ [<code>Taggd</code>](#Taggd)
-Delete a single tag by index
+根据索引删除一个 tag
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| index | <code>Number</code> | The index of the desired tag |
+| index | <code>Number</code> | tag 所在集合的索引 |
 
 <a name="Taggd+setTags"></a>
 
 ### taggd.setTags(tags) ⇒ [<code>Taggd</code>](#Taggd)
-Set all tags
+设置所有 tag，它会先清空现有的 tag
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tags | <code>Array.&lt;Taggd.Tag&gt;</code> | An array of tags |
+| tags | <code>Array.&lt;Taggd.Tag&gt;</code> | tag 数组 |
 
 <a name="Taggd+addTags"></a>
 
 ### taggd.addTags(tags) ⇒ [<code>Taggd</code>](#Taggd)
-Add multiple tags
+添加多个 tag
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tags | <code>Array.&lt;Taggd.Tag&gt;</code> | An array of tags |
+| tags | <code>Array.&lt;Taggd.Tag&gt;</code> | tag 数组 |
 
 <a name="Taggd+getTags"></a>
 
 ### taggd.getTags() ⇒ <code>Array.&lt;Taggd.Tag&gt;</code>
-Get all tags
+获取所有的 tag
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: <code>Array.&lt;Taggd.Tag&gt;</code> - All tags of this Taggd instance  
+**Returns**: <code>Array.&lt;Taggd.Tag&gt;</code> - 当前实例的所有 tag 集合  
 <a name="Taggd+deleteTags"></a>
 
 ### taggd.deleteTags() ⇒ [<code>Taggd</code>](#Taggd)
-Remove all tags
+删除所有的 tag
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 <a name="Taggd+map"></a>
 
 ### taggd.map(callback) ⇒ [<code>Taggd</code>](#Taggd)
-Iterate and replace all tags
+遍历所有 tag
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| callback | <code>function</code> | The callback to execute for all tags |
+| callback | <code>function</code> | 回调处理函数 |
 
 <a name="Taggd+destroy"></a>
 
 ### taggd.destroy() ⇒ [<code>Taggd</code>](#Taggd)
-Clean up memory
+销毁实例
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 <a name="Taggd+enableEditorMode"></a>
 
 ### taggd.enableEditorMode() ⇒ [<code>Taggd</code>](#Taggd)
-Enable editor mode
+启用编辑模式，可缩放，移动，添加事件触发
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  
 <a name="Taggd+disableEditorMode"></a>
 
 ### taggd.disableEditorMode() ⇒ [<code>Taggd</code>](#Taggd)
-Disable editor mode
+禁用编辑模式
 
 **Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - Current Taggd instance  
+**Returns**: [<code>Taggd</code>](#Taggd) - 当前 Taggd 实例  

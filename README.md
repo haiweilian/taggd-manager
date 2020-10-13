@@ -1,9 +1,10 @@
 ![Example](https://github.com/haiweilian/taggd-manager/raw/master/docs/example.gif)
 
-[English](https://github.com/haiweilian/taggd-manager/blob/master/README.md) | 
-[中文文档](https://github.com/haiweilian/taggd-manager/blob/master/READMECN.md)
-
 ## taggd-manager
+
+[English](https://github.com/haiweilian/taggd-manager/blob/master/README.md)
+
+[中文文档](https://github.com/haiweilian/taggd-manager/blob/master/READMECN.md)
 
 `taggd-manager` Is an image tag management tool that supports zooming, moving, and flexible customization.
 
@@ -43,7 +44,7 @@ The style sheet has only the required dependency style, if you want to add a the
 If you use a module import.
 
 ```js
-import Taggd from 'taggd';
+import Taggd from 'taggd-manager';
 ```
 
 Finally, you can initialize `taggd`.

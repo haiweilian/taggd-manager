@@ -27,181 +27,182 @@
 <a name="new_Tag_new"></a>
 
 ### new Tag(position, text, [buttonAttributes], [popupAttributes])
-Create a new Tag instance
+创建一个 Tag 新实例
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| position | <code>Object</code> |  | The tag’s coordinates |
-| text | <code>String</code> \| <code>function</code> |  | The tag’s content |
-| [buttonAttributes] | <code>Object</code> | <code>{}</code> | The button’s attributes |
-| [popupAttributes] | <code>Object</code> | <code>{}</code> | The popup’s attributes |
+| position | <code>Object</code> |  | tag 坐标 |
+| text | <code>String</code> \| <code>function</code> |  | tag 内容 |
+| [buttonAttributes] | <code>Object</code> | <code>{}</code> | button 自定义属性 |
+| [popupAttributes] | <code>Object</code> | <code>{}</code> | popup 自定义属性 |
 
 <a name="Tag+on"></a>
 
 ### tag.on(eventName, handler) ⇒ <code>Taggd</code>
-Subscribe to an event.
+订阅事件
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd</code> - Current Taggd instance  
+**Returns**: <code>Taggd</code> - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>String</code> | The event to subscribe to. |
-| handler | <code>function</code> | The handler to execute. |
+| eventName | <code>String</code> | 事件名称 |
+| handler | <code>function</code> | 事件回调 |
 
 <a name="Tag+off"></a>
 
 ### tag.off(eventName, handler) ⇒ <code>Taggd</code>
-Unsubscribe from an event.
+取消订阅事件
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd</code> - Current Taggd instance  
+**Returns**: <code>Taggd</code> - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>String</code> | The event to unsubscribe from. |
-| handler | <code>function</code> | The handler that was used to subscribe. |
+| eventName | <code>String</code> | 事件名称 |
+| handler | <code>function</code> | 事件回调 |
 
 <a name="Tag+once"></a>
 
 ### tag.once(eventName, handler) ⇒ <code>Taggd</code>
-Subscribe to an event and unsubscribe once triggered.
+触发一次订阅后，以及取消订阅
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd</code> - Current Taggd instance  
+**Returns**: <code>Taggd</code> - 当前 Taggd 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| eventName | <code>String</code> | The event to subscribe to. |
-| handler | <code>function</code> | The handler to execute. |
+| eventName | <code>String</code> | 事件名称 |
+| handler | <code>function</code> | 事件回调 |
 
 <a name="Tag+isHidden"></a>
 
 ### tag.isHidden() ⇒ <code>Boolean</code>
-Test whether the tag is hidden or not
+当前 tag 是否隐藏
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Boolean</code> - A boolean indicating the tag’s state  
+**Returns**: <code>Boolean</code> - false/true  
 <a name="Tag+show"></a>
 
 ### tag.show() ⇒ <code>Taggd.Tag</code>
-Show the tag
+显示 tag 内容
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - Current Tag  
+**Returns**: <code>Taggd.Tag</code> - 当前 Tag 实例  
 <a name="Tag+hide"></a>
 
 ### tag.hide() ⇒ <code>Taggd.Tag</code>
-Hide the tag
+隐藏 tag 内容
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - Current Tag  
+**Returns**: <code>Taggd.Tag</code> - 当前 Tag 实例  
 <a name="Tag+setText"></a>
 
 ### tag.setText(text) ⇒ <code>Taggd.Tag</code>
-Set the tag’s text
+设置 tag 内容
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - Current Tag  
+**Returns**: <code>Taggd.Tag</code> - 当前 Tag 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| text | <code>String</code> \| <code>function</code> | The tag’s content |
+| text | <code>String</code> \| <code>function</code> | tag 内容，如果是一个函数使用当前函数执行的结果 |
 
 <a name="Tag+setPosition"></a>
 
 ### tag.setPosition(x, y) ⇒ <code>Taggd.Tag</code>
-Set the tag’s position
+设置 tag 坐标位置
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - Current Tag  
+**Returns**: <code>Taggd.Tag</code> - 当前 Tag 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>Number</code> | The tag’s x-coordinate |
-| y | <code>Number</code> | The tag’s y-coordinate |
+| x | <code>Number</code> | x 坐标 |
+| y | <code>Number</code> | y 坐标 |
 
 <a name="Tag+setButtonAttributes"></a>
 
 ### tag.setButtonAttributes(atttributes) ⇒ <code>Taggd.Tag</code>
-Set the tag button’s attributes
+设置 button 属性
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - Current tag  
+**Returns**: <code>Taggd.Tag</code> - 当前 tag 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| atttributes | <code>Object</code> | = {} - The attributes to set |
+| atttributes | <code>Object</code> | = {} - button 属性 |
 
 <a name="Tag+setPopupAttributes"></a>
 
 ### tag.setPopupAttributes(atttributes) ⇒ <code>Taggd.Tag</code>
-Set the tag popup’s attributes
+设置 popup 属性
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - Current tag  
+**Returns**: <code>Taggd.Tag</code> - 当前 tag 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| atttributes | <code>Object</code> | = {} - The attributes to set |
+| atttributes | <code>Object</code> | = {} - popup 属性 |
 
 <a name="Tag+enableEditorMode"></a>
 
 ### tag.enableEditorMode() ⇒ <code>Taggd.Tag</code>
-Enable editor mode
+启用编辑模式，可移动
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - Current tag  
+**Returns**: <code>Taggd.Tag</code> - 当前 tag 实例  
 <a name="Tag+disableEditorMode"></a>
 
 ### tag.disableEditorMode() ⇒ <code>Taggd.Tag</code>
-Disable editor mode
+禁用编辑模式
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - Current tag  
+**Returns**: <code>Taggd.Tag</code> - 当前 tag 实例  
 <a name="Tag+toJSON"></a>
 
 ### tag.toJSON() ⇒ <code>Object</code>
-Get a Taggd.createFromObject-compatible object
+获取 tag 信息返回一个与 Taggd.createFromObject 格式对应的对象。
+包含坐标信息、button属性、popup属性。
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Object</code> - A object for JSON  
+**Returns**: <code>Object</code> - JSON 对象
 <a name="Tag.setElementAttributes"></a>
 
 ### Tag.setElementAttributes(element, [attributes]) ⇒ <code>DomNode</code>
-Set element attributes
+静态方法-设置元素属性
 
 **Kind**: static method of [<code>Tag</code>](#Tag)  
 **Returns**: <code>DomNode</code> - The original element  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| element | <code>DomNode</code> |  | The element the attributes should be set to |
-| [attributes] | <code>Object</code> | <code>{}</code> | A map of attributes to set |
+| element | <code>DomNode</code> |  | 元素 |
+| [attributes] | <code>Object</code> | <code>{}</code> | 属性对象 |
 
 <a name="Tag.getPositionStyle"></a>
 
 ### Tag.getPositionStyle(x, y) ⇒ <code>Object</code>
-Get the position style
+静态方法-获取相对定位值
 
 **Kind**: static method of [<code>Tag</code>](#Tag)  
 **Returns**: <code>Object</code> - The style  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>Number</code> | The tag’s x-coordinate |
-| y | <code>Number</code> | The tag’s y-coordinate |
+| x | <code>Number</code> | x 坐标 |
+| y | <code>Number</code> | y 坐标 |
 
 <a name="Tag.createFromObject"></a>
 
 ### Tag.createFromObject(object) ⇒ [<code>Tag</code>](#Tag)
-Create a tag from object
+静态方法-对象的方式创建 tag
 
 **Kind**: static method of [<code>Tag</code>](#Tag)  
-**Returns**: [<code>Tag</code>](#Tag) - The created Tag instance  
+**Returns**: [<code>Tag</code>](#Tag) - 创建 Tag 实例  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| object | <code>Object</code> | The object containing all information |
+| object | <code>Object</code> | new Tag 对象方式的参数 |
 

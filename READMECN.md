@@ -1,9 +1,10 @@
 ![Example](https://github.com/haiweilian/taggd-manager/raw/master/docs/example.gif)
 
-[English](https://github.com/haiweilian/taggd-manager/blob/master/README.md) | 
-[中文文档](https://github.com/haiweilian/taggd-manager/blob/master/READMECN.md)
-
 ## taggd-manager
+
+[English](https://github.com/haiweilian/taggd-manager/blob/master/README.md)
+
+[中文文档](https://github.com/haiweilian/taggd-manager/blob/master/READMECN.md)
 
 `taggd-manager` 是一个图片标记管理工具，支持缩放、移动和灵活的自定义。
 
@@ -43,7 +44,7 @@
 如果使用模块导入。
 
 ```js
-import Taggd from 'taggd';
+import Taggd from 'taggd-manager';
 ```
 
 最后，您可以初始化 `taggd`。
