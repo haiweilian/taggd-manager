@@ -1,11 +1,11 @@
 /*!
- * taggd-manager v0.0.2
+ * taggd-manager v0.0.4
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2020 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2020-10-11T10:18:44.313Z
+ * Date: 2020-11-08T11:40:35.242Z
  */
 
 (function (global, factory) {
@@ -480,6 +480,35 @@
       startX: pageX,
       startY: pageY
     }, end);
+  }
+  /**
+   * Get the rolling ratio.
+   * @param {Object} event - The target event object.
+   * @param {boolean} zoomRatio - The zoom ratio.
+   * @returns {number} The result ratio.
+   */
+
+  function getWheelRatio(event, zoomRatio) {
+    var delta = 1;
+    var ratio = zoomRatio;
+
+    if (event.deltaY) {
+      delta = event.deltaY > 0 ? 1 : -1;
+    } else if (event.wheelDelta) {
+      delta = -event.wheelDelta / 120;
+    } else if (event.detail) {
+      delta = event.detail > 0 ? 1 : -1;
+    }
+
+    ratio *= -delta;
+
+    if (ratio < 0) {
+      ratio = 1 / (1 - ratio);
+    } else {
+      ratio = 1 + ratio;
+    }
+
+    return ratio;
   }
 
   var TagEffect = {
@@ -1221,25 +1250,7 @@
           height = imageData.height,
           naturalWidth = imageData.naturalWidth,
           naturalHeight = imageData.naturalHeight;
-      var delta = 1;
-      var ratio = options.zoomRatio;
-
-      if (event.deltaY) {
-        delta = event.deltaY > 0 ? 1 : -1;
-      } else if (event.wheelDelta) {
-        delta = -event.wheelDelta / 120;
-      } else if (event.detail) {
-        delta = event.detail > 0 ? 1 : -1;
-      }
-
-      ratio *= -delta;
-
-      if (ratio < 0) {
-        ratio = 1 / (1 - ratio);
-      } else {
-        ratio = 1 + ratio;
-      }
-
+      var ratio = getWheelRatio(event, options.zoomRatio);
       var zoomRatioMin = Math.max(0.01, options.zoomRatioMin);
       var zoomRatioMax = Math.min(100, options.zoomRatioMax);
       ratio = width * ratio / naturalWidth;
@@ -1252,8 +1263,8 @@
       imageData.ratio = ratio;
       imageData.width = newWidth;
       imageData.height = newHeight;
-      imageData.left -= offsetWidth * ((event.pageX - offset.left) / newWidth);
-      imageData.top -= offsetHeight * ((event.pageY - offset.top) / newHeight);
+      imageData.left -= offsetWidth * ((event.pageX - offset.left) / width);
+      imageData.top -= offsetHeight * ((event.pageY - offset.top) / height);
       this.imageChangeRender();
       this.emit('taggd.editor.zoom', this);
     },
