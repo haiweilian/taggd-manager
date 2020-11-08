@@ -1,4 +1,4 @@
-import { assign, setStyle, getOffset, getPointer, addClass, removeClass } from '../util/utilities'
+import { assign, setStyle, getOffset, getPointer, getWheelRatio, addClass, removeClass } from '../util/utilities'
 
 export default {
   /**
@@ -118,24 +118,7 @@ export default {
     const { options, image, imageData } = this
     const { width, height, naturalWidth, naturalHeight } = imageData
 
-    let delta = 1
-    let ratio = options.zoomRatio
-
-    if (event.deltaY) {
-      delta = event.deltaY > 0 ? 1 : -1
-    } else if (event.wheelDelta) {
-      delta = -event.wheelDelta / 120
-    } else if (event.detail) {
-      delta = event.detail > 0 ? 1 : -1
-    }
-
-    ratio *= -delta
-
-    if (ratio < 0) {
-      ratio = 1 / (1 - ratio)
-    } else {
-      ratio = 1 + ratio
-    }
+    let ratio = getWheelRatio(event, options.zoomRatio)
 
     const zoomRatioMin = Math.max(0.01, options.zoomRatioMin)
     const zoomRatioMax = Math.min(100, options.zoomRatioMax)
@@ -152,8 +135,8 @@ export default {
     imageData.ratio = ratio
     imageData.width = newWidth
     imageData.height = newHeight
-    imageData.left -= offsetWidth * ((event.pageX - offset.left) / newWidth)
-    imageData.top -= offsetHeight * ((event.pageY - offset.top) / newHeight)
+    imageData.left -= offsetWidth * ((event.pageX - offset.left) / width)
+    imageData.top -= offsetHeight * ((event.pageY - offset.top) / height)
 
     this.imageChangeRender()
 

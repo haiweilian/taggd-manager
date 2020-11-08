@@ -273,3 +273,32 @@ export function getPointer({ pageX, pageY }, endOnly) {
         ...end,
       }
 }
+
+/**
+ * Get the rolling ratio.
+ * @param {Object} event - The target event object.
+ * @param {boolean} zoomRatio - The zoom ratio.
+ * @returns {number} The result ratio.
+ */
+export function getWheelRatio(event, zoomRatio) {
+  let delta = 1
+  let ratio = zoomRatio
+
+  if (event.deltaY) {
+    delta = event.deltaY > 0 ? 1 : -1
+  } else if (event.wheelDelta) {
+    delta = -event.wheelDelta / 120
+  } else if (event.detail) {
+    delta = event.detail > 0 ? 1 : -1
+  }
+
+  ratio *= -delta
+
+  if (ratio < 0) {
+    ratio = 1 / (1 - ratio)
+  } else {
+    ratio = 1 + ratio
+  }
+
+  return ratio
+}
