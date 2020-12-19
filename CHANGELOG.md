@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/haiweilian/taggd-manager/compare/v0.0.5...v0.0.6) (2020-12-19)
+
+
+### Features
+
+* improving behavior of taggd.destroy() ([89dbe0c](https://github.com/haiweilian/taggd-manager/commit/89dbe0c0a70abf1ca5310b8dbc3e8bb654257b75)), closes [#3](https://github.com/haiweilian/taggd-manager/issues/3)
+
 ### [0.0.5](https://github.com/haiweilian/taggd-manager/compare/v0.0.4...v0.0.5) (2020-11-08)
 
 
