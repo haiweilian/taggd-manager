@@ -8,7 +8,7 @@
 
 `taggd-manager` 是一个图片标记管理工具，支持缩放、移动和灵活的自定义。
 
-它的原始创意来自 [timseverien/taggd](https://github.com/timseverien/taggd)，原作者不维护了此项目，而且功能比较简单。故新建了一个项目扩展，删除了内部默认的模板并增加了缩放、移动的功能和更多的事件回调。
+它的原始创意来自 [timseverien/taggd](https://github.com/timseverien/taggd)，原作者不维护了此项目，而且功能比较简单。故新建了一个项目扩展，增加了缩放、移动的功能和更多的事件回调。
 
 ## Projects
 

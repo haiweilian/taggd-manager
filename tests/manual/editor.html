@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>编辑演示</title>
+    <title>Editor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../dist/taggd.css">
     <link rel="stylesheet" href="./assets/layout.css" />
@@ -11,20 +11,22 @@
   <body>
     <header class="header">
       <ul>
-        <li><a href="./basic.html">Basic 基础演示</a></li>
-        <li class="active"><a href="./editor.html">Editor 编辑演示</a></li>
+        <li><a href="./basic.html">Basic</a></li>
+        <li class="active"><a href="./editor.html">Editor</a></li>
       </ul>
     </header>
     <header class="header">
       <ul>
         <li class=""><label><input type="checkbox" checked id="TaggdEditor"/>Taggd Editor</label></li>
         <li class=""><label><input type="checkbox" checked id="TagEditor"/>Tag Editor</label></li>
+      </ul>
+      <ul>
         <li class=""><button id="btnGenerateOutput">Get Data</button></li>
+        <li class=""><button id="btnTaggdDestroy">Destroy</button></li>
       </ul>
     </header>
     <main class="container">
-      <img src="../assets/1024x512.jpg" alt="" id="image" />
-      <!-- <img src="https://w.wallhaven.cc/full/j5/wallhaven-j5mz95.png" alt="" id="image" /> -->
+      <img src="../assets/1024x512.jpg" alt="" id="image" style="max-width: 100%;" />
     </main>
     <pre id="output"></pre>
     <script src="../../dist/taggd.js"></script>
@@ -54,6 +56,10 @@
         output.innerHTML = JSON.stringify(taggd.getTags(), null, 2);
       });
 
+      btnTaggdDestroy.addEventListener('click', function () {
+        taggd.destroy()
+      })
+
       TaggdEditor.addEventListener('change', function (event) {
         if(event.target.checked) {
           taggd.enableEditorMode()
@@ -63,7 +69,6 @@
       })
 
       TagEditor.addEventListener('change', function (event) {
-        console.log(event.target.checked)
         if(event.target.checked) {
           data.forEach(tag => tag.enableEditorMode())
         } else {

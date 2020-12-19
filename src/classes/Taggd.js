@@ -22,7 +22,7 @@ class Taggd extends EventEmitter {
     this.wrapper.className = 'taggd'
 
     image.classList.add('taggd__image')
-    image.parentElement.insertBefore(this.wrapper, image)
+    image.parentNode.insertBefore(this.wrapper, image)
 
     this.wrapper.appendChild(image)
 
@@ -283,6 +283,18 @@ class Taggd extends EventEmitter {
 
     if (!isCanceled) {
       this.deleteTags()
+
+      this.image.removeEventListener(this.options.addEvent, this.imageClickHandler)
+      this.image.removeEventListener('wheel', this.imageZoomHander)
+      this.image.removeEventListener('mousedown', this.imageDownHander)
+      document.removeEventListener('mousemove', this.imageMoveHander)
+      document.removeEventListener('mouseup', this.imageUpHander)
+
+      this.image.classList.remove('taggd__image')
+      this.image.style.cssText = this.imageData.naturalStyle
+
+      this.wrapper.parentNode.insertBefore(this.image, this.wrapper)
+      this.wrapper.parentNode.removeChild(this.wrapper)
     }
 
     return this
