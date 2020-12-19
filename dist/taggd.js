@@ -1,11 +1,11 @@
 /*!
- * taggd-manager v0.0.4
+ * taggd-manager v0.0.6
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2020 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2020-11-08T11:40:35.242Z
+ * Date: 2020-12-19T11:24:37.172Z
  */
 
 (function (global, factory) {
@@ -265,11 +265,6 @@
   function _nonIterableRest() {
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
-
-  /**
-   * see from https://github.com/haiweilian/share-snippets
-   * see from https://github.com/fengyuanchen/viewerjs/blob/master/src/js/utilities.js
-   */
 
   /**
    * Check wheter an object is an instance of type
@@ -1169,6 +1164,7 @@
           height: height,
           naturalWidth: naturalWidth,
           naturalHeight: naturalHeight,
+          naturalStyle: image.style.cssText,
           ratio: width / naturalWidth,
           left: (parentWidth - width) / 2,
           top: (parentHeight - height) / 2
@@ -1353,7 +1349,7 @@
       _this.wrapper = document.createElement('div');
       _this.wrapper.className = 'taggd';
       image.classList.add('taggd__image');
-      image.parentElement.insertBefore(_this.wrapper, image);
+      image.parentNode.insertBefore(_this.wrapper, image);
 
       _this.wrapper.appendChild(image);
 
@@ -1650,6 +1646,15 @@
 
         if (!isCanceled) {
           this.deleteTags();
+          this.image.removeEventListener(this.options.addEvent, this.imageClickHandler);
+          this.image.removeEventListener('wheel', this.imageZoomHander);
+          this.image.removeEventListener('mousedown', this.imageDownHander);
+          document.removeEventListener('mousemove', this.imageMoveHander);
+          document.removeEventListener('mouseup', this.imageUpHander);
+          this.image.classList.remove('taggd__image');
+          this.image.style.cssText = this.imageData.naturalStyle;
+          this.wrapper.parentNode.insertBefore(this.image, this.wrapper);
+          this.wrapper.parentNode.removeChild(this.wrapper);
         }
 
         return this;

@@ -1,17 +1,13 @@
 /*!
- * taggd-manager v0.0.4
+ * taggd-manager v0.0.6
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2020 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2020-11-08T11:40:35.242Z
+ * Date: 2020-12-19T11:24:37.172Z
  */
 
-/**
- * see from https://github.com/haiweilian/share-snippets
- * see from https://github.com/fengyuanchen/viewerjs/blob/master/src/js/utilities.js
- */
 /**
  * Check wheter an object is an instance of type
  * @param {Object} object - The object to test
@@ -807,6 +803,7 @@ var TaggdEffect = {
         height,
         naturalWidth,
         naturalHeight,
+        naturalStyle: image.style.cssText,
         ratio: width / naturalWidth,
         left: (parentWidth - width) / 2,
         top: (parentHeight - height) / 2,
@@ -992,7 +989,7 @@ class Taggd extends EventEmitter {
     this.wrapper.className = 'taggd';
 
     image.classList.add('taggd__image');
-    image.parentElement.insertBefore(this.wrapper, image);
+    image.parentNode.insertBefore(this.wrapper, image);
 
     this.wrapper.appendChild(image);
 
@@ -1253,6 +1250,18 @@ class Taggd extends EventEmitter {
 
     if (!isCanceled) {
       this.deleteTags();
+
+      this.image.removeEventListener(this.options.addEvent, this.imageClickHandler);
+      this.image.removeEventListener('wheel', this.imageZoomHander);
+      this.image.removeEventListener('mousedown', this.imageDownHander);
+      document.removeEventListener('mousemove', this.imageMoveHander);
+      document.removeEventListener('mouseup', this.imageUpHander);
+
+      this.image.classList.remove('taggd__image');
+      this.image.style.cssText = this.imageData.naturalStyle;
+
+      this.wrapper.parentNode.insertBefore(this.image, this.wrapper);
+      this.wrapper.parentNode.removeChild(this.wrapper);
     }
 
     return this
