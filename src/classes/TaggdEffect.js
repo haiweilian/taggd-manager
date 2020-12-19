@@ -38,6 +38,7 @@ export default {
         height,
         naturalWidth,
         naturalHeight,
+        naturalStyle: image.style.cssText,
         ratio: width / naturalWidth,
         left: (parentWidth - width) / 2,
         top: (parentHeight - height) / 2,

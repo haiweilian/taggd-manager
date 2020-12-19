@@ -1,8 +1,4 @@
 /**
- * see from https://github.com/haiweilian/share-snippets
- * see from https://github.com/fengyuanchen/viewerjs/blob/master/src/js/utilities.js
- */
-/**
  * Check wheter an object is an instance of type
  * @param {Object} object - The object to test
  * @param {Object} type - The class to test

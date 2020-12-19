@@ -8,7 +8,7 @@
 
 `taggd-manager` Is an image tag management tool that supports zooming, moving, and flexible customization.
 
-The original idea of it comes from [timseverien/taggd](https://github.com/timseverien/taggd), The original author did not maintain this project, and the functionality is relatively simple. So a new project extension was created, which removed the internal default template and added zoom, move, and more event callbacks.
+The original idea of it comes from [timseverien/taggd](https://github.com/timseverien/taggd), The original author did not maintain this project, and the functionality is relatively simple. So a new project extension has been created, adding zoom, move and more event callbacks.
 
 ## Projects
 
