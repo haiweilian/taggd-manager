@@ -5,7 +5,7 @@
  * Copyright 2021 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2021-02-09T12:56:04.903Z
+ * Date: 2021-02-09T15:11:33.269Z
  */
 
 /*! *****************************************************************************
@@ -1221,6 +1221,7 @@ var Taggd = /** @class */ (function (_super) {
         }
         return this;
     };
+    Taggd.Tag = Tag;
     return Taggd;
 }(EventEmitter));
 assign(Taggd.prototype, TaggdEffect);
@@ -1240,7 +1241,6 @@ Taggd.DEFAULT_OPTIONS = {
     hideDelay: 1,
 };
 
-// @ts-ignore
 Taggd.Tag = Tag;
 
 export default Taggd;

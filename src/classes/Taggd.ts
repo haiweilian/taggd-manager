@@ -7,7 +7,7 @@ import { IPointer, IDefaultOptions, ImageData } from '../types/index'
 
 class Taggd extends EventEmitter {
   static DEFAULT_OPTIONS: IDefaultOptions
-  static Tag: Tag
+  static Tag = Tag
 
   public loadImage: any
   public taggdChangeRender: any

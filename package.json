@@ -5,6 +5,7 @@
   "description": "Is an image tag management tool that supports zooming, moving, and flexible customization.",
   "main": "dist/taggd.js",
   "module": "dist/taggd.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "npm run build:js && npm run build:css",
     "build:js": "rollup -c",
