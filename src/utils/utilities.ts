@@ -1,55 +1,59 @@
+import { IOffset, IPointer, IStyleDeclaration } from '../types/index'
+
+const REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/
+
 /**
  * Check wheter an object is an instance of type
  * @param {Object} object - The object to test
  * @param {Object} type - The class to test
- * @return {Boolean}
+ * @return {Boolean} Returns `true` if the given value is an instance of type, else `false`.
  */
-export function ofInstance(object, type) {
+export function ofInstance(object: object, type: any): boolean {
   return object instanceof type
 }
 
 /**
  * Check if the given value is a string.
  * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is a string, else `false`.
+ * @return {Boolean} Returns `true` if the given value is a string, else `false`.
  */
-export function isString(value) {
+export function isString(value: unknown): boolean {
   return typeof value === 'string'
 }
 
 /**
  * Check if the given value is a number.
  * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is a number, else `false`.
+ * @return {Boolean} Returns `true` if the given value is a number, else `false`.
  */
-export function isNumber(value) {
+export function isNumber(value: unknown): boolean {
   return typeof value === 'number' && !Number.isNaN(value)
 }
 
 /**
  * Check if the given value is undefined.
  * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is undefined, else `false`.
+ * @return {Boolean} Returns `true` if the given value is undefined, else `false`.
  */
-export function isUndefined(value) {
+export function isUndefined(value: unknown): boolean {
   return typeof value === 'undefined'
 }
 
 /**
  * Check if the given value is an object.
  * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is an object, else `false`.
+ * @return {Boolean} Returns `true` if the given value is an object, else `false`.
  */
-export function isObject(value) {
+export function isObject(value: unknown): boolean {
   return typeof value === 'object' && value !== null
 }
 
 /**
  * Check if the given value is a function.
  * @param {*} value - The value to check.
- * @returns {boolean} Returns `true` if the given value is a function, else `false`.
+ * @return {Boolean} Returns `true` if the given value is a function, else `false`.
  */
-export function isFunction(value) {
+export function isFunction(value: unknown): value is Function {
   return typeof value === 'function'
 }
 
@@ -57,9 +61,9 @@ export function isFunction(value) {
  * Iterate the given data.
  * @param {*} data - The data to iterate.
  * @param {Function} callback - The process function for each element.
- * @returns {*} The original data.
+ * @return {*} The original data.
  */
-export function forEach(data, callback) {
+export function forEach(data: any, callback: Function): any {
   if (data && isFunction(callback)) {
     if (Array.isArray(data) || isNumber(data.length) /* array-like */) {
       const { length } = data
@@ -84,12 +88,11 @@ export function forEach(data, callback) {
  * Extend the given object.
  * @param {*} obj - The object to be extended.
  * @param {*} args - The rest objects which will be merged to the first object.
- * @returns {Object} The extended object.
+ * @return {Object} The extended object.
  */
-/* eslint-disable prettier/prettier */
-export const assign = Object.assign || function assign(obj, ...args) {
+export function assign(obj: any, ...args: any): object {
   if (isObject(obj) && args.length > 0) {
-    args.forEach((arg) => {
+    args.forEach((arg: any) => {
       if (isObject(arg)) {
         Object.keys(arg).forEach((key) => {
           obj[key] = arg[key]
@@ -100,32 +103,27 @@ export const assign = Object.assign || function assign(obj, ...args) {
   return obj
 }
 
-const REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/
-
-/* eslint-enable prettier/prettier */
 /**
  * Apply styles to the given element.
- * @param {Element} element - The target element.
- * @param {Object} styles - The styles for applying.
+ * @param {HTMLElement} element - The target element.
+ * @param {CSSStyleDeclaration} styles - The styles for applying.
  */
-export function setStyle(element, styles) {
-  const { style } = element
-
-  forEach(styles, (value, property) => {
+export function setStyle(element: HTMLElement, styles: IStyleDeclaration): void {
+  forEach(styles, (value: any, property: any) => {
     if (REGEXP_SUFFIX.test(property) && isNumber(value)) {
       value += 'px'
     }
 
-    style[property] = value
+    element.style[property] = value
   })
 }
 
 /**
  * Escape a string for using in HTML.
  * @param {String} value - The string to escape.
- * @returns {String} Returns the escaped string.
+ * @return {String} Returns the escaped string.
  */
-export function escapeHTMLEntities(value) {
+export function escapeHTMLEntities(value: string): string {
   return isString(value)
     ? value
         .replace(/&(?!amp;|quot;|#39;|lt;|gt;)/g, '&amp;')
@@ -138,11 +136,11 @@ export function escapeHTMLEntities(value) {
 
 /**
  * Check if the given element has a special class.
- * @param {Element} element - The element to check.
- * @param {string} value - The class to search.
- * @returns {boolean} Returns `true` if the special class was found.
+ * @param {HTMLElement} element - The element to check.
+ * @param {String} value - The class to search.
+ * @return {Boolean} Returns `true` if the special class was found.
  */
-export function hasClass(element, value) {
+export function hasClass(element: HTMLElement, value: string): boolean {
   if (!element || !value) {
     return false
   }
@@ -152,20 +150,20 @@ export function hasClass(element, value) {
 
 /**
  * Add classes to the given element.
- * @param {Element} element - The target element.
- * @param {string} value - The classes to be added.
+ * @param {HTMLElement} element - The target element.
+ * @param {String} value - The classes to be added.
  */
-export function addClass(element, value) {
+export function addClass(element: HTMLElement, value: string): void {
   if (!element || !value) {
     return
   }
 
-  if (isNumber(element.length)) {
-    forEach(element, (elem) => {
-      addClass(elem, value)
-    })
-    return
-  }
+  // if (isNumber(element.length)) {
+  //   forEach(element, (elem) => {
+  //     addClass(elem, value)
+  //   })
+  //   return
+  // }
 
   if (element.classList) {
     element.classList.add(value)
@@ -183,20 +181,20 @@ export function addClass(element, value) {
 
 /**
  * Remove classes from the given element.
- * @param {Element} element - The target element.
- * @param {string} value - The classes to be removed.
+ * @param {HTMLElement} element - The target element.
+ * @param {String} value - The classes to be removed.
  */
-export function removeClass(element, value) {
+export function removeClass(element: HTMLElement, value: string): void {
   if (!element || !value) {
     return
   }
 
-  if (isNumber(element.length)) {
-    forEach(element, (elem) => {
-      removeClass(elem, value)
-    })
-    return
-  }
+  // if (isNumber(element.length)) {
+  //   forEach(element, (elem) => {
+  //     removeClass(elem, value)
+  //   })
+  //   return
+  // }
 
   if (element.classList) {
     element.classList.remove(value)
@@ -210,80 +208,74 @@ export function removeClass(element, value) {
 
 /**
  * Add or remove classes from the given element.
- * @param {Element} element - The target element.
- * @param {string} value - The classes to be toggled.
- * @param {boolean} added - Add only.
+ * @param {HTMLElement} element - The target element.
+ * @param {String} value - The classes to be toggled.
  */
-export function toggleClass(element, value, added) {
+export function toggleClass(element: HTMLElement, value: string): void {
   if (!value) {
     return
   }
 
-  if (isNumber(element.length)) {
-    forEach(element, (elem) => {
-      toggleClass(elem, value, added)
-    })
-    return
+  // if (isNumber(element.length)) {
+  //   forEach(element, (elem) => {
+  //     toggleClass(elem, value, added)
+  //   })
+  //   return
+  // }
+
+  if (element.classList) {
+    element.classList.toggle(value)
   }
 
-  // IE10-11 doesn't support the second parameter of `classList.toggle`
-  if (added) {
-    addClass(element, value)
-  } else {
+  if (hasClass(element, value)) {
     removeClass(element, value)
+  } else {
+    addClass(element, value)
   }
 }
 
 /**
  * Get the offset base on the document.
- * @param {Element} element - The target element.
- * @returns {Object} The offset data.
+ * @param {HTMLElement} element - The target element.
+ * @return {Object} The offset data.
  */
-export function getOffset(element) {
+export function getOffset(element: HTMLElement): IOffset {
   const box = element.getBoundingClientRect()
 
   return {
-    left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
     top: box.top + (window.pageYOffset - document.documentElement.clientTop),
+    left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
   }
 }
 
 /**
  * Get a pointer from an event object.
- * @param {Object} event - The target event object.
- * @param {boolean} endOnly - Indicates if only returns the end point coordinate or not.
- * @returns {Object} The result pointer contains start and/or end point coordinates.
+ * @param {MouseEvent} event - The target event object.
+ * @return {Object} The result pointer contains start and/or end point coordinates.
  */
-export function getPointer({ pageX, pageY }, endOnly) {
-  const end = {
-    endX: pageX,
-    endY: pageY,
+export function getPointer(event: MouseEvent): IPointer {
+  return {
+    elX: event.pageX,
+    elY: event.pageY,
+    endX: event.pageX,
+    endY: event.pageY,
+    startX: event.pageX,
+    startY: event.pageY,
   }
-
-  return endOnly
-    ? end
-    : {
-        timeStamp: Date.now(),
-        startX: pageX,
-        startY: pageY,
-        ...end,
-      }
 }
 
 /**
  * Get the rolling ratio.
- * @param {Object} event - The target event object.
- * @param {boolean} zoomRatio - The zoom ratio.
- * @returns {number} The result ratio.
+ * @param {WheelEvent} event - The target event object.
+ * @param {Number} zoomRatio - The zoom ratio.
+ * @return {Number} The result ratio.
  */
-export function getWheelRatio(event, zoomRatio) {
+export function getWheelRatio(event: WheelEvent, zoomRatio: number): number {
   let delta = 1
   let ratio = zoomRatio
 
   if (event.deltaY) {
     delta = event.deltaY > 0 ? 1 : -1
-  } else if (event.wheelDelta) {
-    delta = -event.wheelDelta / 120
   } else if (event.detail) {
     delta = event.detail > 0 ? 1 : -1
   }

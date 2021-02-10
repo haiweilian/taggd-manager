@@ -1,17 +1,19 @@
-import { assign, setStyle, getOffset, getPointer, getWheelRatio, addClass, removeClass } from '../util/utilities'
+import Tag from './Tag'
+import Taggd from './Taggd'
+import { setStyle, getOffset, getPointer, getWheelRatio, addClass, removeClass } from '../utils/utilities'
 
-export default {
+const TaggdEffect: ThisType<Taggd> = {
   /**
-   * load image and reset image
+   * Load image and reset image
    * @param {Taggd.Tag[]} tags - An array of tags
-   * @return {undefined}
+   * @return {Taggd} Current Taggd instance
    */
-  loadImage(tags) {
+  loadImage(tags: Tag[]) {
     this.emit('taggd.editor.load', this)
 
-    const { image, wrapper } = this
-    const parentWidth = wrapper.offsetWidth || 500
-    const parentHeight = wrapper.offsetHeight || 300
+    const { image, wrapper, imageData } = this
+    const parentWidth = wrapper.offsetWidth
+    const parentHeight = wrapper.offsetHeight
     const newImage = document.createElement('img')
 
     addClass(wrapper, 'taggd--loading')
@@ -33,24 +35,18 @@ export default {
       }
 
       // Init image style
-      const imageData = {
-        width,
-        height,
-        naturalWidth,
-        naturalHeight,
-        naturalStyle: image.style.cssText,
-        ratio: width / naturalWidth,
-        left: (parentWidth - width) / 2,
-        top: (parentHeight - height) / 2,
-      }
-      const initialImageData = assign({}, imageData)
-
-      this.imageData = imageData
-      this.initialImageData = initialImageData
+      imageData.width = width
+      imageData.height = height
+      imageData.naturalWidth = naturalWidth
+      imageData.naturalHeight = naturalHeight
+      imageData.naturalStyle = image.style.cssText
+      imageData.ratio = width / naturalWidth
+      imageData.left = (parentWidth - width) / 2
+      imageData.top = (parentHeight - height) / 2
 
       // Init tags
       this.setTags(tags)
-      this.imageChangeRender()
+      this.taggdChangeRender()
 
       this.emit('taggd.editor.loaded', this)
     }
@@ -60,33 +56,36 @@ export default {
     }
 
     newImage.src = image.src
+
+    return this
   },
 
   /**
-   * change image reset style
-   * @param {Object} style style change
-   * @return {undefined}
+   * Change image reset style
+   * @return {Taggd} Current Taggd instance
    */
-  imageChangeRender(style = {}) {
-    style = { ...this.imageData, ...style }
+  taggdChangeRender() {
+    const { image, imageData } = this
 
-    setStyle(this.image, {
-      width: style.width,
-      height: style.height,
-      marginLeft: style.left,
-      marginTop: style.top,
+    setStyle(image, {
+      width: imageData.width,
+      height: imageData.height,
+      marginLeft: imageData.left,
+      marginTop: imageData.top,
     })
 
     // update tags position
     this.tags.forEach((tag) => tag.setPosition())
+
+    return this
   },
 
   /**
-   * image click/dblclick hander
-   * @param {EventTarget} event
-   * @return {undefined}
+   * Taggd click/dblclick hander
+   * @param {MouseEvent} event
+   * @return {Taggd} Current Taggd instance
    */
-  imageClickHandler(event) {
+  taggdClickHandler(event: MouseEvent) {
     const { imageData } = this
     const offset = getOffset(this.image)
 
@@ -96,14 +95,16 @@ export default {
     }
 
     this.emit('taggd.editor.add', this, position)
+
+    return this
   },
 
   /**
-   * image wheel hander
-   * @param {EventTarget} event
-   * @return {undefined}
+   * Taggd wheel hander
+   * @param {WheelEvent} event
+   * @return {Taggd} Current Taggd instance
    */
-  imageZoomHander(event) {
+  taggdZoomHander(event: WheelEvent) {
     if (this.wheeling) {
       return
     }
@@ -139,36 +140,41 @@ export default {
     imageData.left -= offsetWidth * ((event.pageX - offset.left) / width)
     imageData.top -= offsetHeight * ((event.pageY - offset.top) / height)
 
-    this.imageChangeRender()
+    this.taggdChangeRender()
 
     this.emit('taggd.editor.zoom', this)
+
+    return this
   },
 
   /**
-   * image mousedown hander
-   * @param {EventTarget} event
-   * @return {undefined}
+   * Taggd mousedown hander
+   * @param {MouseEvent} event
+   * @return {Taggd} Current Taggd instance
    */
-  imageDownHander(event) {
+  taggdDownHander(event: MouseEvent) {
     event.preventDefault()
 
     addClass(this.wrapper, 'taggd--grabbing')
 
     this.action = 'move'
-    this.pointer = assign(getPointer(event), {
-      moveX: this.imageData.left,
-      moveY: this.imageData.top,
-    })
+    this.pointer = {
+      ...getPointer(event),
+      elX: this.imageData.left,
+      elY: this.imageData.top,
+    }
 
     this.emit('taggd.editor.movedown', this)
+
+    return this
   },
 
   /**
-   * image mousemove hander
-   * @param {EventTarget} event
-   * @return {undefined}
+   * Taggd mousemove hander
+   * @param {MouseEvent} event
+   * @return {Taggd} Current Taggd instance
    */
-  imageMoveHander(event) {
+  taggdMoveHander(event: MouseEvent) {
     if (!this.action) {
       return
     }
@@ -176,22 +182,24 @@ export default {
     event.preventDefault()
 
     const { imageData, pointer } = this
-    const { endX, endY } = getPointer(event, true)
+    const { endX, endY } = getPointer(event)
 
-    imageData.left = pointer.moveX + (endX - pointer.startX)
-    imageData.top = pointer.moveY + (endY - pointer.startY)
+    imageData.left = pointer.elX + (endX - pointer.startX)
+    imageData.top = pointer.elY + (endY - pointer.startY)
 
-    this.imageChangeRender()
+    this.taggdChangeRender()
 
     this.emit('taggd.editor.move', this)
+
+    return this
   },
 
   /**
-   * image mouseup hander
-   * @param {EventTarget} event
-   * @return {undefined}
+   * Taggd mouseup hander
+   * @param {MouseEvent} event
+   * @return {Taggd} Current Taggd instance
    */
-  imageUpHander(event) {
+  taggdUpHander(event: MouseEvent) {
     if (!this.action) {
       return
     }
@@ -200,8 +208,11 @@ export default {
 
     removeClass(this.wrapper, 'taggd--grabbing')
 
-    this.action = false
-
+    this.action = ''
     this.emit('taggd.editor.moveup', this)
+
+    return this
   },
 }
+
+export default TaggdEffect

@@ -1,3 +1,7 @@
+![shields](https://img.shields.io/npm/l/taggd-manager)
+![shields](https://img.shields.io/npm/v/taggd-manager)
+![shields](https://img.shields.io/npm/dm/taggd-manager)
+
 ![Example](https://github.com/haiweilian/taggd-manager/raw/master/docs/example.gif)
 
 ## taggd-manager
@@ -8,11 +12,7 @@
 
 `taggd-manager` Is an image tag management tool that supports zooming, moving, and flexible customization.
 
-The original idea of it comes from [timseverien/taggd](https://github.com/timseverien/taggd), The original author did not maintain this project, and the functionality is relatively simple. So a new project extension has been created, adding zoom, move and more event callbacks.
-
-## Projects
-
-* Todo <https://github.com/haiweilian/taggd-manager/projects/1>
+The original idea of it comes from [timseverien/taggd](https://github.com/timseverien/taggd), The original author did not maintain this project. So a new project extension has been created, adding zoom, move and more event callbacks.
 
 ## Installation
 

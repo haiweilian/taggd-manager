@@ -1,9 +1,23 @@
 import TagEffect from './TagEffect'
-import EventEmitter from '../util/event-emitter'
-import TypeErrorMessage from '../util/type-error-message'
-import { isObject, isString, isFunction, isNumber, assign, setStyle, addClass, removeClass } from '../util/utilities'
+import EventEmitter from '../utils/event-emitter'
+import TypeErrorMessage from '../utils/type-error-message'
+import { isObject, isString, isFunction, isNumber, assign, setStyle, addClass, removeClass } from '../utils/utilities'
+import { IPosition, IPointer } from '../types/index'
 
 class Tag extends EventEmitter {
+  public Taggd: any
+  public tagDownHander: any
+  public tagMoveHander: any
+  public tagUpHander: any
+
+  wrapperElement: HTMLElement
+  popupElement: HTMLElement
+  buttonElement: HTMLElement
+  text: string
+  position: IPosition
+  pointer: IPointer
+  action: string
+
   /**
    * Create a new Tag instance
    * @param {{ x: Number, y: Number }} position - The tag’s coordinates
@@ -11,7 +25,7 @@ class Tag extends EventEmitter {
    * @param {Object} [buttonAttributes = {}] - The button’s attributes
    * @param {Object} [popupAttributes = {}] - The popup’s attributes
    */
-  constructor(position, text, buttonAttributes = {}, popupAttributes = {}) {
+  constructor(position: Pick<IPosition, 'x' | 'y'>, text: string | Function = '', buttonAttributes = {}, popupAttributes = {}) {
     if (!isObject(position)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(position))
     } else if (!('x' in position) || !('y' in position)) {
@@ -32,10 +46,10 @@ class Tag extends EventEmitter {
     this.wrapperElement.appendChild(this.buttonElement)
     this.wrapperElement.appendChild(this.popupElement)
 
-    this.text = null
-    this.position = position
-    this.pointer = {}
-    this.action = false
+    this.text = ''
+    this.position = position as IPosition
+    this.pointer = {} as IPointer
+    this.action = ''
 
     this.setButtonAttributes(buttonAttributes)
     this.setPopupAttributes(popupAttributes)
@@ -47,9 +61,9 @@ class Tag extends EventEmitter {
    * Subscribe to an event.
    * @param {String} eventName - The event to subscribe to.
    * @param {Function} handler - The handler to execute.
-   * @return {Taggd} Current Taggd instance
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  on(eventName, handler) {
+  on(eventName: string, handler: Function) {
     return super.on(eventName, handler)
   }
 
@@ -57,9 +71,9 @@ class Tag extends EventEmitter {
    * Unsubscribe from an event.
    * @param {String} eventName - The event to unsubscribe from.
    * @param {Function} handler - The handler that was used to subscribe.
-   * @return {Taggd} Current Taggd instance
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  off(eventName, handler) {
+  off(eventName: string, handler: Function) {
     return super.off(eventName, handler)
   }
 
@@ -67,9 +81,9 @@ class Tag extends EventEmitter {
    * Subscribe to an event and unsubscribe once triggered.
    * @param {String} eventName - The event to subscribe to.
    * @param {Function} handler - The handler to execute.
-   * @return {Taggd} Current Taggd instance
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  once(eventName, handler) {
+  once(eventName: string, handler: Function) {
     return super.once(eventName, handler)
   }
 
@@ -83,7 +97,7 @@ class Tag extends EventEmitter {
 
   /**
    * Show the tag
-   * @return {Taggd.Tag} Current Tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   show() {
     const isCanceled = !this.emit('taggd.tag.show', this)
@@ -98,7 +112,7 @@ class Tag extends EventEmitter {
 
   /**
    * Hide the tag
-   * @return {Taggd.Tag} Current Tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   hide() {
     const isCanceled = !this.emit('taggd.tag.hide', this)
@@ -114,9 +128,9 @@ class Tag extends EventEmitter {
   /**
    * Set the tag’s text
    * @param {String|Function} text - The tag’s content
-   * @return {Taggd.Tag} Current Tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  setText(text = '') {
+  setText(text: string | Function) {
     if (!isString(text) && !isFunction(text)) {
       throw new TypeError(TypeErrorMessage.getMessage(text, 'a string or a function'))
     }
@@ -142,7 +156,7 @@ class Tag extends EventEmitter {
    * Set the tag’s position
    * @param {Number} x - The tag’s x-coordinate
    * @param {Number} y - The tag’s y-coordinate
-   * @return {Taggd.Tag} Current Tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   setPosition(x = this.position.x, y = this.position.y) {
     if (!isNumber(x)) {
@@ -175,7 +189,7 @@ class Tag extends EventEmitter {
   /**
    * Set the tag button’s attributes
    * @param {Object} atttributes = {} - The attributes to set
-   * @return {Taggd.Tag} Current tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   setButtonAttributes(attributes = {}) {
     if (!isObject(attributes)) {
@@ -195,7 +209,7 @@ class Tag extends EventEmitter {
   /**
    * Set the tag popup’s attributes
    * @param {Object} atttributes = {} - The attributes to set
-   * @return {Taggd.Tag} Current tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   setPopupAttributes(attributes = {}) {
     if (!isObject(attributes)) {
@@ -214,7 +228,7 @@ class Tag extends EventEmitter {
 
   /**
    * Enable editor mode
-   * @return {Taggd.Tag} Current tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   enableEditorMode() {
     const isCanceled = !this.emit('taggd.tag.editor.enable', this)
@@ -232,7 +246,7 @@ class Tag extends EventEmitter {
 
   /**
    * Disable editor mode
-   * @return {Taggd.Tag} Current tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   disableEditorMode() {
     const isCanceled = !this.emit('taggd.tag.editor.disable', this)
@@ -253,7 +267,7 @@ class Tag extends EventEmitter {
    * @return {Object} A object for JSON
    */
   toJSON() {
-    function getAttributes(rawAttributes) {
+    function getAttributes(rawAttributes: any) {
       const attributes = {}
 
       Array.prototype.forEach.call(rawAttributes, (attribute) => {
@@ -261,6 +275,7 @@ class Tag extends EventEmitter {
           return
         }
 
+        // @ts-ignore
         attributes[attribute.name] = attribute.value
       })
 
@@ -281,7 +296,7 @@ class Tag extends EventEmitter {
    * @param {Object} [attributes = {}] - A map of attributes to set
    * @return {DomNode} The original element
    */
-  static setElementAttributes(element, attributes = {}) {
+  static setElementAttributes(element: Element, attributes = {}) {
     if (!isObject(attributes)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(attributes))
     }
@@ -295,6 +310,7 @@ class Tag extends EventEmitter {
         return
       }
 
+      // @ts-ignore
       element.setAttribute(attributeName, attributeValue)
     })
 
@@ -307,7 +323,7 @@ class Tag extends EventEmitter {
    * @param {Number} y - The tag’s y-coordinate
    * @return {Object} The style
    */
-  static getPositionStyle(x, y) {
+  static getPositionStyle(x: number, y: number) {
     if (!isNumber(x)) {
       throw new TypeError(TypeErrorMessage.getFloatMessage(x))
     }
@@ -326,7 +342,7 @@ class Tag extends EventEmitter {
    * @param {Object} object - The object containing all information
    * @return {Tag} The created Tag instance
    */
-  static createFromObject(object) {
+  static createFromObject(object: any) {
     return new Tag(object.position, object.text, object.buttonAttributes, object.popupAttributes)
   }
 }

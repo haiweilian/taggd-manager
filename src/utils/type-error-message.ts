@@ -5,7 +5,7 @@ const TypeErrorMessage = {
    * @param {String} expectedType - A string describing the expected type
    * @return {String} The error message
    */
-  getMessage: (object, expectedType) => `${object} should be ${expectedType}`,
+  getMessage: (object: unknown, expectedType: unknown): string => `${object} should be ${expectedType}`,
 
   /**
    * Get the TypeError Array message
@@ -13,7 +13,7 @@ const TypeErrorMessage = {
    * @param {String} expectedType - The expected type of all array items
    * @return {String} The error message
    */
-  getArrayMessage: (object, expectedType) => {
+  getArrayMessage: (object: unknown, expectedType: unknown): string => {
     if (expectedType) {
       return TypeErrorMessage.getTypeErrorMessage(object, `an array of ${expectedType}`)
     }
@@ -25,35 +25,35 @@ const TypeErrorMessage = {
    * @param {Object} object - The tested object
    * @return {String} The error message
    */
-  getFunctionMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'a function'),
+  getFunctionMessage: (object: unknown): string => TypeErrorMessage.getTypeErrorMessage(object, 'a function'),
 
   /**
    * Get the TypeError Integer message
    * @param {Object} object - The tested object
    * @return {String} The error message
    */
-  getIntegerMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'an integer'),
+  getIntegerMessage: (object: unknown): string => TypeErrorMessage.getTypeErrorMessage(object, 'an integer'),
 
   /**
    * Get the TypeError Float message
    * @param {Object} object - The tested object
    * @return {String} The error message
    */
-  getFloatMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'a floating number'),
+  getFloatMessage: (object: unknown): string => TypeErrorMessage.getTypeErrorMessage(object, 'a floating number'),
 
   /**
    * Get the TypeError Object message
    * @param {Object} object - The tested object
    * @return {String} The error message
    */
-  getObjectMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'an object'),
+  getObjectMessage: (object: unknown): string => TypeErrorMessage.getTypeErrorMessage(object, 'an object'),
 
   /**
    * Get the TypeError Taggd.Tag message
    * @param {Object} object - The tested object
    * @return {String} The error message
    */
-  getTagMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'a tag'),
+  getTagMessage: (object: unknown): string => TypeErrorMessage.getTypeErrorMessage(object, 'a tag'),
 
   /**
    * Get TypeError message
@@ -61,7 +61,7 @@ const TypeErrorMessage = {
    * @param {String} message - The type message
    * @return {String} The error message
    */
-  getTypeErrorMessage: (object, message) => `${object} is not a ${message}`,
+  getTypeErrorMessage: (object: unknown, message: unknown): string => `${object} is not a ${message}`,
 }
 
 export default TypeErrorMessage
