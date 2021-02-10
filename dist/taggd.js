@@ -5,7 +5,7 @@
  * Copyright 2021 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2021-02-09T15:11:33.269Z
+ * Date: 2021-02-10T06:58:38.955Z
  */
 
 (function (global, factory) {
@@ -556,7 +556,7 @@
         };
         /**
          * Show the tag
-         * @return {Taggd.Tag} Current Tag
+         * @return {Taggd.Tag} Current Taggd.Tag instance
          */
         Tag.prototype.show = function () {
             var isCanceled = !this.emit('taggd.tag.show', this);
@@ -568,7 +568,7 @@
         };
         /**
          * Hide the tag
-         * @return {Taggd.Tag} Current Tag
+         * @return {Taggd.Tag} Current Taggd.Tag instance
          */
         Tag.prototype.hide = function () {
             var isCanceled = !this.emit('taggd.tag.hide', this);
@@ -581,7 +581,7 @@
         /**
          * Set the tag’s text
          * @param {String|Function} text - The tag’s content
-         * @return {Taggd.Tag} Current Tag
+         * @return {Taggd.Tag} Current Taggd.Tag instance
          */
         Tag.prototype.setText = function (text) {
             if (!isString(text) && !isFunction(text)) {
@@ -604,7 +604,7 @@
          * Set the tag’s position
          * @param {Number} x - The tag’s x-coordinate
          * @param {Number} y - The tag’s y-coordinate
-         * @return {Taggd.Tag} Current Tag
+         * @return {Taggd.Tag} Current Taggd.Tag instance
          */
         Tag.prototype.setPosition = function (x, y) {
             if (x === void 0) { x = this.position.x; }
@@ -632,7 +632,7 @@
         /**
          * Set the tag button’s attributes
          * @param {Object} atttributes = {} - The attributes to set
-         * @return {Taggd.Tag} Current tag
+         * @return {Taggd.Tag} Current Taggd.Tag instance
          */
         Tag.prototype.setButtonAttributes = function (attributes) {
             if (attributes === void 0) { attributes = {}; }
@@ -649,7 +649,7 @@
         /**
          * Set the tag popup’s attributes
          * @param {Object} atttributes = {} - The attributes to set
-         * @return {Taggd.Tag} Current tag
+         * @return {Taggd.Tag} Current Taggd.Tag instance
          */
         Tag.prototype.setPopupAttributes = function (attributes) {
             if (attributes === void 0) { attributes = {}; }
@@ -665,7 +665,7 @@
         };
         /**
          * Enable editor mode
-         * @return {Taggd.Tag} Current tag
+         * @return {Taggd.Tag} Current Taggd.Tag instance
          */
         Tag.prototype.enableEditorMode = function () {
             var isCanceled = !this.emit('taggd.tag.editor.enable', this);
@@ -679,7 +679,7 @@
         };
         /**
          * Disable editor mode
-         * @return {Taggd.Tag} Current tag
+         * @return {Taggd.Tag} Current Taggd.Tag instance
          */
         Tag.prototype.disableEditorMode = function () {
             var isCanceled = !this.emit('taggd.tag.editor.disable', this);

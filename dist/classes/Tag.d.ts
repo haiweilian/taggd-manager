@@ -48,47 +48,47 @@ declare class Tag extends EventEmitter {
     isHidden(): boolean;
     /**
      * Show the tag
-     * @return {Taggd.Tag} Current Tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     show(): this;
     /**
      * Hide the tag
-     * @return {Taggd.Tag} Current Tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     hide(): this;
     /**
      * Set the tag’s text
      * @param {String|Function} text - The tag’s content
-     * @return {Taggd.Tag} Current Tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     setText(text: string | Function): this;
     /**
      * Set the tag’s position
      * @param {Number} x - The tag’s x-coordinate
      * @param {Number} y - The tag’s y-coordinate
-     * @return {Taggd.Tag} Current Tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     setPosition(x?: number, y?: number): this;
     /**
      * Set the tag button’s attributes
      * @param {Object} atttributes = {} - The attributes to set
-     * @return {Taggd.Tag} Current tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     setButtonAttributes(attributes?: {}): this;
     /**
      * Set the tag popup’s attributes
      * @param {Object} atttributes = {} - The attributes to set
-     * @return {Taggd.Tag} Current tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     setPopupAttributes(attributes?: {}): this;
     /**
      * Enable editor mode
-     * @return {Taggd.Tag} Current tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     enableEditorMode(): this;
     /**
      * Disable editor mode
-     * @return {Taggd.Tag} Current tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     disableEditorMode(): this;
     /**

@@ -97,7 +97,7 @@ class Tag extends EventEmitter {
 
   /**
    * Show the tag
-   * @return {Taggd.Tag} Current Tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   show() {
     const isCanceled = !this.emit('taggd.tag.show', this)
@@ -112,7 +112,7 @@ class Tag extends EventEmitter {
 
   /**
    * Hide the tag
-   * @return {Taggd.Tag} Current Tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   hide() {
     const isCanceled = !this.emit('taggd.tag.hide', this)
@@ -128,7 +128,7 @@ class Tag extends EventEmitter {
   /**
    * Set the tag’s text
    * @param {String|Function} text - The tag’s content
-   * @return {Taggd.Tag} Current Tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   setText(text: string | Function) {
     if (!isString(text) && !isFunction(text)) {
@@ -156,7 +156,7 @@ class Tag extends EventEmitter {
    * Set the tag’s position
    * @param {Number} x - The tag’s x-coordinate
    * @param {Number} y - The tag’s y-coordinate
-   * @return {Taggd.Tag} Current Tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   setPosition(x = this.position.x, y = this.position.y) {
     if (!isNumber(x)) {
@@ -189,7 +189,7 @@ class Tag extends EventEmitter {
   /**
    * Set the tag button’s attributes
    * @param {Object} atttributes = {} - The attributes to set
-   * @return {Taggd.Tag} Current tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   setButtonAttributes(attributes = {}) {
     if (!isObject(attributes)) {
@@ -209,7 +209,7 @@ class Tag extends EventEmitter {
   /**
    * Set the tag popup’s attributes
    * @param {Object} atttributes = {} - The attributes to set
-   * @return {Taggd.Tag} Current tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   setPopupAttributes(attributes = {}) {
     if (!isObject(attributes)) {
@@ -228,7 +228,7 @@ class Tag extends EventEmitter {
 
   /**
    * Enable editor mode
-   * @return {Taggd.Tag} Current tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   enableEditorMode() {
     const isCanceled = !this.emit('taggd.tag.editor.enable', this)
@@ -246,7 +246,7 @@ class Tag extends EventEmitter {
 
   /**
    * Disable editor mode
-   * @return {Taggd.Tag} Current tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
    */
   disableEditorMode() {
     const isCanceled = !this.emit('taggd.tag.editor.disable', this)

@@ -16,7 +16,7 @@
     "test:unit": "jest --coverage",
     "commit": "git-cz",
     "release": "standard-version",
-    "docs": "jsdoc2md src/classes/Taggd.js > docs/en/methods-taggd.md && jsdoc2md src/classes/Tag.js > docs/en/methods-tag.md"
+    "docs": "jsdoc2md src/classes/Taggd.ts --configure jsdoc.json > docs/en/methods-taggd.md && jsdoc2md src/classes/Tag.ts --configure jsdoc.json > docs/en/methods-tag.md"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.1",
     "@babel/preset-env": "^7.11.0",
+    "@babel/preset-typescript": "^7.12.13",
     "@commitlint/cli": "^9.1.1",
     "@commitlint/config-conventional": "^9.1.1",
     "@rollup/plugin-babel": "^5.2.1",
@@ -55,6 +56,7 @@
     "gulp-sass": "^4.1.0",
     "husky": "^4.2.5",
     "jest": "^26.2.2",
+    "jsdoc-babel": "^0.5.0",
     "jsdoc-to-markdown": "^6.0.1",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
