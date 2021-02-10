@@ -1,6 +1,6 @@
 {
   "eslint.options": {
-    "extensions": [".js", ".jsx", ".ts", ".tsx"]
+    "extensions": [".js", ".ts"]
   },
   "eslint.validate": ["javascript", "typescript"],
   "editor.codeActionsOnSave": {
