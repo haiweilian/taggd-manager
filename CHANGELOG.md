@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/haiweilian/taggd-manager/compare/v0.0.6...v1.0.0) (2021-04-02)
+
+
+### Features
+
+* add declaration files ([e654b29](https://github.com/haiweilian/taggd-manager/commit/e654b2924440fa8e4e74302a8c9791e85034751a))
+
 ### [0.0.6](https://github.com/haiweilian/taggd-manager/compare/v0.0.5...v0.0.6) (2020-12-19)
 
 
