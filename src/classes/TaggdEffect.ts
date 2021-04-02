@@ -90,8 +90,8 @@ const TaggdEffect: ThisType<Taggd> = {
     const offset = getOffset(this.image)
 
     const position = {
-      x: ((event.pageX - offset.left) / imageData.width) * imageData.naturalWidth,
-      y: ((event.pageY - offset.top) / imageData.height) * imageData.naturalHeight,
+      x: (event.pageX - offset.left) / imageData.ratio,
+      y: (event.pageY - offset.top) / imageData.ratio,
     }
 
     this.emit('taggd.editor.add', this, position)

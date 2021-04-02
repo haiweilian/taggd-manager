@@ -5,7 +5,7 @@
  * Copyright 2021 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2021-02-10T06:58:38.955Z
+ * Date: 2021-04-02T13:23:54.632Z
  */
 
 /*! *****************************************************************************
@@ -834,8 +834,8 @@ var TaggdEffect = {
         var imageData = this.imageData;
         var offset = getOffset(this.image);
         var position = {
-            x: ((event.pageX - offset.left) / imageData.width) * imageData.naturalWidth,
-            y: ((event.pageY - offset.top) / imageData.height) * imageData.naturalHeight,
+            x: (event.pageX - offset.left) / imageData.ratio,
+            y: (event.pageY - offset.top) / imageData.ratio,
         };
         this.emit('taggd.editor.add', this, position);
         return this;

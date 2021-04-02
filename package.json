@@ -16,6 +16,10 @@
     "test:unit": "jest --coverage",
     "commit": "git-cz",
     "release": "standard-version",
+    "release-f": "standard-version -f",
+    "release-major": "standard-version -r major",
+    "release-minor": "standard-version -r minor",
+    "release-patch": "standard-version -r patch",
     "docs": "jsdoc2md src/classes/Taggd.ts --configure jsdoc.json > docs/en/methods-taggd.md && jsdoc2md src/classes/Tag.ts --configure jsdoc.json > docs/en/methods-tag.md"
   },
   "repository": {
