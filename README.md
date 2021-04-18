@@ -38,7 +38,7 @@ The style sheet has only the required dependency style, if you want to add a the
 ```
 
 ```html
-<script src="/path/to/taggd-manager/dist/taggd.js"></script>
+<script src="/path/to/taggd-manager/dist/taggd.umd.js"></script>
 ```
 
 If you use a module import.

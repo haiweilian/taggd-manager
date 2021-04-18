@@ -1,7 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import babel from '@rollup/plugin-babel'
-import typescript from 'rollup-plugin-typescript2'
+import typescript from '@rollup/plugin-typescript'
 import createBanner from 'create-banner'
 import pkg from './package.json'
 
@@ -16,7 +15,13 @@ export default [
       file: pkg.main,
       format: 'umd',
     },
-    plugins: [resolve(), commonjs(), typescript(), babel({ babelHelpers: 'bundled' })],
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript({
+        tsconfig: './tsconfig.json',
+      }),
+    ],
   },
   {
     input: 'src/index.ts',
@@ -26,6 +31,12 @@ export default [
       file: pkg.module,
       format: 'esm',
     },
-    plugins: [resolve(), commonjs(), typescript(), babel({ babelHelpers: 'bundled' })],
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript({
+        tsconfig: './tsconfig.json',
+      }),
+    ],
   },
 ]

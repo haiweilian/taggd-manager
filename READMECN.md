@@ -38,7 +38,7 @@
 ```
 
 ```html
-<script src="/path/to/taggd-manager/dist/taggd.js"></script>
+<script src="/path/to/taggd-manager/dist/taggd.umd.js"></script>
 ```
 
 如果使用模块导入。

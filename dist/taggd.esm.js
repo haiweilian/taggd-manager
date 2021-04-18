@@ -1,11 +1,11 @@
 /*!
- * taggd-manager v0.0.6
+ * taggd-manager v1.0.0
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2021 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2021-04-02T13:23:54.632Z
+ * Date: 2021-04-15T12:41:46.800Z
  */
 
 /*! *****************************************************************************
@@ -22,59 +22,38 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-
 /* global Reflect, Promise */
-var _extendStatics = function extendStatics(d, b) {
-  _extendStatics = Object.setPrototypeOf || {
-    __proto__: []
-  } instanceof Array && function (d, b) {
-    d.__proto__ = b;
-  } || function (d, b) {
-    for (var p in b) {
-      if (b.hasOwnProperty(p)) d[p] = b[p];
-    }
-  };
 
-  return _extendStatics(d, b);
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+    return extendStatics(d, b);
 };
 
 function __extends(d, b) {
-  _extendStatics(d, b);
-
-  function __() {
-    this.constructor = d;
-  }
-
-  d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    if (typeof b !== "function" && b !== null)
+        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
-var _assign = function __assign() {
-  _assign = Object.assign || function __assign(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-
-      for (var p in s) {
-        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-      }
-    }
-
-    return t;
-  };
-
-  return _assign.apply(this, arguments);
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
-function __spreadArrays() {
-  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
-    s += arguments[i].length;
-  }
 
-  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
-    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
-      r[k] = a[j];
-    }
-  }
-
-  return r;
+function __spreadArray(to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 }
 
 var REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/;
@@ -291,7 +270,7 @@ var TagEffect = {
         event.preventDefault();
         addClass(this.buttonElement, 'taggd--grabbing');
         this.action = 'move';
-        this.pointer = _assign(_assign({}, getPointer(event)), { elX: this.position.left, elY: this.position.top });
+        this.pointer = __assign(__assign({}, getPointer(event)), { elX: this.position.left, elY: this.position.top });
         this.emit('taggd.tag.editor.movedown', this);
         return this;
     },
@@ -401,7 +380,7 @@ var EventEmitter = /** @class */ (function () {
         var isCanceled = false;
         if (this.handlers[EVENT_WILDCARD]) {
             this.handlers[EVENT_WILDCARD].forEach(function (eventHandler) {
-                var returnValue = eventHandler.apply(void 0, __spreadArrays([eventName], args));
+                var returnValue = eventHandler.apply(void 0, __spreadArray([eventName], args));
                 isCanceled = (returnValue !== undefined && !returnValue) || isCanceled;
             });
         }
@@ -885,7 +864,7 @@ var TaggdEffect = {
         event.preventDefault();
         addClass(this.wrapper, 'taggd--grabbing');
         this.action = 'move';
-        this.pointer = _assign(_assign({}, getPointer(event)), { elX: this.imageData.left, elY: this.imageData.top });
+        this.pointer = __assign(__assign({}, getPointer(event)), { elX: this.imageData.left, elY: this.imageData.top });
         this.emit('taggd.editor.movedown', this);
         return this;
     },
@@ -1072,7 +1051,7 @@ var Taggd = /** @class */ (function (_super) {
                 for (var _i = 1; _i < arguments.length; _i++) {
                     args[_i - 1] = arguments[_i];
                 }
-                _this.emit.apply(_this, __spreadArrays([eventName, _this], args));
+                _this.emit.apply(_this, __spreadArray([eventName, _this], args));
             });
             // Establish contact with Taggd
             tag.Taggd = this;

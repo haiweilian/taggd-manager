@@ -1,12 +1,11 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "extends": ["prettier/@typescript-eslint", "plugin:prettier/recommended", "plugin:@typescript-eslint/recommended"],
-  "plugins": ["jest", "@typescript-eslint"],
+  "extends": ["plugin:@typescript-eslint/recommended", "prettier/@typescript-eslint", "plugin:prettier/recommended"],
+  "plugins": ["@typescript-eslint"],
   "env": {
     "node": true,
-    "browser": true,
-    "jest/globals": true
+    "browser": true
   },
   "rules": {
     "@typescript-eslint/ban-types": "off",
