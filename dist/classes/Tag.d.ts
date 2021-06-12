@@ -1,5 +1,6 @@
+import Taggd from './Taggd';
 import EventEmitter from '../utils/event-emitter';
-import { IPosition, IPointer } from '../types/index';
+import { IPosition, IPointer, IEventTag } from '../types/index';
 declare class Tag extends EventEmitter {
     Taggd: any;
     tagDownHander: any;
@@ -26,21 +27,21 @@ declare class Tag extends EventEmitter {
      * @param {Function} handler - The handler to execute.
      * @return {Taggd.Tag} Current Taggd.Tag instance
      */
-    on(eventName: string, handler: Function): void;
+    on(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any): void;
     /**
      * Unsubscribe from an event.
      * @param {String} eventName - The event to unsubscribe from.
      * @param {Function} handler - The handler that was used to subscribe.
      * @return {Taggd.Tag} Current Taggd.Tag instance
      */
-    off(eventName: string, handler: Function): void;
+    off(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any): void;
     /**
      * Subscribe to an event and unsubscribe once triggered.
      * @param {String} eventName - The event to subscribe to.
      * @param {Function} handler - The handler to execute.
      * @return {Taggd.Tag} Current Taggd.Tag instance
      */
-    once(eventName: string, handler: Function): void;
+    once(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any): void;
     /**
      * Test whether the tag is hidden or not
      * @return {Boolean} A boolean indicating the tag’s state

@@ -1,6 +1,6 @@
 import Tag from './Tag';
 import EventEmitter from '../utils/event-emitter';
-import { IPointer, IDefaultOptions, ImageData } from '../types/index';
+import { IDefaultOptions, IPointer, IPosition, ImageData, IEventTaggd } from '../types/index';
 declare class Taggd extends EventEmitter {
     static DEFAULT_OPTIONS: IDefaultOptions;
     static Tag: typeof Tag;
@@ -33,21 +33,21 @@ declare class Taggd extends EventEmitter {
      * @param {Function} handler - The handler to execute.
      * @return {Taggd} Current Taggd instance
      */
-    on(eventName: string, handler: Function): void;
+    on(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any): void;
     /**
      * Unsubscribe from an event.
      * @param {String} eventName - The event to unsubscribe from.
      * @param {Function} handler - The handler that was used to subscribe.
      * @return {Taggd} Current Taggd instance
      */
-    off(eventName: string, handler: Function): void;
+    off(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any): void;
     /**
      * Subscribe to an event and unsubscribe once triggered.
      * @param {String} eventName - The event to subscribe to.
      * @param {Function} handler - The handler to execute.
      * @return {Taggd} Current Taggd instance
      */
-    once(eventName: string, handler: Function): void;
+    once(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any): void;
     /**
      * Set taggd options
      * @param {Object} options - The options to set
@@ -99,7 +99,7 @@ declare class Taggd extends EventEmitter {
      * @param {Function} callback - The callback to execute for all tags
      * @return {Taggd} Current Taggd instance
      */
-    map(callback: Function): this;
+    map(callback: (value: Tag, index: number, array: Tag[]) => any): this;
     /**
      * Clean up memory
      * @return {Taggd} Current Taggd instance

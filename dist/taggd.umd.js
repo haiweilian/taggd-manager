@@ -5,7 +5,7 @@
  * Copyright 2021 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2021-04-15T12:41:46.800Z
+ * Date: 2021-06-12T11:41:11.494Z
  */
 
 (function (global, factory) {
@@ -596,8 +596,8 @@
             }
             var isCanceled = !this.emit('taggd.tag.change', this);
             if (!isCanceled) {
-                var _a = this, wrapperElement = _a.wrapperElement, position = _a.position, Taggd = _a.Taggd;
-                var _b = Taggd.imageData, left = _b.left, top_1 = _b.top, ratio = _b.ratio;
+                var _a = this, wrapperElement = _a.wrapperElement, position = _a.position, Taggd_1 = _a.Taggd;
+                var _b = Taggd_1.imageData, left = _b.left, top_1 = _b.top, ratio = _b.ratio;
                 position.left = ratio * position.x + left;
                 position.top = ratio * position.y + top_1;
                 setStyle(wrapperElement, {
@@ -649,7 +649,7 @@
         Tag.prototype.enableEditorMode = function () {
             var isCanceled = !this.emit('taggd.tag.editor.enable', this);
             if (!isCanceled) {
-                addClass(this.buttonElement, 'taggd--grab');
+                this.buttonElement.classList.add('taggd--grab');
                 this.buttonElement.addEventListener('mousedown', (this.tagDownHander = this.tagDownHander.bind(this)));
                 document.addEventListener('mousemove', (this.tagMoveHander = this.tagMoveHander.bind(this)));
                 document.addEventListener('mouseup', (this.tagUpHander = this.tagUpHander.bind(this)));
@@ -663,7 +663,7 @@
         Tag.prototype.disableEditorMode = function () {
             var isCanceled = !this.emit('taggd.tag.editor.disable', this);
             if (!isCanceled) {
-                removeClass(this.buttonElement, 'taggd--grab');
+                this.buttonElement.classList.remove('taggd--grab');
                 this.buttonElement.removeEventListener('mousedown', this.tagDownHander);
                 document.removeEventListener('mousemove', this.tagMoveHander);
                 document.removeEventListener('mouseup', this.tagUpHander);
@@ -940,10 +940,8 @@
             _this.action = '';
             _this.wheeling = false;
             _this.setOptions(options);
-            // TODO: Subscriptions do not fire after instantiation 'taggd.editor.load'
-            setTimeout(function () {
-                _this.loadImage(data);
-            });
+            // Subscriptions do not fire after instantiation 'taggd.editor.load'
+            Promise.resolve().then(_this.loadImage(data));
             return _this;
         }
         /**
@@ -1149,7 +1147,6 @@
             if (!isFunction(callback)) {
                 throw new TypeError(TypeErrorMessage.getFunctionMessage(callback));
             }
-            // @ts-ignore
             this.tags = this.tags.map(callback);
             return this;
         };
@@ -1181,7 +1178,7 @@
         Taggd.prototype.enableEditorMode = function () {
             var isCanceled = !this.emit('taggd.editor.enable', this);
             if (!isCanceled) {
-                addClass(this.wrapper, 'taggd--pointer');
+                this.wrapper.classList.add('taggd--pointer');
                 this.image.addEventListener(this.options.addEvent, (this.taggdClickHandler = this.taggdClickHandler.bind(this)));
                 this.image.addEventListener('wheel', (this.taggdZoomHander = this.taggdZoomHander.bind(this)));
                 this.image.addEventListener('mousedown', (this.taggdDownHander = this.taggdDownHander.bind(this)));
@@ -1197,7 +1194,7 @@
         Taggd.prototype.disableEditorMode = function () {
             var isCanceled = !this.emit('taggd.editor.disable', this);
             if (!isCanceled) {
-                removeClass(this.wrapper, 'taggd--pointer');
+                this.wrapper.classList.remove('taggd--pointer');
                 this.image.removeEventListener(this.options.addEvent, this.taggdClickHandler);
                 this.image.removeEventListener('wheel', this.taggdZoomHander);
                 this.image.removeEventListener('mousedown', this.taggdDownHander);
