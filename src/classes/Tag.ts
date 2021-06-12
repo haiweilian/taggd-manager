@@ -1,8 +1,9 @@
+import Taggd from './Taggd'
 import TagEffect from './TagEffect'
 import EventEmitter from '../utils/event-emitter'
 import TypeErrorMessage from '../utils/type-error-message'
-import { isObject, isString, isFunction, isNumber, assign, setStyle, addClass, removeClass } from '../utils/utilities'
-import { IPosition, IPointer } from '../types/index'
+import { isObject, isString, isFunction, isNumber, assign, setStyle } from '../utils/utilities'
+import { IPosition, IPointer, IEventTag } from '../types/index'
 
 class Tag extends EventEmitter {
   public Taggd: any
@@ -63,7 +64,7 @@ class Tag extends EventEmitter {
    * @param {Function} handler - The handler to execute.
    * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  on(eventName: string, handler: Function) {
+  on(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any) {
     return super.on(eventName, handler)
   }
 
@@ -73,7 +74,7 @@ class Tag extends EventEmitter {
    * @param {Function} handler - The handler that was used to subscribe.
    * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  off(eventName: string, handler: Function) {
+  off(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any) {
     return super.off(eventName, handler)
   }
 
@@ -83,7 +84,7 @@ class Tag extends EventEmitter {
    * @param {Function} handler - The handler to execute.
    * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  once(eventName: string, handler: Function) {
+  once(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any) {
     return super.once(eventName, handler)
   }
 
@@ -234,7 +235,7 @@ class Tag extends EventEmitter {
     const isCanceled = !this.emit('taggd.tag.editor.enable', this)
 
     if (!isCanceled) {
-      addClass(this.buttonElement, 'taggd--grab')
+      this.buttonElement.classList.add('taggd--grab')
 
       this.buttonElement.addEventListener('mousedown', (this.tagDownHander = this.tagDownHander.bind(this)))
       document.addEventListener('mousemove', (this.tagMoveHander = this.tagMoveHander.bind(this)))
@@ -252,7 +253,7 @@ class Tag extends EventEmitter {
     const isCanceled = !this.emit('taggd.tag.editor.disable', this)
 
     if (!isCanceled) {
-      removeClass(this.buttonElement, 'taggd--grab')
+      this.buttonElement.classList.remove('taggd--grab')
 
       this.buttonElement.removeEventListener('mousedown', this.tagDownHander)
       document.removeEventListener('mousemove', this.tagMoveHander)

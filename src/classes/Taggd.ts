@@ -2,8 +2,8 @@ import Tag from './Tag'
 import TaggdEffect from './TaggdEffect'
 import EventEmitter from '../utils/event-emitter'
 import TypeErrorMessage from '../utils/type-error-message'
-import { ofInstance, isObject, isFunction, assign, addClass, removeClass } from '../utils/utilities'
-import { IPointer, IDefaultOptions, ImageData } from '../types/index'
+import { ofInstance, isObject, isFunction, assign } from '../utils/utilities'
+import { IDefaultOptions, IPointer, IPosition, ImageData, IEventTaggd } from '../types/index'
 
 class Taggd extends EventEmitter {
   static DEFAULT_OPTIONS: IDefaultOptions
@@ -59,10 +59,8 @@ class Taggd extends EventEmitter {
 
     this.setOptions(options)
 
-    // TODO: Subscriptions do not fire after instantiation 'taggd.editor.load'
-    setTimeout(() => {
-      this.loadImage(data)
-    })
+    // Subscriptions do not fire after instantiation 'taggd.editor.load'
+    Promise.resolve().then(this.loadImage(data))
   }
 
   /**
@@ -71,7 +69,7 @@ class Taggd extends EventEmitter {
    * @param {Function} handler - The handler to execute.
    * @return {Taggd} Current Taggd instance
    */
-  on(eventName: string, handler: Function) {
+  on(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any) {
     return super.on(eventName, handler)
   }
 
@@ -81,7 +79,7 @@ class Taggd extends EventEmitter {
    * @param {Function} handler - The handler that was used to subscribe.
    * @return {Taggd} Current Taggd instance
    */
-  off(eventName: string, handler: Function) {
+  off(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any) {
     return super.off(eventName, handler)
   }
 
@@ -91,7 +89,7 @@ class Taggd extends EventEmitter {
    * @param {Function} handler - The handler to execute.
    * @return {Taggd} Current Taggd instance
    */
-  once(eventName: string, handler: Function) {
+  once(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any) {
     return super.once(eventName, handler)
   }
 
@@ -289,12 +287,11 @@ class Taggd extends EventEmitter {
    * @param {Function} callback - The callback to execute for all tags
    * @return {Taggd} Current Taggd instance
    */
-  map(callback: Function) {
+  map(callback: (value: Tag, index: number, array: Tag[]) => any) {
     if (!isFunction(callback)) {
       throw new TypeError(TypeErrorMessage.getFunctionMessage(callback))
     }
 
-    // @ts-ignore
     this.tags = this.tags.map(callback)
 
     return this
@@ -334,7 +331,7 @@ class Taggd extends EventEmitter {
     const isCanceled = !this.emit('taggd.editor.enable', this)
 
     if (!isCanceled) {
-      addClass(this.wrapper, 'taggd--pointer')
+      this.wrapper.classList.add('taggd--pointer')
 
       this.image.addEventListener(this.options.addEvent, (this.taggdClickHandler = this.taggdClickHandler.bind(this)))
       this.image.addEventListener('wheel', (this.taggdZoomHander = this.taggdZoomHander.bind(this)))
@@ -354,7 +351,7 @@ class Taggd extends EventEmitter {
     const isCanceled = !this.emit('taggd.editor.disable', this)
 
     if (!isCanceled) {
-      removeClass(this.wrapper, 'taggd--pointer')
+      this.wrapper.classList.remove('taggd--pointer')
 
       this.image.removeEventListener(this.options.addEvent, this.taggdClickHandler)
       this.image.removeEventListener('wheel', this.taggdZoomHander)
