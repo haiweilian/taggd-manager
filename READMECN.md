@@ -59,7 +59,7 @@ const taggd = new Taggd(image, options, tags);
 
 ## Issue
 
-如果您有更好的建议，请 [create an issue](https://github.com/haiweilian/taggd-manager/issues)
+If you have a better suggestion, please [create an issue](https://github.com/haiweilian/taggd-manager/issues)
 
 ## License
 
