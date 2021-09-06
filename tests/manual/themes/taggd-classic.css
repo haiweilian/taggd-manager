@@ -13,6 +13,20 @@
   background-color: rgb(219, 50, 92);
 }
 
+.taggd__button.taggd__button--1 {
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.75);
+  background-image: url('../images/1.png');
+  background-size: contain;
+}
+
+.taggd__button.taggd__button--2 {
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.75);
+  background-image: url('../images/2.png');
+  background-size: contain;
+}
+
 .taggd__popup {
   position: absolute;
   top: 125%;

@@ -2,6 +2,8 @@ import Taggd from '../../dist/index'
 
 Taggd.DEFAULT_OPTIONS
 
+Taggd.Tag.createFromObject
+
 const image = document.getElementById('image') as HTMLImageElement
 
 const taggd = new Taggd(image, {}, [])
