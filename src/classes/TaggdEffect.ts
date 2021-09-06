@@ -105,6 +105,8 @@ const TaggdEffect: ThisType<Taggd> = {
    * @return {Taggd} Current Taggd instance
    */
   taggdZoomHander(event: WheelEvent) {
+    event.preventDefault()
+
     if (this.wheeling) {
       return
     }
@@ -114,8 +116,6 @@ const TaggdEffect: ThisType<Taggd> = {
     setTimeout(() => {
       this.wheeling = false
     }, 50)
-
-    event.preventDefault()
 
     const { options, image, imageData } = this
     const { width, height, naturalWidth, naturalHeight } = imageData
