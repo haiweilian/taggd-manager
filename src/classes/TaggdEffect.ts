@@ -206,6 +206,17 @@ const TaggdEffect: ThisType<Taggd> = {
 
     event.preventDefault()
 
+    // If it is not visible, restore to the last starting position.
+    const { imageData, wrapper, pointer } = this
+    const l = Math.abs(imageData.left) >= (imageData.left >= 0 ? wrapper.offsetWidth : imageData.width)
+    const t = Math.abs(imageData.top) >= (imageData.top >= 0 ? wrapper.offsetHeight : imageData.height)
+
+    if (l || t) {
+      imageData.left = pointer.elX
+      imageData.top = pointer.elY
+      this.taggdChangeRender()
+    }
+
     removeClass(this.wrapper, 'taggd--grabbing')
 
     this.action = ''
