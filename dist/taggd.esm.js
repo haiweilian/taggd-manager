@@ -1,11 +1,11 @@
 /*!
- * taggd-manager v1.0.0
+ * taggd-manager v1.1.0
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2021 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2021-06-12T11:41:11.494Z
+ * Date: 2021-09-06T14:47:11.538Z
  */
 
 /*! *****************************************************************************
@@ -826,6 +826,7 @@ var TaggdEffect = {
      */
     taggdZoomHander: function (event) {
         var _this = this;
+        event.preventDefault();
         if (this.wheeling) {
             return;
         }
@@ -833,7 +834,6 @@ var TaggdEffect = {
         setTimeout(function () {
             _this.wheeling = false;
         }, 50);
-        event.preventDefault();
         var _a = this, options = _a.options, image = _a.image, imageData = _a.imageData;
         var width = imageData.width, height = imageData.height, naturalWidth = imageData.naturalWidth, naturalHeight = imageData.naturalHeight;
         var ratio = getWheelRatio(event, options.zoomRatio);
@@ -896,6 +896,15 @@ var TaggdEffect = {
             return;
         }
         event.preventDefault();
+        // If it is not visible, restore to the last starting position.
+        var _a = this, imageData = _a.imageData, wrapper = _a.wrapper, pointer = _a.pointer;
+        var l = Math.abs(imageData.left) >= (imageData.left >= 0 ? wrapper.offsetWidth : imageData.width);
+        var t = Math.abs(imageData.top) >= (imageData.top >= 0 ? wrapper.offsetHeight : imageData.height);
+        if (l || t) {
+            imageData.left = pointer.elX;
+            imageData.top = pointer.elY;
+            this.taggdChangeRender();
+        }
         removeClass(this.wrapper, 'taggd--grabbing');
         this.action = '';
         this.emit('taggd.editor.moveup', this);

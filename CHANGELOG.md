@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/haiweilian/taggd-manager/compare/v1.1.0...v1.1.1) (2021-09-06)
+
+
+### Bug Fixes
+
+* fix scroll while zooming ([19403c8](https://github.com/haiweilian/taggd-manager/commit/19403c8637f450b2d75781f9e2716a71f1f119f8)), closes [#14](https://github.com/haiweilian/taggd-manager/issues/14)
+* invisible reset position ([aaaa321](https://github.com/haiweilian/taggd-manager/commit/aaaa32186097f0e0c0d8e82feed326945bea3aeb)), closes [#13](https://github.com/haiweilian/taggd-manager/issues/13)
+
 ## [1.1.0](https://github.com/haiweilian/taggd-manager/compare/v1.0.0...v1.1.0) (2021-06-12)
 
 
