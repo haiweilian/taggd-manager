@@ -12,6 +12,7 @@ const TagEffect: ThisType<Tag> = {
 
     addClass(this.buttonElement, 'taggd--grabbing')
 
+    this.move = false
     this.action = 'move'
     this.pointer = {
       ...getPointer(event),
@@ -47,6 +48,7 @@ const TagEffect: ThisType<Tag> = {
     position.x = Math.min(Math.max(0, x), naturalWidth)
     position.y = Math.min(Math.max(0, y), naturalHeight)
 
+    this.move = true
     this.setPosition()
     this.emit('taggd.tag.editor.move', this)
 
@@ -68,7 +70,7 @@ const TagEffect: ThisType<Tag> = {
     removeClass(this.buttonElement, 'taggd--grabbing')
 
     this.action = ''
-    this.emit('taggd.tag.editor.moveup', this)
+    this.move && this.emit('taggd.tag.editor.moveup', this)
 
     return this
   },

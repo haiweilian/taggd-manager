@@ -47,6 +47,10 @@
         console.log(event)
       })
 
+      taggd.on('taggd.tag.click',function (taggd, tag) {
+        console.log(taggd, tag)
+      })
+
       taggd.on('taggd.editor.add', function (taggd, position) {
         var tag = new Taggd.Tag(position, `x${position.x}-y${position.y}`).enableEditorMode()
         data.push(tag)
