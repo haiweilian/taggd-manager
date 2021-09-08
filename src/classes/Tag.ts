@@ -18,6 +18,7 @@ class Tag extends EventEmitter {
   position: IPosition
   pointer: IPointer
   action: string
+  move: boolean
 
   /**
    * Create a new Tag instance
@@ -38,7 +39,7 @@ class Tag extends EventEmitter {
     this.wrapperElement = document.createElement('div')
     this.wrapperElement.classList.add('taggd__wrapper')
 
-    this.buttonElement = document.createElement('button')
+    this.buttonElement = document.createElement('span')
     this.buttonElement.classList.add('taggd__button')
 
     this.popupElement = document.createElement('span')
@@ -51,6 +52,7 @@ class Tag extends EventEmitter {
     this.position = position as IPosition
     this.pointer = {} as IPointer
     this.action = ''
+    this.move = false
 
     this.setButtonAttributes(buttonAttributes)
     this.setPopupAttributes(popupAttributes)
@@ -122,6 +124,16 @@ class Tag extends EventEmitter {
       this.popupElement.style.display = 'none'
       this.emit('taggd.tag.hidden', this)
     }
+
+    return this
+  }
+
+  /**
+   * Click the tag
+   * @return {Taggd.Tag} Current Taggd.Tag instance
+   */
+  click() {
+    this.emit('taggd.tag.click', this)
 
     return this
   }

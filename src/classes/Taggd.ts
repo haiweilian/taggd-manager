@@ -26,6 +26,7 @@ class Taggd extends EventEmitter {
   pointer: IPointer
   action: string
   wheeling: boolean
+  move: boolean
 
   /**
    * Create a new taggd instance
@@ -56,6 +57,7 @@ class Taggd extends EventEmitter {
     this.pointer = {} as IPointer
     this.action = ''
     this.wheeling = false
+    this.move = false
 
     this.setOptions(options)
 
@@ -176,6 +178,18 @@ class Taggd extends EventEmitter {
           tag.popupElement.addEventListener('mouseleave', () => tag.hide())
         }
       }
+
+      // Add events to click tags
+      // If a move occurs, click will not be triggered
+      tag.buttonElement.addEventListener('click', (e) => {
+        if (!isTargetButton(e)) return
+
+        if (tag.move) {
+          tag.move = false
+        } else {
+          tag.click()
+        }
+      })
 
       // Route all tag events through taggd instance
       tag.onAnything((eventName: string, ...args: any) => {

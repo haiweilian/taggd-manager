@@ -43,12 +43,12 @@ All `taggd.tag*` event handlers receive the following arguments:
 | `taggd.editor.load`         | before load image                    | no                                  |
 | `taggd.editor.loaded`       | after load image                     | no                                  |
 | `taggd.editor.loaderror`    | after error image                    | no                                  |
-| `taggd.editor.add`          | after click image                    | no                                  |
+| `taggd.editor.add`          | after click image(no move trigger)   | no                                  |
 | `taggd.editor.zoom`         | after zoom image                     | no                                  |
 | `taggd.editor.movedown`     | after movedown image                 | no                                  |
 | `taggd.editor.move`         | after move image                     | no                                  |
 | `taggd.editor.moveup`       | after moveup image                   | no                                  |
-| `taggd.tag.add`             | before adding a tag                  | yes                                 |
+| `taggd.tag.add`             | before adding a tag(move trigger)    | yes                                 |
 | `taggd.tag.added`           | after adding a tag                   | no                                  |
 | `taggd.tag.delete`          | before deleting a tag                | yes                                 |
 | `taggd.tag.deleted`         | after deleting a tag                 | no                                  |
@@ -58,11 +58,12 @@ All `taggd.tag*` event handlers receive the following arguments:
 | `taggd.tag.hidden`          | after hiding a tag                   | no                                  |
 | `taggd.tag.change`          | before changing a tag                | yes                                 |
 | `taggd.tag.changed`         | after changing a tag                 | no                                  |
+| `taggd.tag.click`           | after click a tag(no move trigger)   | no                                  |
 | `taggd.tag.editor.enable`   | before enable editor mode            | yes                                 |
 | `taggd.tag.editor.disable`  | before disabling editor mode         | yes                                 |
 | `taggd.tag.editor.movedown` | after movedown a tag                 | no                                  |
 | `taggd.tag.editor.move`     | after move a tag                     | no                                  |
-| `taggd.tag.editor.moveup`   | after moveup a tag                   | no                                  |
+| `taggd.tag.editor.moveup`   | after moveup a tag(move trigger)     | no                                  |
 
 ## Tag Events
 
@@ -82,8 +83,9 @@ All `taggd.tag.*` event handlers receive the following argument:
 | `taggd.tag.hidden`          | after hiding a tag                   | no                                  |
 | `taggd.tag.change`          | before changing a tag                | yes                                 |
 | `taggd.tag.changed`         | after changing a tag                 | no                                  |
+| `taggd.tag.click`           | after click a tag(no move trigger)   | no                                  |
 | `taggd.tag.editor.enable`   | before enable editor mode            | yes                                 |
 | `taggd.tag.editor.disable`  | before disabling editor mode         | yes                                 |
 | `taggd.tag.editor.movedown` | after movedown a tag                 | no                                  |
 | `taggd.tag.editor.move`     | after move a tag                     | no                                  |
-| `taggd.tag.editor.moveup`   | after moveup a tag                   | no                                  |
+| `taggd.tag.editor.moveup`   | after moveup a tag(move trigger)     | no                                  |

@@ -86,6 +86,13 @@ const TaggdEffect: ThisType<Taggd> = {
    * @return {Taggd} Current Taggd instance
    */
   taggdClickHandler(event: MouseEvent) {
+    if (this.move) {
+      this.move = false
+      if (this.options.addEvent === 'click') {
+        return this
+      }
+    }
+
     const { imageData } = this
     const offset = getOffset(this.image)
 
@@ -157,6 +164,7 @@ const TaggdEffect: ThisType<Taggd> = {
 
     addClass(this.wrapper, 'taggd--grabbing')
 
+    this.move = false
     this.action = 'move'
     this.pointer = {
       ...getPointer(event),
@@ -187,8 +195,8 @@ const TaggdEffect: ThisType<Taggd> = {
     imageData.left = pointer.elX + (endX - pointer.startX)
     imageData.top = pointer.elY + (endY - pointer.startY)
 
+    this.move = true
     this.taggdChangeRender()
-
     this.emit('taggd.editor.move', this)
 
     return this
@@ -220,7 +228,7 @@ const TaggdEffect: ThisType<Taggd> = {
     removeClass(this.wrapper, 'taggd--grabbing')
 
     this.action = ''
-    this.emit('taggd.editor.moveup', this)
+    this.move && this.emit('taggd.editor.moveup', this)
 
     return this
   },
