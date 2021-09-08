@@ -1,7 +1,7 @@
 {
   "name": "taggd-manager",
   "space": "Taggd",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Is an image tag management tool that supports zooming, moving, and flexible customization.",
   "main": "dist/taggd.umd.js",
   "module": "dist/taggd.esm.js",

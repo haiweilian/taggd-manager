@@ -15,20 +15,6 @@
   background: #eee;
 }
 
-.taggd--pointer {
-  cursor: pointer;
-}
-
-.taggd--grab {
-  cursor: -webkit-grab;
-  cursor: grab;
-}
-
-.taggd--grabbing {
-  cursor: -webkit-grabbing;
-  cursor: grabbing;
-}
-
 .taggd--loading {
   pointer-events: none;
 }

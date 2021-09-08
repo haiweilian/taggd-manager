@@ -13,6 +13,7 @@ declare class Tag extends EventEmitter {
     position: IPosition;
     pointer: IPointer;
     action: string;
+    move: boolean;
     /**
      * Create a new Tag instance
      * @param {{ x: Number, y: Number }} position - The tag’s coordinates
@@ -57,6 +58,11 @@ declare class Tag extends EventEmitter {
      * @return {Taggd.Tag} Current Taggd.Tag instance
      */
     hide(): this;
+    /**
+     * Click the tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
+     */
+    click(): this;
     /**
      * Set the tag’s text
      * @param {String|Function} text - The tag’s content

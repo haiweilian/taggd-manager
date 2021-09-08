@@ -20,6 +20,7 @@ declare class Taggd extends EventEmitter {
     pointer: IPointer;
     action: string;
     wheeling: boolean;
+    move: boolean;
     /**
      * Create a new taggd instance
      * @param {HTMLElement} image - The image to wrap

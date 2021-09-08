@@ -1,11 +1,11 @@
 /*!
- * taggd-manager v1.1.0
+ * taggd-manager v1.1.1
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2021 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2021-09-06T14:47:11.538Z
+ * Date: 2021-09-08T16:02:48.261Z
  */
 
 /*! *****************************************************************************
@@ -269,6 +269,7 @@ var TagEffect = {
     tagDownHander: function (event) {
         event.preventDefault();
         addClass(this.buttonElement, 'taggd--grabbing');
+        this.move = false;
         this.action = 'move';
         this.pointer = __assign(__assign({}, getPointer(event)), { elX: this.position.left, elY: this.position.top });
         this.emit('taggd.tag.editor.movedown', this);
@@ -292,6 +293,7 @@ var TagEffect = {
         var y = (pointer.elY + (endY - pointer.startY) - top) / ratio;
         position.x = Math.min(Math.max(0, x), naturalWidth);
         position.y = Math.min(Math.max(0, y), naturalHeight);
+        this.move = true;
         this.setPosition();
         this.emit('taggd.tag.editor.move', this);
         return this;
@@ -308,7 +310,7 @@ var TagEffect = {
         event.preventDefault();
         removeClass(this.buttonElement, 'taggd--grabbing');
         this.action = '';
-        this.emit('taggd.tag.editor.moveup', this);
+        this.move && this.emit('taggd.tag.editor.moveup', this);
         return this;
     },
 };
@@ -477,7 +479,7 @@ var Tag = /** @class */ (function (_super) {
         _this = _super.call(this) || this;
         _this.wrapperElement = document.createElement('div');
         _this.wrapperElement.classList.add('taggd__wrapper');
-        _this.buttonElement = document.createElement('button');
+        _this.buttonElement = document.createElement('span');
         _this.buttonElement.classList.add('taggd__button');
         _this.popupElement = document.createElement('span');
         _this.popupElement.classList.add('taggd__popup');
@@ -487,6 +489,7 @@ var Tag = /** @class */ (function (_super) {
         _this.position = position;
         _this.pointer = {};
         _this.action = '';
+        _this.move = false;
         _this.setButtonAttributes(buttonAttributes);
         _this.setPopupAttributes(popupAttributes);
         _this.setText(text);
@@ -549,6 +552,14 @@ var Tag = /** @class */ (function (_super) {
             this.popupElement.style.display = 'none';
             this.emit('taggd.tag.hidden', this);
         }
+        return this;
+    };
+    /**
+     * Click the tag
+     * @return {Taggd.Tag} Current Taggd.Tag instance
+     */
+    Tag.prototype.click = function () {
+        this.emit('taggd.tag.click', this);
         return this;
     };
     /**
@@ -810,6 +821,12 @@ var TaggdEffect = {
      * @return {Taggd} Current Taggd instance
      */
     taggdClickHandler: function (event) {
+        if (this.move) {
+            this.move = false;
+            if (this.options.addEvent === 'click') {
+                return this;
+            }
+        }
         var imageData = this.imageData;
         var offset = getOffset(this.image);
         var position = {
@@ -863,6 +880,7 @@ var TaggdEffect = {
     taggdDownHander: function (event) {
         event.preventDefault();
         addClass(this.wrapper, 'taggd--grabbing');
+        this.move = false;
         this.action = 'move';
         this.pointer = __assign(__assign({}, getPointer(event)), { elX: this.imageData.left, elY: this.imageData.top });
         this.emit('taggd.editor.movedown', this);
@@ -882,6 +900,7 @@ var TaggdEffect = {
         var _b = getPointer(event), endX = _b.endX, endY = _b.endY;
         imageData.left = pointer.elX + (endX - pointer.startX);
         imageData.top = pointer.elY + (endY - pointer.startY);
+        this.move = true;
         this.taggdChangeRender();
         this.emit('taggd.editor.move', this);
         return this;
@@ -907,7 +926,7 @@ var TaggdEffect = {
         }
         removeClass(this.wrapper, 'taggd--grabbing');
         this.action = '';
-        this.emit('taggd.editor.moveup', this);
+        this.move && this.emit('taggd.editor.moveup', this);
         return this;
     },
 };
@@ -942,6 +961,7 @@ var Taggd = /** @class */ (function (_super) {
         _this.pointer = {};
         _this.action = '';
         _this.wheeling = false;
+        _this.move = false;
         _this.setOptions(options);
         // Subscriptions do not fire after instantiation 'taggd.editor.load'
         Promise.resolve().then(_this.loadImage(data));
@@ -1052,6 +1072,18 @@ var Taggd = /** @class */ (function (_super) {
                     tag.popupElement.addEventListener('mouseleave', function () { return tag.hide(); });
                 }
             }
+            // Add events to click tags
+            // If a move occurs, click will not be triggered
+            tag.buttonElement.addEventListener('click', function (e) {
+                if (!isTargetButton(e))
+                    return;
+                if (tag.move) {
+                    tag.move = false;
+                }
+                else {
+                    tag.click();
+                }
+            });
             // Route all tag events through taggd instance
             tag.onAnything(function (eventName) {
                 var args = [];
