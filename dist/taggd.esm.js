@@ -1,11 +1,11 @@
 /*!
- * taggd-manager v1.1.1
+ * taggd-manager v1.1.2
  * https://github.com/haiweilian/taggd-manager#readme
  *
  * Copyright 2021 haiweilian@foxmail.com
  * Released under the MIT license
  *
- * Date: 2021-09-08T16:02:48.261Z
+ * Date: 2021-11-03T09:20:22.158Z
  */
 
 /*! *****************************************************************************
