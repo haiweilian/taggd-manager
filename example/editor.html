@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editor</title>
+    <link rel="stylesheet" href="./lib/taggd.css" />
+    <style>
+      .header {
+        margin: 8px;
+        text-align: center;
+      }
+
+      .container {
+        width: 1000px;
+        height: 300px;
+        margin: 0 auto;
+      }
+
+      .taggd__button {
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        margin-top: -0.5rem;
+        margin-left: -0.5rem;
+        background-color: rgba(219, 50, 92, 0.75);
+        border-radius: 0.5rem;
+      }
+
+      .taggd__button:hover {
+        z-index: 10;
+        background-color: rgb(219, 50, 92);
+      }
+
+      .taggd__button.taggd__button--1 {
+        z-index: 10;
+        background-color: transparent;
+        background-image: url('./assets/loc1.png');
+        background-size: contain;
+      }
+
+      .taggd__button.taggd__button--2 {
+        z-index: 10;
+        background-color: transparent;
+        background-image: url('./assets/loc2.png');
+        background-size: contain;
+      }
+
+      .taggd__popup {
+        position: absolute;
+        top: 125%;
+        left: 50%;
+        display: block;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        background-color: rgba(219, 50, 92, 0.75);
+        transform: translateX(-50%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <label><input type="checkbox" checked id="action-taggd" />Taggd Editor</label>
+      <label><input type="checkbox" checked id="action-taggd-tag" />Tag Editor</label>
+      <button id="action-data">Get Data</button>
+      <button id="action-destroy">Destroy</button>
+      <a href="https://github.com/haiweilian/taggd-manager/tree/master/docs/public/example/editor.html" target="_blank">
+        View Source Code
+      </a>
+    </div>
+    <main class="container">
+      <img src="./assets/1024x512.jpg" alt="" id="image" />
+    </main>
+    <pre id="output"></pre>
+    <script src="./lib/taggd.umd.js"></script>
+    <script>
+      var image = document.getElementById('image')
+
+      var data = [
+        new Taggd.Tag({ x: 200, y: 200 }).enableEditorMode(),
+        new Taggd.Tag({ x: 600, y: 300 }).enableEditorMode(),
+        new Taggd.Tag({ x: 300, y: 400 }, '蕾姆是最好的女孩').enableEditorMode(),
+        new Taggd.Tag({ x: 400, y: 300 }, '蕾姆是最好的女孩').disableEditorMode(),
+      ]
+      var taggd = new Taggd(image, {}, data).enableEditorMode()
+
+      taggd.on('*', function (event) {
+        console.log('DEBUG:', event)
+      })
+
+      taggd.on('taggd.tag.click', function (taggd, tag) {
+        console.log('taggd.tag.click:', taggd, tag)
+      })
+
+      taggd.on('taggd.editor.add', function (taggd, position) {
+        // var tag = new Taggd.Tag(position, `x${position.x}-y${position.y}`).enableEditorMode()
+        var tag = new Taggd.Tag.createFromObject({
+          position,
+          text: `x${position.x}-y${position.y}`,
+          buttonAttributes: {
+            class: `taggd__button--${data.length % 2 ? 1 : 2}`,
+          },
+        }).enableEditorMode()
+        data.push(tag)
+        taggd.addTag(tag)
+      })
+
+      document.getElementById('action-data').addEventListener('click', function () {
+        document.getElementById('output').innerHTML = JSON.stringify(taggd.getTags(), null, 2)
+      })
+
+      document.getElementById('action-destroy').addEventListener('click', function () {
+        taggd.destroy()
+      })
+
+      document.getElementById('action-taggd').addEventListener('change', function (event) {
+        if(event.target.checked) {
+          taggd.enableEditorMode()
+        } else {
+          taggd.disableEditorMode()
+        }
+      })
+
+      document.getElementById('action-taggd-tag').addEventListener('change', function (event) {
+        if(event.target.checked) {
+          data.forEach(tag => tag.enableEditorMode())
+        } else {
+          data.forEach(tag => tag.disableEditorMode())
+        }
+      })
+    </script>
+  </body>
+</html>
