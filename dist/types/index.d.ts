@@ -17,7 +17,7 @@ export declare enum EventTag {
     'taggd.tag.editor.move' = "taggd.tag.editor.move",
     'taggd.tag.editor.moveup' = "taggd.tag.editor.moveup"
 }
-export declare type IEventTag = keyof typeof EventTag;
+export type IEventTag = keyof typeof EventTag;
 /**
  * Taggd Events
  */
@@ -50,7 +50,7 @@ export declare enum EventTaggd {
     'taggd.tag.editor.move' = "taggd.tag.editor.move",
     'taggd.tag.editor.moveup' = "taggd.tag.editor.moveup"
 }
-export declare type IEventTaggd = keyof typeof EventTaggd;
+export type IEventTaggd = keyof typeof EventTaggd;
 /**
  * IOffset
  */

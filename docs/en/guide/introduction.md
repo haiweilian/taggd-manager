@@ -1,14 +1,4 @@
-![shields](https://img.shields.io/npm/l/taggd-manager)
-![shields](https://img.shields.io/npm/v/taggd-manager)
-![shields](https://img.shields.io/npm/dm/taggd-manager)
-
-![Example](https://github.com/haiweilian/taggd-manager/raw/master/docs/public/example.gif)
-
-## taggd-manager
-
-[English](https://haiweilian.github.io/taggd-manager/guide/introduction.html)
-
-[中文文档](https://haiweilian.github.io/taggd-manager/zh/guide/introduction.html)
+# Intro
 
 `taggd-manager` Is an image tag management tool that supports zooming, moving, and flexible customization.
 
@@ -48,11 +38,3 @@ const tags = [];
 
 const taggd = new Taggd(image, options, tags);
 ```
-
-## Issue
-
-If you have a better suggestion, please [create an issue](https://github.com/haiweilian/taggd-manager/issues)
-
-## License
-
-The code is released under [the MIT license](https://github.com/haiweilian/taggd-manager/blob/master/LICENSE)

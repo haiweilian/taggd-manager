@@ -1,12 +1,12 @@
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import createBanner from 'create-banner'
-import pkg from './package.json'
+import { defineConfig } from 'rollup'
+import copy from 'rollup-plugin-copy'
+import pkg from './package.json' assert { type: 'json' }
 
 const banner = createBanner()
 
-export default [
+export default defineConfig([
   {
     input: 'src/index.ts',
     output: {
@@ -16,10 +16,8 @@ export default [
       format: 'umd',
     },
     plugins: [
-      resolve(),
-      commonjs(),
       typescript({
-        tsconfig: './tsconfig.json',
+        tsconfig: './tsconfig.build.json',
       }),
     ],
   },
@@ -32,11 +30,15 @@ export default [
       format: 'esm',
     },
     plugins: [
-      resolve(),
-      commonjs(),
       typescript({
-        tsconfig: './tsconfig.json',
+        tsconfig: './tsconfig.build.json',
+      }),
+      copy({
+        targets: [
+          { src: 'src/*.css', dest: 'dist' },
+          { src: 'dist/*.(js|css)', dest: 'docs/public/example/lib' },
+        ],
       }),
     ],
   },
-]
+])

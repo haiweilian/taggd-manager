@@ -1,9 +1,9 @@
-import Taggd from './Taggd'
-import TagEffect from './TagEffect'
+import { IPosition, IPointer, IEventTag } from '../types/index'
 import EventEmitter from '../utils/event-emitter'
 import TypeErrorMessage from '../utils/type-error-message'
 import { isObject, isString, isFunction, isNumber, assign, setStyle } from '../utils/utilities'
-import { IPosition, IPointer, IEventTag } from '../types/index'
+import TagEffect from './TagEffect'
+import Taggd from './Taggd'
 
 class Tag extends EventEmitter {
   public Taggd: any
@@ -27,7 +27,12 @@ class Tag extends EventEmitter {
    * @param {Object} [buttonAttributes = {}] - The button’s attributes
    * @param {Object} [popupAttributes = {}] - The popup’s attributes
    */
-  constructor(position: Pick<IPosition, 'x' | 'y'>, text: string | Function = '', buttonAttributes = {}, popupAttributes = {}) {
+  constructor(
+    position: Pick<IPosition, 'x' | 'y'>,
+    text: string | Function = '',
+    buttonAttributes = {},
+    popupAttributes = {}
+  ) {
     if (!isObject(position)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(position))
     } else if (!('x' in position) || !('y' in position)) {
