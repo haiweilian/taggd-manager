@@ -8,6 +8,9 @@ export default defineConfig({
   base: '/taggd-manager/',
   title: 'Taggd Manager',
   description: 'Image tags tool, supporting movement, scaling, and custom events',
+  route: {
+    exclude: ['public/**'],
+  },
   locales: [
     {
       lang: 'en',

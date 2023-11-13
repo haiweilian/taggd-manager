@@ -10,9 +10,7 @@
 | [buttonAttributes] | <code>Object</code> | <code>{}</code> | <p>button 自定义属性</p> |
 | [popupAttributes] | <code>Object</code> | <code>{}</code> | <p>popup 自定义属性</p> |
 
-<a name="Tag+on"></a>
-
-### tag.on(eventName, handler) ⇒ <code>Taggd.Tag</code>
+### tag.on(eventName, handler)
 <p>订阅事件</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
@@ -23,9 +21,7 @@
 | eventName | <code>String</code> | <p>事件名称</p> |
 | handler | <code>function</code> | <p>事件回调</p> |
 
-<a name="Tag+off"></a>
-
-### tag.off(eventName, handler) ⇒ <code>Taggd.Tag</code>
+### tag.off(eventName, handler)
 <p>取消订阅事件</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
@@ -36,9 +32,7 @@
 | eventName | <code>String</code> | <p>事件名称</p> |
 | handler | <code>function</code> | <p>事件回调</p> |
 
-<a name="Tag+once"></a>
-
-### tag.once(eventName, handler) ⇒ <code>Taggd.Tag</code>
+### tag.once(eventName, handler)
 <p>触发一次订阅后，立即取消订阅</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
@@ -49,30 +43,25 @@
 | eventName | <code>String</code> | <p>事件名称</p> |
 | handler | <code>function</code> | <p>事件回调</p> |
 
-<a name="Tag+isHidden"></a>
-
-### tag.isHidden() ⇒ <code>Boolean</code>
+### tag.isHidden()
 <p>当前 tag 是否隐藏</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 **Returns**: <code>Boolean</code> - <p>true/false</p>  
-<a name="Tag+show"></a>
 
-### tag.show() ⇒ <code>Taggd.Tag</code>
+### tag.show()
 <p>显示 tag 内容</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 **Returns**: <code>Taggd.Tag</code> - <p>当前 Tag 实例</p>  
-<a name="Tag+hide"></a>
 
-### tag.hide() ⇒ <code>Taggd.Tag</code>
+### tag.hide()
 <p>隐藏 tag 内容</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 **Returns**: <code>Taggd.Tag</code> - <p>当前 Tag 实例</p>  
-<a name="Tag+setText"></a>
 
-### tag.setText(text) ⇒ <code>Taggd.Tag</code>
+### tag.setText(text)
 <p>设置 tag 内容</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
@@ -82,9 +71,7 @@
 | --- | --- | --- |
 | text | <code>String</code> \| <code>function</code> | <p>tag 内容，如果是一个函数使用当前函数执行的结果</p> |
 
-<a name="Tag+setPosition"></a>
-
-### tag.setPosition(x, y) ⇒ <code>Taggd.Tag</code>
+### tag.setPosition(x, y)
 <p>设置 tag 坐标位置</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
@@ -95,9 +82,7 @@
 | x | <code>Number</code> | <p>x 坐标</p> |
 | y | <code>Number</code> | <p>y 坐标</p> |
 
-<a name="Tag+setButtonAttributes"></a>
-
-### tag.setButtonAttributes(atttributes) ⇒ <code>Taggd.Tag</code>
+### tag.setButtonAttributes(atttributes)
 <p>设置 button 属性</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
@@ -107,9 +92,7 @@
 | --- | --- | --- |
 | atttributes | <code>Object</code> | <p>= {} - 属性信息</p> |
 
-<a name="Tag+setPopupAttributes"></a>
-
-### tag.setPopupAttributes(atttributes) ⇒ <code>Taggd.Tag</code>
+### tag.setPopupAttributes(atttributes)
 <p>设置 popup 属性</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
@@ -119,30 +102,25 @@
 | --- | --- | --- |
 | atttributes | <code>Object</code> | <p>= {} - 属性信息</p> |
 
-<a name="Tag+enableEditorMode"></a>
-
-### tag.enableEditorMode() ⇒ <code>Taggd.Tag</code>
+### tag.enableEditorMode()
 <p>启用编辑模式，可移动、切换状态</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 **Returns**: <code>Taggd.Tag</code> - <p>当前 Tag 实例</p>  
-<a name="Tag+disableEditorMode"></a>
 
-### tag.disableEditorMode() ⇒ <code>Taggd.Tag</code>
+### tag.disableEditorMode()
 <p>禁用编辑模式</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 **Returns**: <code>Taggd.Tag</code> - <p>当前 Tag 实例</p>  
-<a name="Tag+toJSON"></a>
 
-### tag.toJSON() ⇒ <code>Object</code>
+### tag.toJSON()
 <p>获取 tag 信息</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 **Returns**: <code>Object</code> - <p>JSON 对象</p>  
-<a name="Tag.setElementAttributes"></a>
 
-### Tag.setElementAttributes(element, [attributes]) ⇒ <code>DomNode</code>
+### Tag.setElementAttributes(element, [attributes])
 <p>静态方法-设置元素属性</p>
 
 **Kind**: static method of [<code>Tag</code>](#Tag)  
@@ -153,9 +131,7 @@
 | element | <code>DomNode</code> |  | <p>元素</p> |
 | [attributes] | <code>Object</code> | <code>{}</code> | <p>属性对象</p> |
 
-<a name="Tag.getPositionStyle"></a>
-
-### Tag.getPositionStyle(x, y) ⇒ <code>Object</code>
+### Tag.getPositionStyle(x, y)
 <p>Get the position style</p>
 
 **Kind**: static method of [<code>Tag</code>](#Tag)  
@@ -166,9 +142,7 @@
 | x | <code>Number</code> | <p>The tag’s x-coordinate</p> |
 | y | <code>Number</code> | <p>The tag’s y-coordinate</p> |
 
-<a name="Tag.createFromObject"></a>
-
-### Tag.createFromObject(object) ⇒ [<code>Tag</code>](#Tag)
+### Tag.createFromObject(object)
 <p>静态方法-对象的方式创建 tag</p>
 
 **Kind**: static method of [<code>Tag</code>](#Tag)  
