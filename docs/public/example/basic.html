@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic</title>
+    <link rel="stylesheet" href="./lib/taggd.css" />
+    <style>
+      .header {
+        margin: 8px;
+        text-align: center;
+      }
+
+      .container {
+        width: 1000px;
+        height: 300px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <button id="action-add">Add random tags</button>
+      <button id="action-delete">Delete all tags</button>
+      <a href="https://github.com/haiweilian/taggd-manager/tree/master/docs/public/example/basic.html" target="_blank">
+        View Source Code
+      </a>
+    </div>
+    <main class="container">
+      <img src="./assets/1024x512.jpg" alt="" id="image" />
+    </main>
+    <script src="./lib/taggd.umd.js"></script>
+    <script>
+      /**
+       * Create a random tag
+       * @return {TaggdManager.Tag} - The tag
+       */
+      function createTag() {
+        const characterSet = 'abcdefghijklmnopqrstuvwxyz'
+        let textLength = 0xf
+        let text = ''
+
+        do {
+          text += characterSet[Math.floor(Math.random() * characterSet.length)]
+        } while (--textLength)
+
+        return new Taggd.Tag(
+          {
+            x: Math.round(Math.random() * (0 - 1000) + 1000),
+            y: Math.round(Math.random() * (0 - 500) + 500),
+          },
+          text
+        )
+      }
+    </script>
+    <script>
+      var image = document.getElementById('image')
+
+      var data = [createTag(), createTag(), createTag(), createTag()]
+      var taggd = new Taggd(image, {}, data)
+
+      document.getElementById('action-add').addEventListener('click', function () {
+        taggd.deleteTags()
+        for (var i = 0; i < 4; i++) {
+          taggd.addTag(createTag())
+        }
+      })
+
+      document.getElementById('action-delete').addEventListener('click', function () {
+        taggd.deleteTags()
+      })
+    </script>
+  </body>
+</html>

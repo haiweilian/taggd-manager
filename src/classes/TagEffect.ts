@@ -1,5 +1,5 @@
-import Tag from './Tag'
 import { getPointer, addClass, removeClass } from '../utils/utilities'
+import Tag from './Tag'
 
 const TagEffect: ThisType<Tag> = {
   /**

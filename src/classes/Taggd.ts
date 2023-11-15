@@ -1,9 +1,9 @@
-import Tag from './Tag'
-import TaggdEffect from './TaggdEffect'
+import { IDefaultOptions, IPointer, IPosition, ImageData, IEventTaggd } from '../types/index'
 import EventEmitter from '../utils/event-emitter'
 import TypeErrorMessage from '../utils/type-error-message'
 import { ofInstance, isObject, isFunction, assign } from '../utils/utilities'
-import { IDefaultOptions, IPointer, IPosition, ImageData, IEventTaggd } from '../types/index'
+import Tag from './Tag'
+import TaggdEffect from './TaggdEffect'
 
 class Taggd extends EventEmitter {
   static DEFAULT_OPTIONS: IDefaultOptions

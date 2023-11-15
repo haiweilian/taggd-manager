@@ -1,0 +1,13 @@
+[
+  "introduction.md",
+  {
+    "type": "dir",
+    "name": "demo",
+    "label": "Example"
+  },
+  {
+    "type": "dir",
+    "name": "api",
+    "label": "API & Config"
+  }
+]

@@ -1,6 +1,6 @@
-import Taggd from './Taggd';
-import EventEmitter from '../utils/event-emitter';
 import { IPosition, IPointer, IEventTag } from '../types/index';
+import EventEmitter from '../utils/event-emitter';
+import Taggd from './Taggd';
 declare class Tag extends EventEmitter {
     Taggd: any;
     tagDownHander: any;

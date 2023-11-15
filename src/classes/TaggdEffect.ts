@@ -1,6 +1,6 @@
+import { setStyle, getOffset, getPointer, getWheelRatio, addClass, removeClass } from '../utils/utilities'
 import Tag from './Tag'
 import Taggd from './Taggd'
-import { setStyle, getOffset, getPointer, getWheelRatio, addClass, removeClass } from '../utils/utilities'
 
 const TaggdEffect: ThisType<Taggd> = {
   /**

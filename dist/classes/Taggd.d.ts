@@ -1,6 +1,6 @@
-import Tag from './Tag';
-import EventEmitter from '../utils/event-emitter';
 import { IDefaultOptions, IPointer, IPosition, ImageData, IEventTaggd } from '../types/index';
+import EventEmitter from '../utils/event-emitter';
+import Tag from './Tag';
 declare class Taggd extends EventEmitter {
     static DEFAULT_OPTIONS: IDefaultOptions;
     static Tag: typeof Tag;
