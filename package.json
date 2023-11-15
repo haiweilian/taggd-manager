@@ -2,7 +2,7 @@
   "name": "taggd-manager",
   "type": "module",
   "space": "Taggd",
-  "version": "1.2.0",
+  "version": "1.1.2",
   "description": "Image tags tool, supporting movement, scaling, and custom events.",
   "main": "dist/taggd.umd.js",
   "module": "dist/taggd.esm.js",
@@ -17,7 +17,7 @@
     "docs:build": "rspress build",
     "docs:preview": "rspress preview",
     "docs:deploy": "npm run docs:build && gh-pages -d doc_build",
-    "release": "npm run build && release-it"
+    "release": "release-it"
   },
   "license": "MIT",
   "author": "haiweilian@foxmail.com",
