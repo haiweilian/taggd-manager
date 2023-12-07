@@ -37,6 +37,7 @@ If you use a module import.
 
 ```js
 import Taggd from 'taggd-manager';
+import 'taggd-manager/dist/taggd.css';
 ```
 
 Finally, you can initialize `taggd`.

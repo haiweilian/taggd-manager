@@ -1,153 +1,170 @@
 # Taggd.Tag
 
 ### new Tag(position, text, [buttonAttributes], [popupAttributes])
-<p>Create a new Tag instance</p>
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| position | <code>Object</code> |  | <p>The tag’s coordinates</p> |
-| text | <code>String</code> \| <code>function</code> |  | <p>The tag’s content</p> |
-| [buttonAttributes] | <code>Object</code> | <code>{}</code> | <p>The button’s attributes</p> |
-| [popupAttributes] | <code>Object</code> | <code>{}</code> | <p>The popup’s attributes</p> |
+Create a new Tag instance
+
+| Param              | Type               | Default | Description             |
+| ------------------ | ------------------ | ------- | ----------------------- |
+| position           | Object             |         | The tag’s coordinates   |
+| text               | String \| function |         | The tag’s content       |
+| [buttonAttributes] | Object             | {}      | The button’s attributes |
+| [popupAttributes]  | Object             | {}      | The popup’s attributes  |
 
 ### tag.on(eventName, handler)
-<p>Subscribe to an event.</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Subscribe to an event.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>String</code> | <p>The event to subscribe to.</p> |
-| handler | <code>function</code> | <p>The handler to execute.</p> |
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
+
+| Param     | Type     | Description                |
+| --------- | -------- | -------------------------- |
+| eventName | String   | The event to subscribe to. |
+| handler   | function | The handler to execute.    |
 
 ### tag.off(eventName, handler)
-<p>Unsubscribe from an event.</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Unsubscribe from an event.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>String</code> | <p>The event to unsubscribe from.</p> |
-| handler | <code>function</code> | <p>The handler that was used to subscribe.</p> |
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
+
+| Param     | Type     | Description                             |
+| --------- | -------- | --------------------------------------- |
+| eventName | String   | The event to unsubscribe from.          |
+| handler   | function | The handler that was used to subscribe. |
 
 ### tag.once(eventName, handler)
-<p>Subscribe to an event and unsubscribe once triggered.</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Subscribe to an event and unsubscribe once triggered.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>String</code> | <p>The event to subscribe to.</p> |
-| handler | <code>function</code> | <p>The handler to execute.</p> |
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
+
+| Param     | Type     | Description                |
+| --------- | -------- | -------------------------- |
+| eventName | String   | The event to subscribe to. |
+| handler   | function | The handler to execute.    |
 
 ### tag.isHidden()
-<p>Test whether the tag is hidden or not</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Boolean</code> - <p>A boolean indicating the tag’s state</p>  
+Test whether the tag is hidden or not
+
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Boolean - A boolean indicating the tag’s state
 
 ### tag.show()
-<p>Show the tag</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Show the tag
+
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
 
 ### tag.hide()
-<p>Hide the tag</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Hide the tag
+
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
 
 ### tag.setText(text)
-<p>Set the tag’s text</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Set the tag’s text
 
-| Param | Type | Description |
-| --- | --- | --- |
-| text | <code>String</code> \| <code>function</code> | <p>The tag’s content</p> |
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
+
+| Param | Type               | Description       |
+| ----- | ------------------ | ----------------- |
+| text  | String \| function | The tag’s content |
 
 ### tag.setPosition(x, y)
-<p>Set the tag’s position</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Set the tag’s position
 
-| Param | Type | Description |
-| --- | --- | --- |
-| x | <code>Number</code> | <p>The tag’s x-coordinate</p> |
-| y | <code>Number</code> | <p>The tag’s y-coordinate</p> |
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
+
+| Param | Type   | Description            |
+| ----- | ------ | ---------------------- |
+| x     | Number | The tag’s x-coordinate |
+| y     | Number | The tag’s y-coordinate |
 
 ### tag.setButtonAttributes(atttributes)
-<p>Set the tag button’s attributes</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Set the tag button’s attributes
 
-| Param | Type | Description |
-| --- | --- | --- |
-| atttributes | <code>Object</code> | <p>= {} - The attributes to set</p> |
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
+
+| Param       | Type   | Description                  |
+| ----------- | ------ | ---------------------------- |
+| atttributes | Object | = {} - The attributes to set |
 
 ### tag.setPopupAttributes(atttributes)
-<p>Set the tag popup’s attributes</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Set the tag popup’s attributes
 
-| Param | Type | Description |
-| --- | --- | --- |
-| atttributes | <code>Object</code> | <p>= {} - The attributes to set</p> |
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
+
+| Param       | Type   | Description                  |
+| ----------- | ------ | ---------------------------- |
+| atttributes | Object | = {} - The attributes to set |
 
 ### tag.enableEditorMode()
-<p>Enable editor mode</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Enable editor mode
+
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
 
 ### tag.disableEditorMode()
-<p>Disable editor mode</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Taggd.Tag</code> - <p>Current Taggd.Tag instance</p>  
+Disable editor mode
+
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Taggd.Tag - Current Taggd.Tag instance
 
 ### tag.toJSON()
-<p>Get a Taggd.createFromObject-compatible object</p>
 
-**Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Object</code> - <p>A object for JSON</p>  
+Get a Taggd.createFromObject-compatible object
+
+**Kind**: instance method of [Tag](#Tag)  
+**Returns**: Object - A object for JSON
 
 ### Tag.setElementAttributes(element, [attributes])
-<p>Set element attributes</p>
 
-**Kind**: static method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>DomNode</code> - <p>The original element</p>  
+Set element attributes
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| element | <code>DomNode</code> |  | <p>The element the attributes should be set to</p> |
-| [attributes] | <code>Object</code> | <code>{}</code> | <p>A map of attributes to set</p> |
+**Kind**: static method of [Tag](#Tag)  
+**Returns**: DomNode - The original element
+
+| Param        | Type    | Default | Description                                 |
+| ------------ | ------- | ------- | ------------------------------------------- |
+| element      | DomNode |         | The element the attributes should be set to |
+| [attributes] | Object  | {}      | A map of attributes to set                  |
 
 ### Tag.getPositionStyle(x, y)
-<p>Get the position style</p>
 
-**Kind**: static method of [<code>Tag</code>](#Tag)  
-**Returns**: <code>Object</code> - <p>The style</p>  
+Get the position style
 
-| Param | Type | Description |
-| --- | --- | --- |
-| x | <code>Number</code> | <p>The tag’s x-coordinate</p> |
-| y | <code>Number</code> | <p>The tag’s y-coordinate</p> |
+**Kind**: static method of [Tag](#Tag)  
+**Returns**: Object - The style
+
+| Param | Type   | Description            |
+| ----- | ------ | ---------------------- |
+| x     | Number | The tag’s x-coordinate |
+| y     | Number | The tag’s y-coordinate |
 
 ### Tag.createFromObject(object)
-<p>Create a tag from object</p>
 
-**Kind**: static method of [<code>Tag</code>](#Tag)  
-**Returns**: [<code>Tag</code>](#Tag) - <p>The created Tag instance</p>  
+Create a tag from object
 
-| Param | Type | Description |
-| --- | --- | --- |
-| object | <code>Object</code> | <p>The object containing all information</p> |
+**Kind**: static method of [Tag](#Tag)  
+**Returns**: [Tag](#Tag) - The created Tag instance
+
+| Param  | Type   | Description                           |
+| ------ | ------ | ------------------------------------- |
+| object | Object | The object containing all information |

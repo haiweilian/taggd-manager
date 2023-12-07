@@ -36,7 +36,7 @@ All `taggd.tag*` event handlers receive the following arguments:
 2. `Tag` instance
 
 | Event                       | Triggered                            | Is preventable by returning `false` |
-|-----------------------------|--------------------------------------|-------------------------------------|
+| --------------------------- | ------------------------------------ | ----------------------------------- |
 | `taggd.destroy`             | before destroying a `Taggd` instance | yes                                 |
 | `taggd.editor.enable`       | before enable editor mode            | yes                                 |
 | `taggd.editor.disable`      | before disabling editor mode         | yes                                 |
@@ -73,19 +73,19 @@ All `taggd.tag.*` event handlers receive the following argument:
 
 1. `Tag` instance
 
-| Event                       | Triggered                            | Is preventable by returning `false` |
-|-----------------------------|--------------------------------------|-------------------------------------|
-| `taggd.tag.delete`          | before deleting a tag                | yes                                 |
-| `taggd.tag.deleted`         | after deleting a tag                 | no                                  |
-| `taggd.tag.show`            | before showing a tag                 | yes                                 |
-| `taggd.tag.shown`           | after showing a tag                  | no                                  |
-| `taggd.tag.hide`            | before hiding a tag                  | yes                                 |
-| `taggd.tag.hidden`          | after hiding a tag                   | no                                  |
-| `taggd.tag.change`          | before changing a tag                | yes                                 |
-| `taggd.tag.changed`         | after changing a tag                 | no                                  |
-| `taggd.tag.click`           | after click a tag(no move trigger)   | no                                  |
-| `taggd.tag.editor.enable`   | before enable editor mode            | yes                                 |
-| `taggd.tag.editor.disable`  | before disabling editor mode         | yes                                 |
-| `taggd.tag.editor.movedown` | after movedown a tag                 | no                                  |
-| `taggd.tag.editor.move`     | after move a tag                     | no                                  |
-| `taggd.tag.editor.moveup`   | after moveup a tag(move trigger)     | no                                  |
+| Event                       | Triggered                          | Is preventable by returning `false` |
+| --------------------------- | ---------------------------------- | ----------------------------------- |
+| `taggd.tag.delete`          | before deleting a tag              | yes                                 |
+| `taggd.tag.deleted`         | after deleting a tag               | no                                  |
+| `taggd.tag.show`            | before showing a tag               | yes                                 |
+| `taggd.tag.shown`           | after showing a tag                | no                                  |
+| `taggd.tag.hide`            | before hiding a tag                | yes                                 |
+| `taggd.tag.hidden`          | after hiding a tag                 | no                                  |
+| `taggd.tag.change`          | before changing a tag              | yes                                 |
+| `taggd.tag.changed`         | after changing a tag               | no                                  |
+| `taggd.tag.click`           | after click a tag(no move trigger) | no                                  |
+| `taggd.tag.editor.enable`   | before enable editor mode          | yes                                 |
+| `taggd.tag.editor.disable`  | before disabling editor mode       | yes                                 |
+| `taggd.tag.editor.movedown` | after movedown a tag               | no                                  |
+| `taggd.tag.editor.move`     | after move a tag                   | no                                  |
+| `taggd.tag.editor.moveup`   | after moveup a tag(move trigger)   | no                                  |

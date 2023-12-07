@@ -39,7 +39,7 @@
     "release-it": "^17.0.0",
     "rollup": "^4.3.0",
     "rollup-plugin-copy": "^3.5.0",
-    "rspress": "^1.6.0",
+    "rspress": "^1.8.0",
     "typescript": "^5.2.2"
   }
 }

@@ -6,8 +6,8 @@
 
 ## 下载
 
-* [Download the latest release](https://github.com/haiweilian/taggd-manager/archive/master.zip)
-* npm: `npm install taggd-manager`
+- [Download the latest release](https://github.com/haiweilian/taggd-manager/archive/master.zip)
+- npm: `npm install taggd-manager`
 
 ## 使用
 
@@ -16,7 +16,7 @@
 样式表只有所需依赖样式，如果要添加主题，请重新覆盖。
 
 ```html
-<link rel="stylesheet" href="/path/to/taggd-manager/dist/taggd.css">
+<link rel="stylesheet" href="/path/to/taggd-manager/dist/taggd.css" />
 ```
 
 ```html
@@ -26,15 +26,16 @@
 如果使用模块导入。
 
 ```js
-import Taggd from 'taggd-manager';
+import Taggd from 'taggd-manager'
+import 'taggd-manager/dist/taggd.css'
 ```
 
 最后，您可以初始化 `taggd`。
 
 ```js
-const image = document.getElementById('my-image');
-const options = {};
-const tags = [];
+const image = document.getElementById('my-image')
+const options = {}
+const tags = []
 
-const taggd = new Taggd(image, options, tags);
+const taggd = new Taggd(image, options, tags)
 ```

@@ -1,143 +1,159 @@
 # Taggd
 
 ### new Taggd(image, [options], [data])
-<p>Create a new taggd instance</p>
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| image | <code>HTMLElement</code> |  | <p>The image to wrap</p> |
-| [options] | <code>Object</code> | <code>{}</code> | <p>The options</p> |
-| [data] | <code>Array</code> | <code>[]</code> | <p>The tags</p> |
+Create a new taggd instance
+
+| Param     | Type        | Default | Description       |
+| --------- | ----------- | ------- | ----------------- |
+| image     | HTMLElement |         | The image to wrap |
+| [options] | Object      | {}      | The options       |
+| [data]    | Array       | []      | The tags          |
 
 ### taggd.on(eventName, handler)
-<p>Subscribe to an event.</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Subscribe to an event.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>String</code> | <p>The event to subscribe to.</p> |
-| handler | <code>function</code> | <p>The handler to execute.</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param     | Type     | Description                |
+| --------- | -------- | -------------------------- |
+| eventName | String   | The event to subscribe to. |
+| handler   | function | The handler to execute.    |
 
 ### taggd.off(eventName, handler)
-<p>Unsubscribe from an event.</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Unsubscribe from an event.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>String</code> | <p>The event to unsubscribe from.</p> |
-| handler | <code>function</code> | <p>The handler that was used to subscribe.</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param     | Type     | Description                             |
+| --------- | -------- | --------------------------------------- |
+| eventName | String   | The event to unsubscribe from.          |
+| handler   | function | The handler that was used to subscribe. |
 
 ### taggd.once(eventName, handler)
-<p>Subscribe to an event and unsubscribe once triggered.</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Subscribe to an event and unsubscribe once triggered.
 
-| Param | Type | Description |
-| --- | --- | --- |
-| eventName | <code>String</code> | <p>The event to subscribe to.</p> |
-| handler | <code>function</code> | <p>The handler to execute.</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param     | Type     | Description                |
+| --------- | -------- | -------------------------- |
+| eventName | String   | The event to subscribe to. |
+| handler   | function | The handler to execute.    |
 
 ### taggd.setOptions(options)
-<p>Set taggd options</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Set taggd options
 
-| Param | Type | Description |
-| --- | --- | --- |
-| options | <code>Object</code> | <p>The options to set</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param   | Type   | Description        |
+| ------- | ------ | ------------------ |
+| options | Object | The options to set |
 
 ### taggd.addTag(tag)
-<p>Add a single tag</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Add a single tag
 
-| Param | Type | Description |
-| --- | --- | --- |
-| tag | <code>Taggd.Tag</code> | <p>The tag to add</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param | Type      | Description    |
+| ----- | --------- | -------------- |
+| tag   | Taggd.Tag | The tag to add |
 
 ### taggd.getTag(index)
-<p>Get a single tag by index</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: <code>Taggd.Tag</code> - <p>The tag to get</p>  
+Get a single tag by index
 
-| Param | Type | Description |
-| --- | --- | --- |
-| index | <code>Number</code> | <p>The index of the desired tag</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: Taggd.Tag - The tag to get
+
+| Param | Type   | Description                  |
+| ----- | ------ | ---------------------------- |
+| index | Number | The index of the desired tag |
 
 ### taggd.deleteTag(index)
-<p>Delete a single tag by index</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Delete a single tag by index
 
-| Param | Type | Description |
-| --- | --- | --- |
-| index | <code>Number</code> | <p>The index of the desired tag</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param | Type   | Description                  |
+| ----- | ------ | ---------------------------- |
+| index | Number | The index of the desired tag |
 
 ### taggd.setTags(tags)
-<p>Set all tags</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Set all tags
 
-| Param | Type | Description |
-| --- | --- | --- |
-| tags | <code>Array.&lt;Taggd.Tag&gt;</code> | <p>An array of tags</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param | Type                    | Description      |
+| ----- | ----------------------- | ---------------- |
+| tags  | Array.&lt;Taggd.Tag&gt; | An array of tags |
 
 ### taggd.addTags(tags)
-<p>Add multiple tags</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Add multiple tags
 
-| Param | Type | Description |
-| --- | --- | --- |
-| tags | <code>Array.&lt;Taggd.Tag&gt;</code> | <p>An array of tags</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param | Type                    | Description      |
+| ----- | ----------------------- | ---------------- |
+| tags  | Array.&lt;Taggd.Tag&gt; | An array of tags |
 
 ### taggd.getTags()
-<p>Get all tags</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: <code>Array.&lt;Taggd.Tag&gt;</code> - <p>All tags of this Taggd instance</p>  
+Get all tags
+
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: Array.&lt;Taggd.Tag&gt; - All tags of this Taggd instance
 
 ### taggd.deleteTags()
-<p>Remove all tags</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Remove all tags
+
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
 
 ### taggd.map(callback)
-<p>Iterate and replace all tags</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Iterate and replace all tags
 
-| Param | Type | Description |
-| --- | --- | --- |
-| callback | <code>function</code> | <p>The callback to execute for all tags</p> |
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
+
+| Param    | Type     | Description                          |
+| -------- | -------- | ------------------------------------ |
+| callback | function | The callback to execute for all tags |
 
 ### taggd.destroy()
-<p>Clean up memory</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Clean up memory
+
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
 
 ### taggd.enableEditorMode()
-<p>Enable editor mode</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Enable editor mode
+
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance
 
 ### taggd.disableEditorMode()
-<p>Disable editor mode</p>
 
-**Kind**: instance method of [<code>Taggd</code>](#Taggd)  
-**Returns**: [<code>Taggd</code>](#Taggd) - <p>Current Taggd instance</p>  
+Disable editor mode
+
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: [Taggd](#Taggd) - Current Taggd instance

@@ -18,7 +18,7 @@ options = {
   zoomRatioMax: 100,
   // 如果标签按钮和弹出窗口之间有间隔，并且你使用鼠标移过/鼠标移出来切换可见性，你可能需要保持这个。
   hideDelay: 500,
-};
+}
 
-new Taggd(image, options);
+new Taggd(image, options)
 ```
