@@ -54,10 +54,10 @@
       }
     </script>
     <script>
-      var image = document.getElementById('image')
+      const image = document.getElementById('image')
 
-      var data = [createTag(), createTag(), createTag(), createTag()]
-      var taggd = new Taggd(image, {}, data)
+      const data = [createTag(), createTag(), createTag(), createTag()]
+      const taggd = new Taggd(image, {}, data)
 
       document.getElementById('action-add').addEventListener('click', function () {
         taggd.deleteTags()

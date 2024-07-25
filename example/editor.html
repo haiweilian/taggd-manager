@@ -73,17 +73,18 @@
       <img src="./assets/1024x512.jpg" alt="" id="image" />
     </main>
     <pre id="output"></pre>
-    <script src="./lib/taggd.umd.js"></script>
-    <script>
-      var image = document.getElementById('image')
+    <script type="module">
+      import Taggd from './lib/taggd.esm.js'
 
-      var data = [
+      const image = document.getElementById('image')
+
+      const data = [
         new Taggd.Tag({ x: 200, y: 200 }).enableEditorMode(),
         new Taggd.Tag({ x: 600, y: 300 }).enableEditorMode(),
-        new Taggd.Tag({ x: 300, y: 400 }, '蕾姆是最好的女孩').enableEditorMode(),
-        new Taggd.Tag({ x: 400, y: 300 }, '蕾姆是最好的女孩').disableEditorMode(),
+        new Taggd.Tag({ x: 300, y: 400 }, `x${300}-y${400}`).enableEditorMode(),
+        new Taggd.Tag({ x: 400, y: 300 }, `x${400}-y${300}`).disableEditorMode(),
       ]
-      var taggd = new Taggd(image, {}, data).enableEditorMode()
+      const taggd = new Taggd(image, {}, data).enableEditorMode()
 
       taggd.on('*', function (event) {
         console.log('DEBUG:', event)
@@ -94,8 +95,8 @@
       })
 
       taggd.on('taggd.editor.add', function (taggd, position) {
-        // var tag = new Taggd.Tag(position, `x${position.x}-y${position.y}`).enableEditorMode()
-        var tag = new Taggd.Tag.createFromObject({
+        // const tag = new Taggd.Tag(position, `x${position.x}-y${position.y}`).enableEditorMode()
+        const tag = Taggd.Tag.createFromObject({
           position,
           text: `x${position.x}-y${position.y}`,
           buttonAttributes: {
@@ -107,7 +108,8 @@
       })
 
       document.getElementById('action-data').addEventListener('click', function () {
-        document.getElementById('output').innerHTML = JSON.stringify(taggd.getTags(), null, 2)
+        document.getElementById('output').innerHTML = JSON.stringify(taggd, null, 2)
+        console.log(taggd.toJSON())
       })
 
       document.getElementById('action-destroy').addEventListener('click', function () {

@@ -1,0 +1,1 @@
+import{_ as t,c as a,o as d,a2 as g}from"./chunks/framework.9P3ITJTm.js";const c=JSON.parse('{"title":"Taggd","description":"","frontmatter":{},"headers":[],"relativePath":"zh/api/taggd.md","filePath":"zh/api/taggd.md"}'),e={name:"zh/api/taggd.md"},r=g("",62),n=[r];function o(h,s,i,l,b,p){return d(),a("div",null,n)}const m=t(e,[["render",o]]);export{c as __pageData,m as default};
