@@ -2,7 +2,7 @@
   "name": "taggd-manager",
   "type": "module",
   "space": "Taggd",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Image tags tool, supporting movement, scaling, and custom events.",
   "main": "dist/taggd.umd.js",
   "module": "dist/taggd.esm.js",
