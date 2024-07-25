@@ -137,6 +137,13 @@ Iterate and replace all tags
 | -------- | -------- | ------------------------------------ |
 | callback | function | The callback to execute for all tags |
 
+### taggd.toJSON()
+
+Get all tags json
+
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: Array - A array for JSON
+
 ### taggd.destroy()
 
 Clean up memory

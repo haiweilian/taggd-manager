@@ -1,4 +1,4 @@
-import { IOffset, IPointer, IStyleDeclaration } from '../types/index';
+import type { IOffset, IPointer, IStyleDeclaration } from './typings';
 /**
  * Check wheter an object is an instance of type
  * @param {Object} object - The object to test

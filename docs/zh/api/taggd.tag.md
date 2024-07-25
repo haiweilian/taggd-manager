@@ -146,18 +146,6 @@
 | element      | DomNode |         | 元素        |
 | [attributes] | Object  | {}      | 属性对象    |
 
-### Tag.getPositionStyle(x, y)
-
-Get the position style
-
-**Kind**: static method of [Tag](#Tag)  
-**Returns**: Object - The style
-
-| Param | Type   | Description            |
-| ----- | ------ | ---------------------- |
-| x     | Number | The tag’s x-coordinate |
-| y     | Number | The tag’s y-coordinate |
-
 ### Tag.createFromObject(object)
 
 静态方法-对象的方式创建 tag

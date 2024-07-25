@@ -1,24 +1,19 @@
-import { IPosition, IPointer, IEventTag } from '../types/index'
 import EventEmitter from '../utils/event-emitter'
 import TypeErrorMessage from '../utils/type-error-message'
-import { isObject, isString, isFunction, isNumber, assign, setStyle } from '../utils/utilities'
-import TagEffect from './TagEffect'
-import Taggd from './Taggd'
+import type { IPosition, IPointer, ITagEvent } from '../utils/typings'
+import { isObject, isString, isFunction, isNumber, setStyle, getPointer, addClass, removeClass } from '../utils/utilities'
+import type Taggd from './Taggd'
 
 class Tag extends EventEmitter {
-  public Taggd: any
-  public tagDownHander: any
-  public tagMoveHander: any
-  public tagUpHander: any
-
+  taggd: Taggd
   wrapperElement: HTMLElement
   popupElement: HTMLElement
   buttonElement: HTMLElement
   text: string
   position: IPosition
   pointer: IPointer
-  action: string
-  move: boolean
+  isMoved: boolean
+  isMoveing: boolean
 
   /**
    * Create a new Tag instance
@@ -30,8 +25,8 @@ class Tag extends EventEmitter {
   constructor(
     position: Pick<IPosition, 'x' | 'y'>,
     text: string | Function = '',
-    buttonAttributes = {},
-    popupAttributes = {}
+    buttonAttributes: Record<string, string> = {},
+    popupAttributes: Record<string, string> = {}
   ) {
     if (!isObject(position)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(position))
@@ -56,8 +51,6 @@ class Tag extends EventEmitter {
     this.text = ''
     this.position = position as IPosition
     this.pointer = {} as IPointer
-    this.action = ''
-    this.move = false
 
     this.setButtonAttributes(buttonAttributes)
     this.setPopupAttributes(popupAttributes)
@@ -71,7 +64,7 @@ class Tag extends EventEmitter {
    * @param {Function} handler - The handler to execute.
    * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  on(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any) {
+  on<T extends keyof ITagEvent>(eventName: T, handler: ITagEvent[T]) {
     return super.on(eventName, handler)
   }
 
@@ -81,7 +74,7 @@ class Tag extends EventEmitter {
    * @param {Function} handler - The handler that was used to subscribe.
    * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  off(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any) {
+  off<T extends keyof ITagEvent>(eventName: T, handler: ITagEvent[T]) {
     return super.off(eventName, handler)
   }
 
@@ -91,8 +84,18 @@ class Tag extends EventEmitter {
    * @param {Function} handler - The handler to execute.
    * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  once(eventName: IEventTag, handler: (taggd: Taggd, tag: Tag) => any) {
+  once<T extends keyof ITagEvent>(eventName: T, handler: ITagEvent[T]) {
     return super.once(eventName, handler)
+  }
+
+  /**
+   * Publish to an event.
+   * @param {String} eventName - The event to Publish to.
+   * @param {Function} handler - The handler to execute.
+   * @return {Boolean} The is canceled.
+   */
+  emit<T extends keyof ITagEvent>(eventName: T, ...args: Parameters<ITagEvent[T]>) {
+    return super.emit(eventName, ...args)
   }
 
   /**
@@ -187,8 +190,8 @@ class Tag extends EventEmitter {
     const isCanceled = !this.emit('taggd.tag.change', this)
 
     if (!isCanceled) {
-      const { wrapperElement, position, Taggd } = this
-      const { left, top, ratio } = Taggd.imageData
+      const { taggd, position, wrapperElement } = this
+      const { left, top, ratio } = taggd.imageData
 
       position.left = ratio * position.x + left
       position.top = ratio * position.y + top
@@ -209,7 +212,7 @@ class Tag extends EventEmitter {
    * @param {Object} atttributes = {} - The attributes to set
    * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  setButtonAttributes(attributes = {}) {
+  setButtonAttributes(attributes: Record<string, string> = {}) {
     if (!isObject(attributes)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(attributes))
     }
@@ -229,7 +232,7 @@ class Tag extends EventEmitter {
    * @param {Object} atttributes = {} - The attributes to set
    * @return {Taggd.Tag} Current Taggd.Tag instance
    */
-  setPopupAttributes(attributes = {}) {
+  setPopupAttributes(attributes: Record<string, string> = {}) {
     if (!isObject(attributes)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(attributes))
     }
@@ -292,8 +295,6 @@ class Tag extends EventEmitter {
         if (attribute.name === 'class' || attribute.name === 'style') {
           return
         }
-
-        // @ts-ignore
         attributes[attribute.name] = attribute.value
       })
 
@@ -314,7 +315,7 @@ class Tag extends EventEmitter {
    * @param {Object} [attributes = {}] - A map of attributes to set
    * @return {DomNode} The original element
    */
-  static setElementAttributes(element: Element, attributes = {}) {
+  static setElementAttributes(element: Element, attributes: Record<string, string> = {}) {
     if (!isObject(attributes)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(attributes))
     }
@@ -328,7 +329,6 @@ class Tag extends EventEmitter {
         return
       }
 
-      // @ts-ignore
       element.setAttribute(attributeName, attributeValue)
     })
 
@@ -336,35 +336,99 @@ class Tag extends EventEmitter {
   }
 
   /**
-   * Get the position style
-   * @param {Number} x - The tag’s x-coordinate
-   * @param {Number} y - The tag’s y-coordinate
-   * @return {Object} The style
-   */
-  static getPositionStyle(x: number, y: number) {
-    if (!isNumber(x)) {
-      throw new TypeError(TypeErrorMessage.getFloatMessage(x))
-    }
-    if (!isNumber(y)) {
-      throw new TypeError(TypeErrorMessage.getFloatMessage(y))
-    }
-
-    return {
-      left: `${x}px`,
-      top: `${y}px`,
-    }
-  }
-
-  /**
    * Create a tag from object
    * @param {Object} object - The object containing all information
    * @return {Tag} The created Tag instance
    */
-  static createFromObject(object: any) {
-    return new Tag(object.position, object.text, object.buttonAttributes, object.popupAttributes)
+  static createFromObject(object: {
+    position: Pick<IPosition, 'x' | 'y'>
+    text?: string | Function
+    buttonAttributes?: Record<string, string>
+    popupAttributes?: Record<string, string>
+  }) {
+    return new Tag(
+      // constructor
+      object.position,
+      object.text,
+      object.buttonAttributes,
+      object.popupAttributes
+    )
+  }
+
+  /**
+   * tag mousedown hander
+   * @param {MouseEvent} event
+   * @return {Taggd.Tag} Current Taggd.Tag instance
+   */
+  private tagDownHander(event: MouseEvent) {
+    event.preventDefault()
+
+    addClass(this.buttonElement, 'taggd--grabbing')
+
+    this.isMoved = false
+    this.isMoveing = true
+    this.pointer = {
+      ...getPointer(event),
+      elX: this.position.left,
+      elY: this.position.top,
+    }
+
+    this.emit('taggd.tag.editor.movedown', this)
+
+    return this
+  }
+
+  /**
+   * tag mousemove hander
+   * @param {MouseEvent} event
+   * @return {Taggd.Tag} Current Taggd.Tag instance
+   */
+  private tagMoveHander(event: MouseEvent) {
+    if (!this.isMoveing) {
+      return
+    }
+
+    event.preventDefault()
+
+    const { taggd, position, pointer } = this
+    const { left, top, ratio, naturalWidth, naturalHeight } = taggd.imageData
+    const { endX, endY } = getPointer(event)
+
+    // update tag x & y
+    const x = (pointer.elX + (endX - pointer.startX) - left) / ratio
+    const y = (pointer.elY + (endY - pointer.startY) - top) / ratio
+
+    position.x = Math.min(Math.max(0, x), naturalWidth)
+    position.y = Math.min(Math.max(0, y), naturalHeight)
+
+    this.isMoved = true
+    this.setPosition()
+    this.emit('taggd.tag.editor.move', this)
+
+    return this
+  }
+
+  /**
+   * tag mouseup hander
+   * @param {MouseEvent} event
+   * @return {Taggd.Tag} Current Taggd.Tag instance
+   */
+  private tagUpHander(event: MouseEvent) {
+    if (!this.isMoveing) {
+      return
+    }
+
+    event.preventDefault()
+
+    removeClass(this.buttonElement, 'taggd--grabbing')
+
+    this.isMoveing = false
+    if (this.isMoved) {
+      this.emit('taggd.tag.editor.moveup', this)
+    }
+
+    return this
   }
 }
-
-assign(Tag.prototype, TagEffect)
 
 export default Tag
