@@ -1,175 +1,98 @@
-/*!
- * taggd-manager v1.1.2
- * https://github.com/haiweilian/taggd-manager#readme
- *
- * Copyright 2023 haiweilian@foxmail.com
- * Released under the MIT license
- *
- * Date: 2023-11-15T05:24:25.838Z
- */
-
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Taggd = factory());
 })(this, (function () { 'use strict';
 
-    /******************************************************************************
-    Copyright (c) Microsoft Corporation.
-
-    Permission to use, copy, modify, and/or distribute this software for any
-    purpose with or without fee is hereby granted.
-
-    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-    PERFORMANCE OF THIS SOFTWARE.
-    ***************************************************************************** */
-    /* global Reflect, Promise, SuppressedError, Symbol */
-
-    var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-
-    function __extends(d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    }
-
-    var __assign = function() {
-        __assign = Object.assign || function __assign(t) {
-            for (var s, i = 1, n = arguments.length; i < n; i++) {
-                s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-            return t;
-        };
-        return __assign.apply(this, arguments);
-    };
-
-    function __spreadArray(to, from, pack) {
-        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-            if (ar || !(i in from)) {
-                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-                ar[i] = from[i];
-            }
-        }
-        return to.concat(ar || Array.prototype.slice.call(from));
-    }
-
-    typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-        var e = new Error(message);
-        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-    };
-
-    var EVENT_WILDCARD = '*';
-    var EventEmitter = /** @class */ (function () {
-        function EventEmitter() {
-            this.handlers = {};
+    const EVENT_WILDCARD = '*';
+    class EventEmitter {
+        handlers = {};
+        constructor() {
             this.handlers = {};
         }
         /**
          * Subscribe to all event.
          * @param {Function} handler - The handler to execute.
          */
-        EventEmitter.prototype.onAnything = function (handler) {
+        onAnything(handler) {
             this.on(EVENT_WILDCARD, handler);
-        };
+        }
         /**
          * Subscribe to an event.
          * @param {String} eventName - The event to subscribe to.
          * @param {Function} handler - The handler to execute.
          */
-        EventEmitter.prototype.on = function (eventName, handler) {
+        on(eventName, handler) {
             if (!this.handlers[eventName]) {
                 this.handlers[eventName] = [];
             }
             this.handlers[eventName].push(handler);
-        };
+        }
         /**
          * Unsubscribe from an event.
          * @param {String} eventName - The event to unsubscribe from.
          * @param {Function} handler - The handler that was used to subscribe.
          */
-        EventEmitter.prototype.off = function (eventName, handler) {
+        off(eventName, handler) {
             if (!this.handlers[eventName])
                 return;
-            var handlerIndex = this.handlers[eventName].indexOf(handler);
+            const handlerIndex = this.handlers[eventName].indexOf(handler);
             if (handlerIndex >= 0) {
                 this.handlers[eventName].splice(handlerIndex, 1);
             }
-        };
+        }
         /**
          * Subscribe to an event and unsubscribe once triggered.
          * @param {String} eventName - The event to subscribe to.
          * @param {Function} handler - The handler to execute.
          */
-        EventEmitter.prototype.once = function (eventName, handler) {
-            var _this = this;
-            this.on(eventName, function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                handler.apply(void 0, args);
-                _this.off(eventName, handler);
+        once(eventName, handler) {
+            this.on(eventName, (...args) => {
+                handler(...args);
+                this.off(eventName, handler);
             });
-        };
+        }
         /**
          * Publish to an event.
          * @param {String} eventName - The event to Publish to.
          * @param {Function} handler - The handler to execute.
          * @return {Boolean} The is canceled.
          */
-        EventEmitter.prototype.emit = function (eventName) {
-            var args = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                args[_i - 1] = arguments[_i];
-            }
-            var isCanceled = false;
+        emit(eventName, ...args) {
+            let isCanceled = false;
             if (this.handlers[EVENT_WILDCARD]) {
-                this.handlers[EVENT_WILDCARD].forEach(function (eventHandler) {
-                    var returnValue = eventHandler.apply(void 0, __spreadArray([eventName], args, false));
+                this.handlers[EVENT_WILDCARD].forEach((eventHandler) => {
+                    const returnValue = eventHandler(eventName, ...args);
                     isCanceled = (returnValue !== undefined && !returnValue) || isCanceled;
                 });
             }
             if (this.handlers[eventName]) {
-                this.handlers[eventName].forEach(function (eventHandler) {
-                    var returnValue = eventHandler.apply(void 0, args);
+                this.handlers[eventName].forEach((eventHandler) => {
+                    const returnValue = eventHandler(...args);
                     isCanceled = (returnValue !== undefined && !returnValue) || isCanceled;
                 });
             }
             return !isCanceled;
-        };
-        return EventEmitter;
-    }());
+        }
+    }
 
-    var TypeErrorMessage = {
+    const TypeErrorMessage = {
         /**
          * Get the TypeError message
          * @param {Object} object - The tested object
          * @param {String} expectedType - A string describing the expected type
          * @return {String} The error message
          */
-        getMessage: function (object, expectedType) { return "".concat(object, " should be ").concat(expectedType); },
+        getMessage: (object, expectedType) => `${object} should be ${expectedType}`,
         /**
          * Get the TypeError Array message
          * @param {Object} object - The tested object
          * @param {String} expectedType - The expected type of all array items
          * @return {String} The error message
          */
-        getArrayMessage: function (object, expectedType) {
+        getArrayMessage: (object, expectedType) => {
             if (expectedType) {
-                return TypeErrorMessage.getTypeErrorMessage(object, "an array of ".concat(expectedType));
+                return TypeErrorMessage.getTypeErrorMessage(object, `an array of ${expectedType}`);
             }
             return TypeErrorMessage.getTypeErrorMessage(object, 'an array');
         },
@@ -178,41 +101,41 @@
          * @param {Object} object - The tested object
          * @return {String} The error message
          */
-        getFunctionMessage: function (object) { return TypeErrorMessage.getTypeErrorMessage(object, 'a function'); },
+        getFunctionMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'a function'),
         /**
          * Get the TypeError Integer message
          * @param {Object} object - The tested object
          * @return {String} The error message
          */
-        getIntegerMessage: function (object) { return TypeErrorMessage.getTypeErrorMessage(object, 'an integer'); },
+        getIntegerMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'an integer'),
         /**
          * Get the TypeError Float message
          * @param {Object} object - The tested object
          * @return {String} The error message
          */
-        getFloatMessage: function (object) { return TypeErrorMessage.getTypeErrorMessage(object, 'a floating number'); },
+        getFloatMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'a floating number'),
         /**
          * Get the TypeError Object message
          * @param {Object} object - The tested object
          * @return {String} The error message
          */
-        getObjectMessage: function (object) { return TypeErrorMessage.getTypeErrorMessage(object, 'an object'); },
+        getObjectMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'an object'),
         /**
          * Get the TypeError Taggd.Tag message
          * @param {Object} object - The tested object
          * @return {String} The error message
          */
-        getTagMessage: function (object) { return TypeErrorMessage.getTypeErrorMessage(object, 'a tag'); },
+        getTagMessage: (object) => TypeErrorMessage.getTypeErrorMessage(object, 'a tag'),
         /**
          * Get TypeError message
          * @param {Object} object - The tested object
          * @param {String} message - The type message
          * @return {String} The error message
          */
-        getTypeErrorMessage: function (object, message) { return "".concat(object, " is not a ").concat(message); },
+        getTypeErrorMessage: (object, message) => `${object} is not a ${message}`,
     };
 
-    var REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/;
+    const REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/;
     /**
      * Check wheter an object is an instance of type
      * @param {Object} object - The object to test
@@ -263,16 +186,16 @@
     function forEach(data, callback) {
         if (data && isFunction(callback)) {
             if (Array.isArray(data) || isNumber(data.length) /* array-like */) {
-                var length_1 = data.length;
-                var i = void 0;
-                for (i = 0; i < length_1; i += 1) {
+                const { length } = data;
+                let i;
+                for (i = 0; i < length; i += 1) {
                     if (callback.call(data, data[i], i, data) === false) {
                         break;
                     }
                 }
             }
             else if (isObject(data)) {
-                Object.keys(data).forEach(function (key) {
+                Object.keys(data).forEach((key) => {
                     callback.call(data, data[key], key, data);
                 });
             }
@@ -285,15 +208,11 @@
      * @param {*} args - The rest objects which will be merged to the first object.
      * @return {Object} The extended object.
      */
-    function assign(obj) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
+    function assign(obj, ...args) {
         if (isObject(obj) && args.length > 0) {
-            args.forEach(function (arg) {
+            args.forEach((arg) => {
                 if (isObject(arg)) {
-                    Object.keys(arg).forEach(function (key) {
+                    Object.keys(arg).forEach((key) => {
                         obj[key] = arg[key];
                     });
                 }
@@ -307,7 +226,7 @@
      * @param {CSSStyleDeclaration} styles - The styles for applying.
      */
     function setStyle(element, styles) {
-        forEach(styles, function (value, property) {
+        forEach(styles, (value, property) => {
             if (REGEXP_SUFFIX.test(property) && isNumber(value)) {
                 value += 'px';
             }
@@ -323,22 +242,16 @@
         if (!element || !value) {
             return;
         }
-        // if (isNumber(element.length)) {
-        //   forEach(element, (elem) => {
-        //     addClass(elem, value)
-        //   })
-        //   return
-        // }
         if (element.classList) {
             element.classList.add(value);
             return;
         }
-        var className = element.className.trim();
+        const className = element.className.trim();
         if (!className) {
             element.className = value;
         }
         else if (className.indexOf(value) < 0) {
-            element.className = "".concat(className, " ").concat(value);
+            element.className = `${className} ${value}`;
         }
     }
     /**
@@ -350,12 +263,6 @@
         if (!element || !value) {
             return;
         }
-        // if (isNumber(element.length)) {
-        //   forEach(element, (elem) => {
-        //     removeClass(elem, value)
-        //   })
-        //   return
-        // }
         if (element.classList) {
             element.classList.remove(value);
             return;
@@ -370,10 +277,10 @@
      * @return {Object} The offset data.
      */
     function getOffset(element) {
-        var box = element.getBoundingClientRect();
+        const box = element.getBoundingClientRect();
         return {
-            top: box.top + (window.pageYOffset - document.documentElement.clientTop),
-            left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
+            top: box.top + (window.scrollY - document.documentElement.clientTop),
+            left: box.left + (window.scrollX - document.documentElement.clientLeft),
         };
     }
     /**
@@ -398,8 +305,8 @@
      * @return {Number} The result ratio.
      */
     function getWheelRatio(event, zoomRatio) {
-        var delta = 1;
-        var ratio = zoomRatio;
+        let delta = 1;
+        let ratio = zoomRatio;
         if (event.deltaY) {
             delta = event.deltaY > 0 ? 1 : -1;
         }
@@ -416,63 +323,16 @@
         return ratio;
     }
 
-    var TagEffect = {
-        /**
-         * tag mousedown hander
-         * @param {MouseEvent} event
-         * @return {Taggd.Tag} Current Taggd.Tag instance
-         */
-        tagDownHander: function (event) {
-            event.preventDefault();
-            addClass(this.buttonElement, 'taggd--grabbing');
-            this.move = false;
-            this.action = 'move';
-            this.pointer = __assign(__assign({}, getPointer(event)), { elX: this.position.left, elY: this.position.top });
-            this.emit('taggd.tag.editor.movedown', this);
-            return this;
-        },
-        /**
-         * tag mousemove hander
-         * @param {MouseEvent} event
-         * @return {Taggd.Tag} Current Taggd.Tag instance
-         */
-        tagMoveHander: function (event) {
-            if (!this.action) {
-                return;
-            }
-            event.preventDefault();
-            var _a = this, position = _a.position, pointer = _a.pointer, Taggd = _a.Taggd;
-            var _b = Taggd.imageData, left = _b.left, top = _b.top, ratio = _b.ratio, naturalWidth = _b.naturalWidth, naturalHeight = _b.naturalHeight;
-            var _c = getPointer(event), endX = _c.endX, endY = _c.endY;
-            // update tag x & y
-            var x = (pointer.elX + (endX - pointer.startX) - left) / ratio;
-            var y = (pointer.elY + (endY - pointer.startY) - top) / ratio;
-            position.x = Math.min(Math.max(0, x), naturalWidth);
-            position.y = Math.min(Math.max(0, y), naturalHeight);
-            this.move = true;
-            this.setPosition();
-            this.emit('taggd.tag.editor.move', this);
-            return this;
-        },
-        /**
-         * tag mouseup hander
-         * @param {MouseEvent} event
-         * @return {Taggd.Tag} Current Taggd.Tag instance
-         */
-        tagUpHander: function (event) {
-            if (!this.action) {
-                return;
-            }
-            event.preventDefault();
-            removeClass(this.buttonElement, 'taggd--grabbing');
-            this.action = '';
-            this.move && this.emit('taggd.tag.editor.moveup', this);
-            return this;
-        },
-    };
-
-    var Tag = /** @class */ (function (_super) {
-        __extends(Tag, _super);
+    class Tag extends EventEmitter {
+        taggd;
+        wrapperElement;
+        popupElement;
+        buttonElement;
+        text;
+        position;
+        pointer;
+        isMoved;
+        isMoveing;
         /**
          * Create a new Tag instance
          * @param {{ x: Number, y: Number }} position - The tag’s coordinates
@@ -480,36 +340,29 @@
          * @param {Object} [buttonAttributes = {}] - The button’s attributes
          * @param {Object} [popupAttributes = {}] - The popup’s attributes
          */
-        function Tag(position, text, buttonAttributes, popupAttributes) {
-            var _this = this;
-            if (text === void 0) { text = ''; }
-            if (buttonAttributes === void 0) { buttonAttributes = {}; }
-            if (popupAttributes === void 0) { popupAttributes = {}; }
+        constructor(position, text = '', buttonAttributes = {}, popupAttributes = {}) {
             if (!isObject(position)) {
                 throw new TypeError(TypeErrorMessage.getObjectMessage(position));
             }
             else if (!('x' in position) || !('y' in position)) {
-                throw new Error("".concat(position, " should have x and y property"));
+                throw new Error(`${position} should have x and y property`);
             }
-            _this = _super.call(this) || this;
-            _this.wrapperElement = document.createElement('div');
-            _this.wrapperElement.classList.add('taggd__wrapper');
-            _this.buttonElement = document.createElement('span');
-            _this.buttonElement.classList.add('taggd__button');
-            _this.popupElement = document.createElement('span');
-            _this.popupElement.classList.add('taggd__popup');
-            _this.wrapperElement.appendChild(_this.buttonElement);
-            _this.wrapperElement.appendChild(_this.popupElement);
-            _this.text = '';
-            _this.position = position;
-            _this.pointer = {};
-            _this.action = '';
-            _this.move = false;
-            _this.setButtonAttributes(buttonAttributes);
-            _this.setPopupAttributes(popupAttributes);
-            _this.setText(text);
-            _this.hide();
-            return _this;
+            super();
+            this.wrapperElement = document.createElement('div');
+            this.wrapperElement.classList.add('taggd__wrapper');
+            this.buttonElement = document.createElement('span');
+            this.buttonElement.classList.add('taggd__button');
+            this.popupElement = document.createElement('span');
+            this.popupElement.classList.add('taggd__popup');
+            this.wrapperElement.appendChild(this.buttonElement);
+            this.wrapperElement.appendChild(this.popupElement);
+            this.text = '';
+            this.position = position;
+            this.pointer = {};
+            this.setButtonAttributes(buttonAttributes);
+            this.setPopupAttributes(popupAttributes);
+            this.setText(text);
+            this.hide();
         }
         /**
          * Subscribe to an event.
@@ -517,76 +370,85 @@
          * @param {Function} handler - The handler to execute.
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.on = function (eventName, handler) {
-            return _super.prototype.on.call(this, eventName, handler);
-        };
+        on(eventName, handler) {
+            return super.on(eventName, handler);
+        }
         /**
          * Unsubscribe from an event.
          * @param {String} eventName - The event to unsubscribe from.
          * @param {Function} handler - The handler that was used to subscribe.
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.off = function (eventName, handler) {
-            return _super.prototype.off.call(this, eventName, handler);
-        };
+        off(eventName, handler) {
+            return super.off(eventName, handler);
+        }
         /**
          * Subscribe to an event and unsubscribe once triggered.
          * @param {String} eventName - The event to subscribe to.
          * @param {Function} handler - The handler to execute.
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.once = function (eventName, handler) {
-            return _super.prototype.once.call(this, eventName, handler);
-        };
+        once(eventName, handler) {
+            return super.once(eventName, handler);
+        }
+        /**
+         * Publish to an event.
+         * @param {String} eventName - The event to Publish to.
+         * @param {Function} handler - The handler to execute.
+         * @return {Boolean} The is canceled.
+         */
+        emit(eventName, ...args) {
+            return super.emit(eventName, ...args);
+        }
         /**
          * Test whether the tag is hidden or not
          * @return {Boolean} A boolean indicating the tag’s state
          */
-        Tag.prototype.isHidden = function () {
+        isHidden() {
             return this.popupElement.style.display === 'none';
-        };
+        }
         /**
          * Show the tag
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.show = function () {
-            var isCanceled = !this.emit('taggd.tag.show', this);
+        show() {
+            const isCanceled = !this.emit('taggd.tag.show', this);
             if (!isCanceled) {
                 this.popupElement.style.display = '';
                 this.emit('taggd.tag.shown', this);
             }
             return this;
-        };
+        }
         /**
          * Hide the tag
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.hide = function () {
-            var isCanceled = !this.emit('taggd.tag.hide', this);
+        hide() {
+            const isCanceled = !this.emit('taggd.tag.hide', this);
             if (!isCanceled) {
                 this.popupElement.style.display = 'none';
                 this.emit('taggd.tag.hidden', this);
             }
             return this;
-        };
+        }
         /**
          * Click the tag
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.click = function () {
+        click() {
             this.emit('taggd.tag.click', this);
             return this;
-        };
+        }
         /**
          * Set the tag’s text
          * @param {String|Function} text - The tag’s content
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.setText = function (text) {
+        setText(text) {
             if (!isString(text) && !isFunction(text)) {
                 throw new TypeError(TypeErrorMessage.getMessage(text, 'a string or a function'));
             }
-            var isCanceled = !this.emit('taggd.tag.change', this);
+            const isCanceled = !this.emit('taggd.tag.change', this);
             if (!isCanceled) {
                 if (isFunction(text)) {
                     this.text = text(this);
@@ -598,28 +460,26 @@
                 this.emit('taggd.tag.changed', this);
             }
             return this;
-        };
+        }
         /**
          * Set the tag’s position
          * @param {Number} x - The tag’s x-coordinate
          * @param {Number} y - The tag’s y-coordinate
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.setPosition = function (x, y) {
-            if (x === void 0) { x = this.position.x; }
-            if (y === void 0) { y = this.position.y; }
+        setPosition(x = this.position.x, y = this.position.y) {
             if (!isNumber(x)) {
                 throw new TypeError(TypeErrorMessage.getFloatMessage(x));
             }
             if (!isNumber(y)) {
                 throw new TypeError(TypeErrorMessage.getFloatMessage(y));
             }
-            var isCanceled = !this.emit('taggd.tag.change', this);
+            const isCanceled = !this.emit('taggd.tag.change', this);
             if (!isCanceled) {
-                var _a = this, wrapperElement = _a.wrapperElement, position = _a.position, Taggd_1 = _a.Taggd;
-                var _b = Taggd_1.imageData, left = _b.left, top_1 = _b.top, ratio = _b.ratio;
+                const { taggd, position, wrapperElement } = this;
+                const { left, top, ratio } = taggd.imageData;
                 position.left = ratio * position.x + left;
-                position.top = ratio * position.y + top_1;
+                position.top = ratio * position.y + top;
                 setStyle(wrapperElement, {
                     left: position.left,
                     top: position.top,
@@ -627,47 +487,45 @@
                 this.emit('taggd.tag.changed', this);
             }
             return this;
-        };
+        }
         /**
          * Set the tag button’s attributes
          * @param {Object} atttributes = {} - The attributes to set
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.setButtonAttributes = function (attributes) {
-            if (attributes === void 0) { attributes = {}; }
+        setButtonAttributes(attributes = {}) {
             if (!isObject(attributes)) {
                 throw new TypeError(TypeErrorMessage.getObjectMessage(attributes));
             }
-            var isCanceled = !this.emit('taggd.tag.change', this);
+            const isCanceled = !this.emit('taggd.tag.change', this);
             if (!isCanceled) {
                 Tag.setElementAttributes(this.buttonElement, attributes);
                 this.emit('taggd.tag.changed', this);
             }
             return this;
-        };
+        }
         /**
          * Set the tag popup’s attributes
          * @param {Object} atttributes = {} - The attributes to set
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.setPopupAttributes = function (attributes) {
-            if (attributes === void 0) { attributes = {}; }
+        setPopupAttributes(attributes = {}) {
             if (!isObject(attributes)) {
                 throw new TypeError(TypeErrorMessage.getObjectMessage(attributes));
             }
-            var isCanceled = !this.emit('taggd.tag.change', this);
+            const isCanceled = !this.emit('taggd.tag.change', this);
             if (!isCanceled) {
                 Tag.setElementAttributes(this.popupElement, attributes);
                 this.emit('taggd.tag.changed', this);
             }
             return this;
-        };
+        }
         /**
          * Enable editor mode
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.enableEditorMode = function () {
-            var isCanceled = !this.emit('taggd.tag.editor.enable', this);
+        enableEditorMode() {
+            const isCanceled = !this.emit('taggd.tag.editor.enable', this);
             if (!isCanceled) {
                 this.buttonElement.classList.add('taggd--grab');
                 this.buttonElement.addEventListener('mousedown', (this.tagDownHander = this.tagDownHander.bind(this)));
@@ -675,13 +533,13 @@
                 document.addEventListener('mouseup', (this.tagUpHander = this.tagUpHander.bind(this)));
             }
             return this;
-        };
+        }
         /**
          * Disable editor mode
          * @return {Taggd.Tag} Current Taggd.Tag instance
          */
-        Tag.prototype.disableEditorMode = function () {
-            var isCanceled = !this.emit('taggd.tag.editor.disable', this);
+        disableEditorMode() {
+            const isCanceled = !this.emit('taggd.tag.editor.disable', this);
             if (!isCanceled) {
                 this.buttonElement.classList.remove('taggd--grab');
                 this.buttonElement.removeEventListener('mousedown', this.tagDownHander);
@@ -689,19 +547,18 @@
                 document.removeEventListener('mouseup', this.tagUpHander);
             }
             return this;
-        };
+        }
         /**
          * Get a Taggd.createFromObject-compatible object
          * @return {Object} A object for JSON
          */
-        Tag.prototype.toJSON = function () {
+        toJSON() {
             function getAttributes(rawAttributes) {
-                var attributes = {};
-                Array.prototype.forEach.call(rawAttributes, function (attribute) {
+                const attributes = {};
+                Array.prototype.forEach.call(rawAttributes, (attribute) => {
                     if (attribute.name === 'class' || attribute.name === 'style') {
                         return;
                     }
-                    // @ts-ignore
                     attributes[attribute.name] = attribute.value;
                 });
                 return attributes;
@@ -712,82 +569,432 @@
                 buttonAttributes: getAttributes(this.buttonElement.attributes),
                 popupAttributes: getAttributes(this.popupElement.attributes),
             };
-        };
+        }
         /**
          * Set element attributes
          * @param {DomNode} element - The element the attributes should be set to
          * @param {Object} [attributes = {}] - A map of attributes to set
          * @return {DomNode} The original element
          */
-        Tag.setElementAttributes = function (element, attributes) {
-            if (attributes === void 0) { attributes = {}; }
+        static setElementAttributes(element, attributes = {}) {
             if (!isObject(attributes)) {
                 throw new TypeError(TypeErrorMessage.getObjectMessage(attributes));
             }
-            Object.entries(attributes).forEach(function (attribute) {
-                var attributeName = attribute[0], attributeValue = attribute[1];
+            Object.entries(attributes).forEach((attribute) => {
+                const [attributeName, attributeValue] = attribute;
                 if (attributeName === 'class' && element.getAttribute(attributeName)) {
-                    var classValue = "".concat(element.getAttribute(attributeName), " ").concat(attributeValue);
+                    const classValue = `${element.getAttribute(attributeName)} ${attributeValue}`;
                     element.setAttribute(attributeName, classValue);
                     return;
                 }
-                // @ts-ignore
                 element.setAttribute(attributeName, attributeValue);
             });
             return element;
-        };
-        /**
-         * Get the position style
-         * @param {Number} x - The tag’s x-coordinate
-         * @param {Number} y - The tag’s y-coordinate
-         * @return {Object} The style
-         */
-        Tag.getPositionStyle = function (x, y) {
-            if (!isNumber(x)) {
-                throw new TypeError(TypeErrorMessage.getFloatMessage(x));
-            }
-            if (!isNumber(y)) {
-                throw new TypeError(TypeErrorMessage.getFloatMessage(y));
-            }
-            return {
-                left: "".concat(x, "px"),
-                top: "".concat(y, "px"),
-            };
-        };
+        }
         /**
          * Create a tag from object
          * @param {Object} object - The object containing all information
          * @return {Tag} The created Tag instance
          */
-        Tag.createFromObject = function (object) {
-            return new Tag(object.position, object.text, object.buttonAttributes, object.popupAttributes);
-        };
-        return Tag;
-    }(EventEmitter));
-    assign(Tag.prototype, TagEffect);
+        static createFromObject(object) {
+            return new Tag(
+            // constructor
+            object.position, object.text, object.buttonAttributes, object.popupAttributes);
+        }
+        /**
+         * tag mousedown hander
+         * @param {MouseEvent} event
+         * @return {Taggd.Tag} Current Taggd.Tag instance
+         */
+        tagDownHander(event) {
+            event.preventDefault();
+            addClass(this.buttonElement, 'taggd--grabbing');
+            this.isMoved = false;
+            this.isMoveing = true;
+            this.pointer = {
+                ...getPointer(event),
+                elX: this.position.left,
+                elY: this.position.top,
+            };
+            this.emit('taggd.tag.editor.movedown', this);
+            return this;
+        }
+        /**
+         * tag mousemove hander
+         * @param {MouseEvent} event
+         * @return {Taggd.Tag} Current Taggd.Tag instance
+         */
+        tagMoveHander(event) {
+            if (!this.isMoveing) {
+                return;
+            }
+            event.preventDefault();
+            const { taggd, position, pointer } = this;
+            const { left, top, ratio, naturalWidth, naturalHeight } = taggd.imageData;
+            const { endX, endY } = getPointer(event);
+            // update tag x & y
+            const x = (pointer.elX + (endX - pointer.startX) - left) / ratio;
+            const y = (pointer.elY + (endY - pointer.startY) - top) / ratio;
+            position.x = Math.min(Math.max(0, x), naturalWidth);
+            position.y = Math.min(Math.max(0, y), naturalHeight);
+            this.isMoved = true;
+            this.setPosition();
+            this.emit('taggd.tag.editor.move', this);
+            return this;
+        }
+        /**
+         * tag mouseup hander
+         * @param {MouseEvent} event
+         * @return {Taggd.Tag} Current Taggd.Tag instance
+         */
+        tagUpHander(event) {
+            if (!this.isMoveing) {
+                return;
+            }
+            event.preventDefault();
+            removeClass(this.buttonElement, 'taggd--grabbing');
+            this.isMoveing = false;
+            if (this.isMoved) {
+                this.emit('taggd.tag.editor.moveup', this);
+            }
+            return this;
+        }
+    }
 
-    var TaggdEffect = {
+    class Taggd extends EventEmitter {
+        static DEFAULT_OPTIONS;
+        static Tag = Tag;
+        wrapper;
+        image;
+        tags;
+        options;
+        imageData;
+        pointer;
+        isMoved;
+        isMoveing;
+        isWheeling;
+        /**
+         * Create a new taggd instance
+         * @param {HTMLElement} image - The image to wrap
+         * @param {Object} [options = {}] - The options
+         * @param {Array} [data = []] - The tags
+         */
+        constructor(image, options = {}, data = []) {
+            if (!(image instanceof Element)) {
+                throw new TypeError(TypeErrorMessage.getMessage(image, Element));
+            }
+            super();
+            this.wrapper = document.createElement('div');
+            this.wrapper.className = 'taggd';
+            this.image = image;
+            image.classList.add('taggd__image');
+            image.parentNode?.insertBefore(this.wrapper, image);
+            this.wrapper.appendChild(image);
+            this.tags = [];
+            this.options = {};
+            this.imageData = {};
+            this.pointer = {};
+            this.setOptions(options);
+            // Subscriptions do not fire after instantiation 'taggd.editor.load'
+            Promise.resolve().then(() => this.loadImage(data));
+        }
+        /**
+         * Subscribe to an event.
+         * @param {String} eventName - The event to subscribe to.
+         * @param {Function} handler - The handler to execute.
+         * @return {Taggd} Current Taggd instance
+         */
+        on(eventName, handler) {
+            return super.on(eventName, handler);
+        }
+        /**
+         * Unsubscribe from an event.
+         * @param {String} eventName - The event to unsubscribe from.
+         * @param {Function} handler - The handler that was used to subscribe.
+         * @return {Taggd} Current Taggd instance
+         */
+        off(eventName, handler) {
+            return super.off(eventName, handler);
+        }
+        /**
+         * Subscribe to an event and unsubscribe once triggered.
+         * @param {String} eventName - The event to subscribe to.
+         * @param {Function} handler - The handler to execute.
+         * @return {Taggd} Current Taggd instance
+         */
+        once(eventName, handler) {
+            return super.once(eventName, handler);
+        }
+        /**
+         * Publish to an event.
+         * @param {String} eventName - The event to Publish to.
+         * @param {Function} handler - The handler to execute.
+         * @return {Boolean} The is canceled.
+         */
+        emit(eventName, ...args) {
+            return super.emit(eventName, ...args);
+        }
+        /**
+         * Set taggd options
+         * @param {Object} options - The options to set
+         * @return {Taggd} Current Taggd instance
+         */
+        setOptions(options) {
+            if (!isObject(options)) {
+                throw new TypeError(TypeErrorMessage.getObjectMessage(options));
+            }
+            this.options = assign(this.options, Taggd.DEFAULT_OPTIONS, options);
+            return this;
+        }
+        /**
+         * Add a single tag
+         * @param {Taggd.Tag} tag - The tag to add
+         * @return {Taggd} Current Taggd instance
+         */
+        addTag(tag) {
+            if (!ofInstance(tag, Tag)) {
+                throw new TypeError(TypeErrorMessage.getTagMessage(tag));
+            }
+            const isCanceled = !this.emit('taggd.tag.add', this, tag);
+            let hideTimeout;
+            /**
+             * Test whether the event’s target is the button Element
+             * @param {Event} e - The event object
+             * @return {Boolean} Whether the event’s target is the button element
+             */
+            const isTargetButton = (e) => e.target === tag.buttonElement;
+            const clearTimeout = () => {
+                if (hideTimeout) {
+                    window.clearTimeout(hideTimeout);
+                    hideTimeout = undefined;
+                }
+            };
+            if (!isCanceled) {
+                // Add events to show/hide tags
+                // If show and hide event are identical, set show/hide mode to toggle
+                if (this.options.show === this.options.hide) {
+                    tag.buttonElement.addEventListener(this.options.show, (e) => {
+                        if (!isTargetButton(e))
+                            return;
+                        clearTimeout();
+                        if (tag.isHidden()) {
+                            tag.show();
+                        }
+                        else {
+                            tag.hide();
+                        }
+                    });
+                }
+                else {
+                    tag.buttonElement.addEventListener(this.options.show, (e) => {
+                        if (!isTargetButton(e))
+                            return;
+                        clearTimeout();
+                        tag.show();
+                    });
+                    tag.buttonElement.addEventListener(this.options.hide, (e) => {
+                        if (!isTargetButton(e))
+                            return;
+                        clearTimeout();
+                        // If the use moves the mouse between the button and popup, a delay should give some time
+                        // to do just that. This only applies to the mouseleave event.
+                        if (this.options.hide === 'mouseleave') {
+                            hideTimeout = window.setTimeout(() => tag.hide(), this.options.hideDelay);
+                        }
+                        else {
+                            tag.hide();
+                        }
+                    });
+                    // Force visibility if user interacts with the popup element
+                    if (this.options.hide === 'mouseleave') {
+                        tag.popupElement.addEventListener('mouseover', () => clearTimeout());
+                        tag.popupElement.addEventListener('mouseleave', () => tag.hide());
+                    }
+                }
+                // Add events to click tags
+                // If a move occurs, click will not be triggered
+                tag.buttonElement.addEventListener('click', (e) => {
+                    if (!isTargetButton(e))
+                        return;
+                    if (!tag.isMoved) {
+                        tag.click();
+                    }
+                });
+                // Route all tag events through taggd instance
+                tag.onAnything((eventName, ...args) => {
+                    this.emit(eventName, this, ...args);
+                });
+                // Establish contact with Taggd
+                tag.taggd = this;
+                tag.setPosition();
+                this.tags.push(tag);
+                this.wrapper.appendChild(tag.wrapperElement);
+                this.emit('taggd.tag.added', this, tag);
+            }
+            return this;
+        }
+        /**
+         * Get a single tag by index
+         * @param  {Number} index - The index of the desired tag
+         * @return {Taggd.Tag} The tag to get
+         */
+        getTag(index) {
+            if (!Number.isInteger(index)) {
+                throw new TypeError(TypeErrorMessage.getIntegerMessage(index));
+            }
+            return this.tags[index];
+        }
+        /**
+         * Delete a single tag by index
+         * @param {Number} index - The index of the desired tag
+         * @return {Taggd} Current Taggd instance
+         */
+        deleteTag(index) {
+            if (!Number.isInteger(index)) {
+                throw new TypeError(TypeErrorMessage.getIntegerMessage(index));
+            }
+            if (!this.tags[index]) {
+                throw new Error(`Tag at index ${index} does not exist.`);
+            }
+            const tag = this.tags[index];
+            const isCanceled = !this.emit('taggd.tag.delete', this, tag);
+            if (!isCanceled) {
+                this.wrapper.removeChild(tag.wrapperElement);
+                this.tags.splice(index, 1);
+                this.emit('taggd.tag.deleted', this, tag);
+            }
+            return this;
+        }
+        /**
+         * Set all tags
+         * @param {Taggd.Tag[]} tags An array of tags
+         * @return {Taggd} Current Taggd instance
+         */
+        setTags(tags) {
+            this.deleteTags();
+            this.addTags(tags);
+            return this;
+        }
+        /**
+         * Add multiple tags
+         * @param {Taggd.Tag[]} tags - An array of tags
+         * @return {Taggd} Current Taggd instance
+         */
+        addTags(tags) {
+            if (!Array.isArray(tags)) {
+                throw new TypeError(TypeErrorMessage.getArrayMessage(tags, 'Taggd.Tag'));
+            }
+            tags.forEach((tag) => this.addTag(tag));
+            return this;
+        }
+        /**
+         * Get all tags
+         * @return {Taggd.Tag[]} All tags of this Taggd instance
+         */
+        getTags() {
+            return this.tags;
+        }
+        /**
+         * Remove all tags
+         * @return {Taggd} Current Taggd instance
+         */
+        deleteTags() {
+            while (this.tags.length > 0) {
+                this.deleteTag(0);
+            }
+            return this;
+        }
+        /**
+         * Iterate and replace all tags
+         * @param {Function} callback - The callback to execute for all tags
+         * @return {Taggd} Current Taggd instance
+         */
+        map(callback) {
+            if (!isFunction(callback)) {
+                throw new TypeError(TypeErrorMessage.getFunctionMessage(callback));
+            }
+            this.tags = this.tags.map(callback);
+            return this;
+        }
+        /**
+         * Get all tags json
+         * @return {Array} A array for JSON
+         */
+        toJSON() {
+            return this.tags.map((tag) => tag.toJSON());
+        }
+        /**
+         * Clean up memory
+         * @return {Taggd} Current Taggd instance
+         */
+        destroy() {
+            const isCanceled = !this.emit('taggd.destroy', this);
+            if (!isCanceled) {
+                this.deleteTags();
+                this.image.removeEventListener(this.options.addEvent, this.taggdClickHandler);
+                this.image.removeEventListener('wheel', this.taggdZoomHander);
+                this.image.removeEventListener('mousedown', this.taggdDownHander);
+                document.removeEventListener('mousemove', this.taggdMoveHander);
+                document.removeEventListener('mouseup', this.taggdUpHander);
+                this.image.classList.remove('taggd__image');
+                this.image.style.cssText = this.imageData.naturalStyle;
+                this.wrapper.parentNode?.insertBefore(this.image, this.wrapper);
+                this.wrapper.parentNode?.removeChild(this.wrapper);
+            }
+            return this;
+        }
+        /**
+         * Enable editor mode
+         * @return {Taggd} Current Taggd instance
+         */
+        enableEditorMode() {
+            const isCanceled = !this.emit('taggd.editor.enable', this);
+            if (!isCanceled) {
+                this.wrapper.classList.add('taggd--pointer');
+                this.image.addEventListener(this.options.addEvent, (this.taggdClickHandler = this.taggdClickHandler.bind(this)));
+                this.image.addEventListener('wheel', (this.taggdZoomHander = this.taggdZoomHander.bind(this)));
+                this.image.addEventListener('mousedown', (this.taggdDownHander = this.taggdDownHander.bind(this)));
+                document.addEventListener('mousemove', (this.taggdMoveHander = this.taggdMoveHander.bind(this)));
+                document.addEventListener('mouseup', (this.taggdUpHander = this.taggdUpHander.bind(this)));
+            }
+            return this;
+        }
+        /**
+         * Disable editor mode
+         * @return {Taggd} Current Taggd instance
+         */
+        disableEditorMode() {
+            const isCanceled = !this.emit('taggd.editor.disable', this);
+            if (!isCanceled) {
+                this.wrapper.classList.remove('taggd--pointer');
+                this.image.removeEventListener(this.options.addEvent, this.taggdClickHandler);
+                this.image.removeEventListener('wheel', this.taggdZoomHander);
+                this.image.removeEventListener('mousedown', this.taggdDownHander);
+                document.removeEventListener('mousemove', this.taggdMoveHander);
+                document.removeEventListener('mouseup', this.taggdUpHander);
+            }
+            return this;
+        }
         /**
          * Load image and reset image
          * @param {Taggd.Tag[]} tags - An array of tags
          * @return {Taggd} Current Taggd instance
          */
-        loadImage: function (tags) {
-            var _this = this;
+        loadImage(tags) {
             this.emit('taggd.editor.load', this);
-            var _a = this, image = _a.image, wrapper = _a.wrapper, imageData = _a.imageData;
-            var parentWidth = wrapper.offsetWidth;
-            var parentHeight = wrapper.offsetHeight;
-            var newImage = document.createElement('img');
+            const { image, wrapper, imageData } = this;
+            const parentWidth = wrapper.offsetWidth;
+            const parentHeight = wrapper.offsetHeight;
+            const newImage = document.createElement('img');
             addClass(wrapper, 'taggd--loading');
-            newImage.onload = function () {
+            newImage.onload = () => {
                 removeClass(wrapper, 'taggd--loading');
                 // Original aspect ratio
-                var naturalWidth = image.naturalWidth, naturalHeight = image.naturalHeight;
-                var aspectRatio = naturalWidth / naturalHeight;
+                const { naturalWidth, naturalHeight } = image;
+                const aspectRatio = naturalWidth / naturalHeight;
                 // Full center in default
-                var width = parentWidth;
-                var height = parentHeight;
+                let width = parentWidth;
+                let height = parentHeight;
                 if (parentHeight * aspectRatio > parentWidth) {
                     height = parentWidth / aspectRatio;
                 }
@@ -804,22 +1011,22 @@
                 imageData.left = (parentWidth - width) / 2;
                 imageData.top = (parentHeight - height) / 2;
                 // Init tags
-                _this.setTags(tags);
-                _this.taggdChangeRender();
-                _this.emit('taggd.editor.loaded', _this);
+                this.setTags(tags);
+                this.taggdChangeRender();
+                this.emit('taggd.editor.loaded', this);
             };
-            newImage.onerror = function () {
-                _this.emit('taggd.editor.loaderror', _this);
+            newImage.onerror = () => {
+                this.emit('taggd.editor.loaderror', this);
             };
             newImage.src = image.src;
             return this;
-        },
+        }
         /**
          * Change image reset style
          * @return {Taggd} Current Taggd instance
          */
-        taggdChangeRender: function () {
-            var _a = this, image = _a.image, imageData = _a.imageData;
+        taggdChangeRender() {
+            const { image, imageData } = this;
             setStyle(image, {
                 width: imageData.width,
                 height: imageData.height,
@@ -827,57 +1034,55 @@
                 marginTop: imageData.top,
             });
             // update tags position
-            this.tags.forEach(function (tag) { return tag.setPosition(); });
+            this.tags.forEach((tag) => tag.setPosition());
             return this;
-        },
+        }
         /**
          * Taggd click/dblclick hander
          * @param {MouseEvent} event
          * @return {Taggd} Current Taggd instance
          */
-        taggdClickHandler: function (event) {
-            if (this.move) {
-                this.move = false;
+        taggdClickHandler(event) {
+            if (this.isMoved) {
                 if (this.options.addEvent === 'click') {
                     return this;
                 }
             }
-            var imageData = this.imageData;
-            var offset = getOffset(this.image);
-            var position = {
+            const { imageData } = this;
+            const offset = getOffset(this.image);
+            const position = {
                 x: (event.pageX - offset.left) / imageData.ratio,
                 y: (event.pageY - offset.top) / imageData.ratio,
             };
             this.emit('taggd.editor.add', this, position);
             return this;
-        },
+        }
         /**
          * Taggd wheel hander
          * @param {WheelEvent} event
          * @return {Taggd} Current Taggd instance
          */
-        taggdZoomHander: function (event) {
-            var _this = this;
+        taggdZoomHander(event) {
             event.preventDefault();
-            if (this.wheeling) {
+            if (this.isWheeling) {
                 return;
             }
-            this.wheeling = true;
-            setTimeout(function () {
-                _this.wheeling = false;
+            this.isWheeling = true;
+            setTimeout(() => {
+                this.isWheeling = false;
             }, 50);
-            var _a = this, options = _a.options, image = _a.image, imageData = _a.imageData;
-            var width = imageData.width, height = imageData.height, naturalWidth = imageData.naturalWidth, naturalHeight = imageData.naturalHeight;
-            var ratio = getWheelRatio(event, options.zoomRatio);
-            var zoomRatioMin = Math.max(0.01, options.zoomRatioMin);
-            var zoomRatioMax = Math.min(100, options.zoomRatioMax);
+            const { options, image, imageData } = this;
+            const { width, height, naturalWidth, naturalHeight } = imageData;
+            let ratio = getWheelRatio(event, options.zoomRatio);
+            const zoomRatioMin = Math.max(0.01, options.zoomRatioMin);
+            const zoomRatioMax = Math.min(100, options.zoomRatioMax);
             ratio = (width * ratio) / naturalWidth;
             ratio = Math.min(Math.max(ratio, zoomRatioMin), zoomRatioMax);
-            var offset = getOffset(image);
-            var newWidth = naturalWidth * ratio;
-            var newHeight = naturalHeight * ratio;
-            var offsetWidth = newWidth - width;
-            var offsetHeight = newHeight - height;
+            const offset = getOffset(image);
+            const newWidth = naturalWidth * ratio;
+            const newHeight = naturalHeight * ratio;
+            const offsetWidth = newWidth - width;
+            const offsetHeight = newHeight - height;
             imageData.ratio = ratio;
             imageData.width = newWidth;
             imageData.height = newHeight;
@@ -886,377 +1091,71 @@
             this.taggdChangeRender();
             this.emit('taggd.editor.zoom', this);
             return this;
-        },
+        }
         /**
          * Taggd mousedown hander
          * @param {MouseEvent} event
          * @return {Taggd} Current Taggd instance
          */
-        taggdDownHander: function (event) {
+        taggdDownHander(event) {
             event.preventDefault();
             addClass(this.wrapper, 'taggd--grabbing');
-            this.move = false;
-            this.action = 'move';
-            this.pointer = __assign(__assign({}, getPointer(event)), { elX: this.imageData.left, elY: this.imageData.top });
+            this.isMoved = false;
+            this.isMoveing = true;
+            this.pointer = {
+                ...getPointer(event),
+                elX: this.imageData.left,
+                elY: this.imageData.top,
+            };
             this.emit('taggd.editor.movedown', this);
             return this;
-        },
+        }
         /**
          * Taggd mousemove hander
          * @param {MouseEvent} event
          * @return {Taggd} Current Taggd instance
          */
-        taggdMoveHander: function (event) {
-            if (!this.action) {
+        taggdMoveHander(event) {
+            if (!this.isMoveing) {
                 return;
             }
             event.preventDefault();
-            var _a = this, imageData = _a.imageData, pointer = _a.pointer;
-            var _b = getPointer(event), endX = _b.endX, endY = _b.endY;
+            const { imageData, pointer } = this;
+            const { endX, endY } = getPointer(event);
             imageData.left = pointer.elX + (endX - pointer.startX);
             imageData.top = pointer.elY + (endY - pointer.startY);
-            this.move = true;
+            this.isMoved = true;
             this.taggdChangeRender();
             this.emit('taggd.editor.move', this);
             return this;
-        },
+        }
         /**
          * Taggd mouseup hander
          * @param {MouseEvent} event
          * @return {Taggd} Current Taggd instance
          */
-        taggdUpHander: function (event) {
-            if (!this.action) {
+        taggdUpHander(event) {
+            if (!this.isMoveing) {
                 return;
             }
             event.preventDefault();
             // If it is not visible, restore to the last starting position.
-            var _a = this, imageData = _a.imageData, wrapper = _a.wrapper, pointer = _a.pointer;
-            var l = Math.abs(imageData.left) >= (imageData.left >= 0 ? wrapper.offsetWidth : imageData.width);
-            var t = Math.abs(imageData.top) >= (imageData.top >= 0 ? wrapper.offsetHeight : imageData.height);
+            const { imageData, wrapper, pointer } = this;
+            const l = Math.abs(imageData.left) >= (imageData.left >= 0 ? wrapper.offsetWidth : imageData.width);
+            const t = Math.abs(imageData.top) >= (imageData.top >= 0 ? wrapper.offsetHeight : imageData.height);
             if (l || t) {
                 imageData.left = pointer.elX;
                 imageData.top = pointer.elY;
                 this.taggdChangeRender();
             }
             removeClass(this.wrapper, 'taggd--grabbing');
-            this.action = '';
-            this.move && this.emit('taggd.editor.moveup', this);
-            return this;
-        },
-    };
-
-    var Taggd = /** @class */ (function (_super) {
-        __extends(Taggd, _super);
-        /**
-         * Create a new taggd instance
-         * @param {HTMLElement} image - The image to wrap
-         * @param {Object} [options = {}] - The options
-         * @param {Array} [data = []] - The tags
-         */
-        function Taggd(image, options, data) {
-            var _this = this;
-            if (options === void 0) { options = {}; }
-            if (data === void 0) { data = []; }
-            var _a;
-            if (!(image instanceof Element)) {
-                throw new TypeError(TypeErrorMessage.getMessage(image, Element));
+            this.isMoveing = false;
+            if (this.isMoved) {
+                this.emit('taggd.editor.moveup', this);
             }
-            _this = _super.call(this) || this;
-            _this.wrapper = document.createElement('div');
-            _this.wrapper.className = 'taggd';
-            image.classList.add('taggd__image');
-            (_a = image.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(_this.wrapper, image);
-            _this.wrapper.appendChild(image);
-            _this.image = image;
-            _this.options = {};
-            _this.imageData = {};
-            _this.initialImageData = {};
-            _this.tags = [];
-            _this.pointer = {};
-            _this.action = '';
-            _this.wheeling = false;
-            _this.move = false;
-            _this.setOptions(options);
-            // Subscriptions do not fire after instantiation 'taggd.editor.load'
-            Promise.resolve().then(_this.loadImage(data));
-            return _this;
+            return this;
         }
-        /**
-         * Subscribe to an event.
-         * @param {String} eventName - The event to subscribe to.
-         * @param {Function} handler - The handler to execute.
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.on = function (eventName, handler) {
-            return _super.prototype.on.call(this, eventName, handler);
-        };
-        /**
-         * Unsubscribe from an event.
-         * @param {String} eventName - The event to unsubscribe from.
-         * @param {Function} handler - The handler that was used to subscribe.
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.off = function (eventName, handler) {
-            return _super.prototype.off.call(this, eventName, handler);
-        };
-        /**
-         * Subscribe to an event and unsubscribe once triggered.
-         * @param {String} eventName - The event to subscribe to.
-         * @param {Function} handler - The handler to execute.
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.once = function (eventName, handler) {
-            return _super.prototype.once.call(this, eventName, handler);
-        };
-        /**
-         * Set taggd options
-         * @param {Object} options - The options to set
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.setOptions = function (options) {
-            if (!isObject(options)) {
-                throw new TypeError(TypeErrorMessage.getObjectMessage(options));
-            }
-            this.options = assign(this.options, Taggd.DEFAULT_OPTIONS, options);
-            return this;
-        };
-        /**
-         * Add a single tag
-         * @param {Taggd.Tag} tag - The tag to add
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.addTag = function (tag) {
-            var _this = this;
-            if (!ofInstance(tag, Tag)) {
-                throw new TypeError(TypeErrorMessage.getTagMessage(tag));
-            }
-            var isCanceled = !this.emit('taggd.tag.add', this, tag);
-            var hideTimeout;
-            /**
-             * Test whether the event’s target is the button Element
-             * @param {Event} e - The event object
-             * @return {Boolean} Whether the event’s target is the button element
-             */
-            var isTargetButton = function (e) { return e.target === tag.buttonElement; };
-            var clearTimeout = function () {
-                if (hideTimeout) {
-                    window.clearTimeout(hideTimeout);
-                    hideTimeout = undefined;
-                }
-            };
-            if (!isCanceled) {
-                // Add events to show/hide tags
-                // If show and hide event are identical, set show/hide mode to toggle
-                if (this.options.show === this.options.hide) {
-                    tag.buttonElement.addEventListener(this.options.show, function (e) {
-                        if (!isTargetButton(e))
-                            return;
-                        clearTimeout();
-                        if (tag.isHidden()) {
-                            tag.show();
-                        }
-                        else {
-                            tag.hide();
-                        }
-                    });
-                }
-                else {
-                    tag.buttonElement.addEventListener(this.options.show, function (e) {
-                        if (!isTargetButton(e))
-                            return;
-                        clearTimeout();
-                        tag.show();
-                    });
-                    tag.buttonElement.addEventListener(this.options.hide, function (e) {
-                        if (!isTargetButton(e))
-                            return;
-                        clearTimeout();
-                        // If the use moves the mouse between the button and popup, a delay should give some time
-                        // to do just that. This only applies to the mouseleave event.
-                        if (_this.options.hide === 'mouseleave') {
-                            hideTimeout = window.setTimeout(function () { return tag.hide(); }, _this.options.hideDelay);
-                        }
-                        else {
-                            tag.hide();
-                        }
-                    });
-                    // Force visibility if user interacts with the popup element
-                    if (this.options.hide === 'mouseleave') {
-                        tag.popupElement.addEventListener('mouseover', function () { return clearTimeout(); });
-                        tag.popupElement.addEventListener('mouseleave', function () { return tag.hide(); });
-                    }
-                }
-                // Add events to click tags
-                // If a move occurs, click will not be triggered
-                tag.buttonElement.addEventListener('click', function (e) {
-                    if (!isTargetButton(e))
-                        return;
-                    if (tag.move) {
-                        tag.move = false;
-                    }
-                    else {
-                        tag.click();
-                    }
-                });
-                // Route all tag events through taggd instance
-                tag.onAnything(function (eventName) {
-                    var args = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        args[_i - 1] = arguments[_i];
-                    }
-                    _this.emit.apply(_this, __spreadArray([eventName, _this], args, false));
-                });
-                // Establish contact with Taggd
-                tag.Taggd = this;
-                tag.setPosition();
-                this.tags.push(tag);
-                this.wrapper.appendChild(tag.wrapperElement);
-                this.emit('taggd.tag.added', this, tag);
-            }
-            return this;
-        };
-        /**
-         * Get a single tag by index
-         * @param  {Number} index - The index of the desired tag
-         * @return {Taggd.Tag} The tag to get
-         */
-        Taggd.prototype.getTag = function (index) {
-            if (!Number.isInteger(index)) {
-                throw new TypeError(TypeErrorMessage.getIntegerMessage(index));
-            }
-            return this.tags[index];
-        };
-        /**
-         * Delete a single tag by index
-         * @param {Number} index - The index of the desired tag
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.deleteTag = function (index) {
-            if (!Number.isInteger(index)) {
-                throw new TypeError(TypeErrorMessage.getIntegerMessage(index));
-            }
-            if (!this.tags[index]) {
-                throw new Error("Tag at index ".concat(index, " does not exist."));
-            }
-            var tag = this.tags[index];
-            var isCanceled = !this.emit('taggd.tag.delete', this, tag);
-            if (!isCanceled) {
-                this.wrapper.removeChild(tag.wrapperElement);
-                this.tags.splice(index, 1);
-                this.emit('taggd.tag.deleted', this, tag);
-            }
-            return this;
-        };
-        /**
-         * Set all tags
-         * @param {Taggd.Tag[]} tags An array of tags
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.setTags = function (tags) {
-            this.deleteTags();
-            this.addTags(tags);
-            return this;
-        };
-        /**
-         * Add multiple tags
-         * @param {Taggd.Tag[]} tags - An array of tags
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.addTags = function (tags) {
-            var _this = this;
-            if (!Array.isArray(tags)) {
-                throw new TypeError(TypeErrorMessage.getArrayMessage(tags, 'Taggd.Tag'));
-            }
-            tags.forEach(function (tag) { return _this.addTag(tag); });
-            return this;
-        };
-        /**
-         * Get all tags
-         * @return {Taggd.Tag[]} All tags of this Taggd instance
-         */
-        Taggd.prototype.getTags = function () {
-            return this.tags;
-        };
-        /**
-         * Remove all tags
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.deleteTags = function () {
-            while (this.tags.length > 0) {
-                this.deleteTag(0);
-            }
-            return this;
-        };
-        /**
-         * Iterate and replace all tags
-         * @param {Function} callback - The callback to execute for all tags
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.map = function (callback) {
-            if (!isFunction(callback)) {
-                throw new TypeError(TypeErrorMessage.getFunctionMessage(callback));
-            }
-            this.tags = this.tags.map(callback);
-            return this;
-        };
-        /**
-         * Clean up memory
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.destroy = function () {
-            var _a, _b;
-            var isCanceled = !this.emit('taggd.destroy', this);
-            if (!isCanceled) {
-                this.deleteTags();
-                this.image.removeEventListener(this.options.addEvent, this.taggdClickHandler);
-                this.image.removeEventListener('wheel', this.taggdZoomHander);
-                this.image.removeEventListener('mousedown', this.taggdDownHander);
-                document.removeEventListener('mousemove', this.taggdMoveHander);
-                document.removeEventListener('mouseup', this.taggdUpHander);
-                this.image.classList.remove('taggd__image');
-                this.image.style.cssText = this.imageData.naturalStyle;
-                (_a = this.wrapper.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(this.image, this.wrapper);
-                (_b = this.wrapper.parentNode) === null || _b === void 0 ? void 0 : _b.removeChild(this.wrapper);
-            }
-            return this;
-        };
-        /**
-         * Enable editor mode
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.enableEditorMode = function () {
-            var isCanceled = !this.emit('taggd.editor.enable', this);
-            if (!isCanceled) {
-                this.wrapper.classList.add('taggd--pointer');
-                this.image.addEventListener(this.options.addEvent, (this.taggdClickHandler = this.taggdClickHandler.bind(this)));
-                this.image.addEventListener('wheel', (this.taggdZoomHander = this.taggdZoomHander.bind(this)));
-                this.image.addEventListener('mousedown', (this.taggdDownHander = this.taggdDownHander.bind(this)));
-                document.addEventListener('mousemove', (this.taggdMoveHander = this.taggdMoveHander.bind(this)));
-                document.addEventListener('mouseup', (this.taggdUpHander = this.taggdUpHander.bind(this)));
-            }
-            return this;
-        };
-        /**
-         * Disable editor mode
-         * @return {Taggd} Current Taggd instance
-         */
-        Taggd.prototype.disableEditorMode = function () {
-            var isCanceled = !this.emit('taggd.editor.disable', this);
-            if (!isCanceled) {
-                this.wrapper.classList.remove('taggd--pointer');
-                this.image.removeEventListener(this.options.addEvent, this.taggdClickHandler);
-                this.image.removeEventListener('wheel', this.taggdZoomHander);
-                this.image.removeEventListener('mousedown', this.taggdDownHander);
-                document.removeEventListener('mousemove', this.taggdMoveHander);
-                document.removeEventListener('mouseup', this.taggdUpHander);
-            }
-            return this;
-        };
-        Taggd.Tag = Tag;
-        return Taggd;
-    }(EventEmitter));
-    assign(Taggd.prototype, TaggdEffect);
+    }
     /**
      * Default options for all Taggd instances
      * @const

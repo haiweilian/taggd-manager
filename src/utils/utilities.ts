@@ -1,4 +1,4 @@
-import { IOffset, IPointer, IStyleDeclaration } from '../types/index'
+import type { IOffset, IPointer, IStyleDeclaration } from './typings'
 
 const REGEXP_SUFFIX = /^(?:width|height|left|top|marginLeft|marginTop)$/
 
@@ -158,13 +158,6 @@ export function addClass(element: HTMLElement, value: string): void {
     return
   }
 
-  // if (isNumber(element.length)) {
-  //   forEach(element, (elem) => {
-  //     addClass(elem, value)
-  //   })
-  //   return
-  // }
-
   if (element.classList) {
     element.classList.add(value)
     return
@@ -189,13 +182,6 @@ export function removeClass(element: HTMLElement, value: string): void {
     return
   }
 
-  // if (isNumber(element.length)) {
-  //   forEach(element, (elem) => {
-  //     removeClass(elem, value)
-  //   })
-  //   return
-  // }
-
   if (element.classList) {
     element.classList.remove(value)
     return
@@ -215,13 +201,6 @@ export function toggleClass(element: HTMLElement, value: string): void {
   if (!value) {
     return
   }
-
-  // if (isNumber(element.length)) {
-  //   forEach(element, (elem) => {
-  //     toggleClass(elem, value, added)
-  //   })
-  //   return
-  // }
 
   if (element.classList) {
     element.classList.toggle(value)
@@ -243,8 +222,8 @@ export function getOffset(element: HTMLElement): IOffset {
   const box = element.getBoundingClientRect()
 
   return {
-    top: box.top + (window.pageYOffset - document.documentElement.clientTop),
-    left: box.left + (window.pageXOffset - document.documentElement.clientLeft),
+    top: box.top + (window.scrollY - document.documentElement.clientTop),
+    left: box.left + (window.scrollX - document.documentElement.clientLeft),
   }
 }
 

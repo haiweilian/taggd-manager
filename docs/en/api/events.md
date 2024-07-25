@@ -28,7 +28,7 @@ The table below lists all available tables for a `Taggd` instance.
 All `taggd.editor*` event handlers receive the following arguments:
 
 1. `Taggd` instance
-2. `[position]` x/y/left/top
+2. `[tag / position]`
 
 All `taggd.tag*` event handlers receive the following arguments:
 

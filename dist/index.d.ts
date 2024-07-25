@@ -1,2 +1,2 @@
-import Taggd from './classes/Taggd';
+import Taggd from './core/Taggd';
 export default Taggd;

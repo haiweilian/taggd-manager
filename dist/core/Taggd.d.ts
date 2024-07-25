@@ -1,60 +1,59 @@
-import { IDefaultOptions, IPointer, IPosition, ImageData, IEventTaggd } from '../types/index';
 import EventEmitter from '../utils/event-emitter';
+import type { IOptions, IPointer, IImageData, ITaggdEvent } from '../utils/typings';
 import Tag from './Tag';
 declare class Taggd extends EventEmitter {
-    static DEFAULT_OPTIONS: IDefaultOptions;
+    static DEFAULT_OPTIONS: IOptions;
     static Tag: typeof Tag;
-    loadImage: any;
-    taggdChangeRender: any;
-    taggdClickHandler: any;
-    taggdZoomHander: any;
-    taggdDownHander: any;
-    taggdMoveHander: any;
-    taggdUpHander: any;
     wrapper: HTMLElement;
     image: HTMLImageElement;
-    options: IDefaultOptions;
-    imageData: ImageData;
-    initialImageData: ImageData;
     tags: Tag[];
+    options: IOptions;
+    imageData: IImageData;
     pointer: IPointer;
-    action: string;
-    wheeling: boolean;
-    move: boolean;
+    isMoved: boolean;
+    isMoveing: boolean;
+    isWheeling: boolean;
     /**
      * Create a new taggd instance
      * @param {HTMLElement} image - The image to wrap
      * @param {Object} [options = {}] - The options
      * @param {Array} [data = []] - The tags
      */
-    constructor(image: HTMLImageElement, options?: Partial<IDefaultOptions>, data?: Tag[]);
+    constructor(image: HTMLImageElement, options?: Partial<IOptions>, data?: Tag[]);
     /**
      * Subscribe to an event.
      * @param {String} eventName - The event to subscribe to.
      * @param {Function} handler - The handler to execute.
      * @return {Taggd} Current Taggd instance
      */
-    on(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any): void;
+    on<T extends keyof ITaggdEvent>(eventName: T, handler: ITaggdEvent[T]): void;
     /**
      * Unsubscribe from an event.
      * @param {String} eventName - The event to unsubscribe from.
      * @param {Function} handler - The handler that was used to subscribe.
      * @return {Taggd} Current Taggd instance
      */
-    off(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any): void;
+    off<T extends keyof ITaggdEvent>(eventName: T, handler: ITaggdEvent[T]): void;
     /**
      * Subscribe to an event and unsubscribe once triggered.
      * @param {String} eventName - The event to subscribe to.
      * @param {Function} handler - The handler to execute.
      * @return {Taggd} Current Taggd instance
      */
-    once(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any): void;
+    once<T extends keyof ITaggdEvent>(eventName: T, handler: ITaggdEvent[T]): void;
+    /**
+     * Publish to an event.
+     * @param {String} eventName - The event to Publish to.
+     * @param {Function} handler - The handler to execute.
+     * @return {Boolean} The is canceled.
+     */
+    emit<T extends keyof ITaggdEvent>(eventName: T, ...args: Parameters<ITaggdEvent[T]>): boolean;
     /**
      * Set taggd options
      * @param {Object} options - The options to set
      * @return {Taggd} Current Taggd instance
      */
-    setOptions(options: Partial<IDefaultOptions>): this;
+    setOptions(options: Partial<IOptions>): this;
     /**
      * Add a single tag
      * @param {Taggd.Tag} tag - The tag to add
@@ -102,6 +101,16 @@ declare class Taggd extends EventEmitter {
      */
     map(callback: (value: Tag, index: number, array: Tag[]) => any): this;
     /**
+     * Get all tags json
+     * @return {Array} A array for JSON
+     */
+    toJSON(): {
+        position: import("../utils/typings").IPosition;
+        text: string;
+        buttonAttributes: {};
+        popupAttributes: {};
+    }[];
+    /**
      * Clean up memory
      * @return {Taggd} Current Taggd instance
      */
@@ -116,5 +125,46 @@ declare class Taggd extends EventEmitter {
      * @return {Taggd} Current Taggd instance
      */
     disableEditorMode(): this;
+    /**
+     * Load image and reset image
+     * @param {Taggd.Tag[]} tags - An array of tags
+     * @return {Taggd} Current Taggd instance
+     */
+    private loadImage;
+    /**
+     * Change image reset style
+     * @return {Taggd} Current Taggd instance
+     */
+    private taggdChangeRender;
+    /**
+     * Taggd click/dblclick hander
+     * @param {MouseEvent} event
+     * @return {Taggd} Current Taggd instance
+     */
+    private taggdClickHandler;
+    /**
+     * Taggd wheel hander
+     * @param {WheelEvent} event
+     * @return {Taggd} Current Taggd instance
+     */
+    taggdZoomHander(event: WheelEvent): this;
+    /**
+     * Taggd mousedown hander
+     * @param {MouseEvent} event
+     * @return {Taggd} Current Taggd instance
+     */
+    taggdDownHander(event: MouseEvent): this;
+    /**
+     * Taggd mousemove hander
+     * @param {MouseEvent} event
+     * @return {Taggd} Current Taggd instance
+     */
+    taggdMoveHander(event: MouseEvent): this;
+    /**
+     * Taggd mouseup hander
+     * @param {MouseEvent} event
+     * @return {Taggd} Current Taggd instance
+     */
+    taggdUpHander(event: MouseEvent): this;
 }
 export default Taggd;

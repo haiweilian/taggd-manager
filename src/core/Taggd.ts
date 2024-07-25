@@ -1,32 +1,22 @@
-import { IDefaultOptions, IPointer, IPosition, ImageData, IEventTaggd } from '../types/index'
 import EventEmitter from '../utils/event-emitter'
 import TypeErrorMessage from '../utils/type-error-message'
-import { ofInstance, isObject, isFunction, assign } from '../utils/utilities'
+import type { IOptions, IPointer, IImageData, ITaggdEvent } from '../utils/typings'
+import { ofInstance, isObject, isFunction, assign, addClass, removeClass, setStyle, getWheelRatio, getOffset, getPointer } from '../utils/utilities'
 import Tag from './Tag'
-import TaggdEffect from './TaggdEffect'
 
 class Taggd extends EventEmitter {
-  static DEFAULT_OPTIONS: IDefaultOptions
+  static DEFAULT_OPTIONS: IOptions
   static Tag = Tag
-
-  public loadImage: any
-  public taggdChangeRender: any
-  public taggdClickHandler: any
-  public taggdZoomHander: any
-  public taggdDownHander: any
-  public taggdMoveHander: any
-  public taggdUpHander: any
 
   wrapper: HTMLElement
   image: HTMLImageElement
-  options: IDefaultOptions
-  imageData: ImageData
-  initialImageData: ImageData
   tags: Tag[]
+  options: IOptions
+  imageData: IImageData
   pointer: IPointer
-  action: string
-  wheeling: boolean
-  move: boolean
+  isMoved: boolean
+  isMoveing: boolean
+  isWheeling: boolean
 
   /**
    * Create a new taggd instance
@@ -34,7 +24,7 @@ class Taggd extends EventEmitter {
    * @param {Object} [options = {}] - The options
    * @param {Array} [data = []] - The tags
    */
-  constructor(image: HTMLImageElement, options: Partial<IDefaultOptions> = {}, data: Tag[] = []) {
+  constructor(image: HTMLImageElement, options: Partial<IOptions> = {}, data: Tag[] = []) {
     if (!(image instanceof Element)) {
       throw new TypeError(TypeErrorMessage.getMessage(image, Element))
     }
@@ -44,25 +34,21 @@ class Taggd extends EventEmitter {
     this.wrapper = document.createElement('div')
     this.wrapper.className = 'taggd'
 
+    this.image = image
     image.classList.add('taggd__image')
     image.parentNode?.insertBefore(this.wrapper, image)
 
     this.wrapper.appendChild(image)
 
-    this.image = image
-    this.options = {} as IDefaultOptions
-    this.imageData = {} as ImageData
-    this.initialImageData = {} as ImageData
     this.tags = []
+    this.options = {} as IOptions
+    this.imageData = {} as IImageData
     this.pointer = {} as IPointer
-    this.action = ''
-    this.wheeling = false
-    this.move = false
 
     this.setOptions(options)
 
     // Subscriptions do not fire after instantiation 'taggd.editor.load'
-    Promise.resolve().then(this.loadImage(data))
+    Promise.resolve().then(() => this.loadImage(data))
   }
 
   /**
@@ -71,7 +57,7 @@ class Taggd extends EventEmitter {
    * @param {Function} handler - The handler to execute.
    * @return {Taggd} Current Taggd instance
    */
-  on(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any) {
+  on<T extends keyof ITaggdEvent>(eventName: T, handler: ITaggdEvent[T]) {
     return super.on(eventName, handler)
   }
 
@@ -81,7 +67,7 @@ class Taggd extends EventEmitter {
    * @param {Function} handler - The handler that was used to subscribe.
    * @return {Taggd} Current Taggd instance
    */
-  off(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any) {
+  off<T extends keyof ITaggdEvent>(eventName: T, handler: ITaggdEvent[T]) {
     return super.off(eventName, handler)
   }
 
@@ -91,8 +77,18 @@ class Taggd extends EventEmitter {
    * @param {Function} handler - The handler to execute.
    * @return {Taggd} Current Taggd instance
    */
-  once(eventName: IEventTaggd, handler: (taggd: Taggd, position: IPosition) => any) {
+  once<T extends keyof ITaggdEvent>(eventName: T, handler: ITaggdEvent[T]) {
     return super.once(eventName, handler)
+  }
+
+  /**
+   * Publish to an event.
+   * @param {String} eventName - The event to Publish to.
+   * @param {Function} handler - The handler to execute.
+   * @return {Boolean} The is canceled.
+   */
+  emit<T extends keyof ITaggdEvent>(eventName: T, ...args: Parameters<ITaggdEvent[T]>) {
+    return super.emit(eventName, ...args)
   }
 
   /**
@@ -100,12 +96,12 @@ class Taggd extends EventEmitter {
    * @param {Object} options - The options to set
    * @return {Taggd} Current Taggd instance
    */
-  setOptions(options: Partial<IDefaultOptions>) {
+  setOptions(options: Partial<IOptions>) {
     if (!isObject(options)) {
       throw new TypeError(TypeErrorMessage.getObjectMessage(options))
     }
 
-    this.options = assign(this.options, Taggd.DEFAULT_OPTIONS, options) as IDefaultOptions
+    this.options = assign(this.options, Taggd.DEFAULT_OPTIONS, options) as IOptions
 
     return this
   }
@@ -184,20 +180,18 @@ class Taggd extends EventEmitter {
       tag.buttonElement.addEventListener('click', (e) => {
         if (!isTargetButton(e)) return
 
-        if (tag.move) {
-          tag.move = false
-        } else {
+        if (!tag.isMoved) {
           tag.click()
         }
       })
 
       // Route all tag events through taggd instance
-      tag.onAnything((eventName: string, ...args: any) => {
+      tag.onAnything((eventName: any, ...args: any) => {
         this.emit(eventName, this, ...args)
       })
 
       // Establish contact with Taggd
-      tag.Taggd = this
+      tag.taggd = this
       tag.setPosition()
 
       this.tags.push(tag)
@@ -312,6 +306,14 @@ class Taggd extends EventEmitter {
   }
 
   /**
+   * Get all tags json
+   * @return {Array} A array for JSON
+   */
+  toJSON() {
+    return this.tags.map((tag) => tag.toJSON())
+  }
+
+  /**
    * Clean up memory
    * @return {Taggd} Current Taggd instance
    */
@@ -376,9 +378,238 @@ class Taggd extends EventEmitter {
 
     return this
   }
-}
 
-assign(Taggd.prototype, TaggdEffect)
+  /**
+   * Load image and reset image
+   * @param {Taggd.Tag[]} tags - An array of tags
+   * @return {Taggd} Current Taggd instance
+   */
+  private loadImage(tags: Tag[]) {
+    this.emit('taggd.editor.load', this)
+
+    const { image, wrapper, imageData } = this
+    const parentWidth = wrapper.offsetWidth
+    const parentHeight = wrapper.offsetHeight
+    const newImage = document.createElement('img')
+
+    addClass(wrapper, 'taggd--loading')
+
+    newImage.onload = () => {
+      removeClass(wrapper, 'taggd--loading')
+
+      // Original aspect ratio
+      const { naturalWidth, naturalHeight } = image
+      const aspectRatio = naturalWidth / naturalHeight
+
+      // Full center in default
+      let width = parentWidth
+      let height = parentHeight
+      if (parentHeight * aspectRatio > parentWidth) {
+        height = parentWidth / aspectRatio
+      } else {
+        width = parentHeight * aspectRatio
+      }
+
+      // Init image style
+      imageData.width = width
+      imageData.height = height
+      imageData.naturalWidth = naturalWidth
+      imageData.naturalHeight = naturalHeight
+      imageData.naturalStyle = image.style.cssText
+      imageData.ratio = width / naturalWidth
+      imageData.left = (parentWidth - width) / 2
+      imageData.top = (parentHeight - height) / 2
+
+      // Init tags
+      this.setTags(tags)
+      this.taggdChangeRender()
+
+      this.emit('taggd.editor.loaded', this)
+    }
+
+    newImage.onerror = () => {
+      this.emit('taggd.editor.loaderror', this)
+    }
+
+    newImage.src = image.src
+
+    return this
+  }
+
+  /**
+   * Change image reset style
+   * @return {Taggd} Current Taggd instance
+   */
+  private taggdChangeRender() {
+    const { image, imageData } = this
+
+    setStyle(image, {
+      width: imageData.width,
+      height: imageData.height,
+      marginLeft: imageData.left,
+      marginTop: imageData.top,
+    })
+
+    // update tags position
+    this.tags.forEach((tag) => tag.setPosition())
+
+    return this
+  }
+
+  /**
+   * Taggd click/dblclick hander
+   * @param {MouseEvent} event
+   * @return {Taggd} Current Taggd instance
+   */
+  private taggdClickHandler(event: MouseEvent) {
+    if (this.isMoved) {
+      if (this.options.addEvent === 'click') {
+        return this
+      }
+    }
+
+    const { imageData } = this
+    const offset = getOffset(this.image)
+
+    const position = {
+      x: (event.pageX - offset.left) / imageData.ratio,
+      y: (event.pageY - offset.top) / imageData.ratio,
+    }
+
+    this.emit('taggd.editor.add', this, position)
+
+    return this
+  }
+
+  /**
+   * Taggd wheel hander
+   * @param {WheelEvent} event
+   * @return {Taggd} Current Taggd instance
+   */
+  taggdZoomHander(event: WheelEvent) {
+    event.preventDefault()
+
+    if (this.isWheeling) {
+      return
+    }
+
+    this.isWheeling = true
+
+    setTimeout(() => {
+      this.isWheeling = false
+    }, 50)
+
+    const { options, image, imageData } = this
+    const { width, height, naturalWidth, naturalHeight } = imageData
+
+    let ratio = getWheelRatio(event, options.zoomRatio)
+
+    const zoomRatioMin = Math.max(0.01, options.zoomRatioMin)
+    const zoomRatioMax = Math.min(100, options.zoomRatioMax)
+
+    ratio = (width * ratio) / naturalWidth
+    ratio = Math.min(Math.max(ratio, zoomRatioMin), zoomRatioMax)
+
+    const offset = getOffset(image)
+    const newWidth = naturalWidth * ratio
+    const newHeight = naturalHeight * ratio
+    const offsetWidth = newWidth - width
+    const offsetHeight = newHeight - height
+
+    imageData.ratio = ratio
+    imageData.width = newWidth
+    imageData.height = newHeight
+    imageData.left -= offsetWidth * ((event.pageX - offset.left) / width)
+    imageData.top -= offsetHeight * ((event.pageY - offset.top) / height)
+
+    this.taggdChangeRender()
+
+    this.emit('taggd.editor.zoom', this)
+
+    return this
+  }
+
+  /**
+   * Taggd mousedown hander
+   * @param {MouseEvent} event
+   * @return {Taggd} Current Taggd instance
+   */
+  taggdDownHander(event: MouseEvent) {
+    event.preventDefault()
+
+    addClass(this.wrapper, 'taggd--grabbing')
+
+    this.isMoved = false
+    this.isMoveing = true
+    this.pointer = {
+      ...getPointer(event),
+      elX: this.imageData.left,
+      elY: this.imageData.top,
+    }
+
+    this.emit('taggd.editor.movedown', this)
+
+    return this
+  }
+
+  /**
+   * Taggd mousemove hander
+   * @param {MouseEvent} event
+   * @return {Taggd} Current Taggd instance
+   */
+  taggdMoveHander(event: MouseEvent) {
+    if (!this.isMoveing) {
+      return
+    }
+
+    event.preventDefault()
+
+    const { imageData, pointer } = this
+    const { endX, endY } = getPointer(event)
+
+    imageData.left = pointer.elX + (endX - pointer.startX)
+    imageData.top = pointer.elY + (endY - pointer.startY)
+
+    this.isMoved = true
+    this.taggdChangeRender()
+    this.emit('taggd.editor.move', this)
+
+    return this
+  }
+
+  /**
+   * Taggd mouseup hander
+   * @param {MouseEvent} event
+   * @return {Taggd} Current Taggd instance
+   */
+  taggdUpHander(event: MouseEvent) {
+    if (!this.isMoveing) {
+      return
+    }
+
+    event.preventDefault()
+
+    // If it is not visible, restore to the last starting position.
+    const { imageData, wrapper, pointer } = this
+    const l = Math.abs(imageData.left) >= (imageData.left >= 0 ? wrapper.offsetWidth : imageData.width)
+    const t = Math.abs(imageData.top) >= (imageData.top >= 0 ? wrapper.offsetHeight : imageData.height)
+
+    if (l || t) {
+      imageData.left = pointer.elX
+      imageData.top = pointer.elY
+      this.taggdChangeRender()
+    }
+
+    removeClass(this.wrapper, 'taggd--grabbing')
+
+    this.isMoveing = false
+    if (this.isMoved) {
+      this.emit('taggd.editor.moveup', this)
+    }
+
+    return this
+  }
+}
 
 /**
  * Default options for all Taggd instances

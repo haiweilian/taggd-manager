@@ -68,7 +68,7 @@
 | ----- | --------- | ----------- |
 | tag   | Taggd.Tag | tag 实例    |
 
-### taggd.getTag(index) ⇒ Taggd.Tag
+### taggd.getTag(index)
 
 根据索引获取一个 tag
 
@@ -136,6 +136,13 @@
 | Param    | Type     | Description  |
 | -------- | -------- | ------------ |
 | callback | function | 回调处理函数 |
+
+### taggd.toJSON()
+
+获取所有 tag 信息
+
+**Kind**: instance method of [Taggd](#Taggd)  
+**Returns**: Array - JSON 数组对象
 
 ### taggd.destroy()
 

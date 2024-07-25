@@ -1,21 +1,31 @@
+# System
+.DS_Store
+
+# Coverage directory
+coverage
+
+# Build Generate
+docs/.vitepress/dist
+docs/.vitepress/cache
+
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-# Pack
+# Caches
+.eslintcache
+.stylelintcache
+
+# Dependency directories
 node_modules
-dist-ssr
-doc_build
-*.local
+bower_components
+jspm_packages
 
 # Editor directories and files
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj

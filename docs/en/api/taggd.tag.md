@@ -146,18 +146,6 @@ Set element attributes
 | element      | DomNode |         | The element the attributes should be set to |
 | [attributes] | Object  | {}      | A map of attributes to set                  |
 
-### Tag.getPositionStyle(x, y)
-
-Get the position style
-
-**Kind**: static method of [Tag](#Tag)  
-**Returns**: Object - The style
-
-| Param | Type   | Description            |
-| ----- | ------ | ---------------------- |
-| x     | Number | The tag’s x-coordinate |
-| y     | Number | The tag’s y-coordinate |
-
 ### Tag.createFromObject(object)
 
 Create a tag from object

@@ -6,9 +6,9 @@
 
 ## taggd-manager
 
-[English](https://haiweilian.github.io/taggd-manager/guide/introduction.html)
+[English](https://haiweilian.github.io/taggd-manager/en/introduction.html)
 
-[中文文档](https://haiweilian.github.io/taggd-manager/zh/guide/introduction.html)
+[中文文档](https://haiweilian.github.io/taggd-manager/zh/introduction.html)
 
 `taggd-manager` Is an image tag management tool that supports zooming, moving, and flexible customization.
 
